@@ -40,7 +40,7 @@
 				use:scrollReveal={{ delay: 200 }}
 			>
 				<a
-					href="/#contact"
+					href="/#intake-form"
 					class="cta-button btn-animate group inline-flex items-center gap-3 rounded-full py-3 pr-3 pl-6 text-lg font-medium text-white shadow-lg"
 					on:click={handleDiscovery}
 				>
@@ -61,7 +61,7 @@
 					</span>
 				</a>
 				<a
-					href="/#contact"
+					href="/contact"
 					class="btn-secondary-animate group inline-flex items-center gap-3 rounded-full border border-white/30 bg-transparent py-3 pr-3 pl-6 text-lg font-medium text-white shadow-sm hover:bg-white/10"
 					on:click={handleSavings}
 				>
