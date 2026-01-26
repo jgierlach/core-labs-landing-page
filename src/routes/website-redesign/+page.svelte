@@ -206,7 +206,7 @@
 
 							<div class="mb-8 text-center">
 								<h2 class="text-xl font-semibold text-white sm:text-2xl">Claim Your Free Design</h2>
-								<p class="mt-2 text-sm text-white/50">Takes less than 2 minutes</p>
+								<p class="mt-2 text-sm text-white/50">Takes less than 1 minute</p>
 							</div>
 
 							{#if errorMessage}
