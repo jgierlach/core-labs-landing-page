@@ -150,7 +150,7 @@
 					</div>
 
 					<!-- Trust indicators -->
-					<div class="mt-12 hidden lg:block" use:pageLoad={{ delay: 400 }}>
+					<!-- <div class="mt-12 hidden lg:block" use:pageLoad={{ delay: 400 }}>
 						<p class="text-sm text-white/40 mb-4">Trusted by businesses worldwide</p>
 						<div class="flex items-center gap-8 opacity-60">
 							<div class="flex items-center gap-2">
@@ -162,7 +162,7 @@
 								<span class="text-white/60 text-sm">50+ happy clients</span>
 							</div>
 						</div>
-					</div>
+					</div> -->
 				</div>
 
 				<!-- Right column: Form -->
@@ -330,7 +330,7 @@
 	</div>
 
 	<!-- Mobile trust indicators -->
-	<div class="container mx-auto px-4 mt-12 lg:hidden">
+	<!-- <div class="container mx-auto px-4 mt-12 lg:hidden">
 		<div class="text-center" use:pageLoad={{ delay: 400 }}>
 			<p class="text-sm text-white/40 mb-4">Trusted by businesses worldwide</p>
 			<div class="flex items-center justify-center gap-2">
@@ -342,7 +342,7 @@
 				<span class="text-white/60 text-sm">50+ happy clients</span>
 			</div>
 		</div>
-	</div>
+	</div> -->
 </section>
 
 <!-- FAQ Section for additional conversion optimization -->
