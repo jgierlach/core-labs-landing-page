@@ -48,20 +48,42 @@
 	}
 
 	function handleSubmit(event) {
-		errorMessage = '';
+    errorMessage = '';
 
-		const validation = validateForm();
-		if (validation) {
-			event.preventDefault();
-			errorMessage = validation;
-			if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
-				window.hcaptcha.reset();
-			}
-			return;
-		}
+    const validation = validateForm();
+    if (validation) {
+        event.preventDefault();
+        errorMessage = validation;
+        if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
+            window.hcaptcha.reset();
+        }
+        return;
+    }
 
-		isSubmitting = true;
+    // Fire Meta Pixel Lead event
+    if (typeof window !== 'undefined' && typeof window.fbq !== 'undefined') {
+        window.fbq('track', 'Lead');
+    }
+
+    isSubmitting = true;
 	}
+
+	// function handleSubmit(event) {
+	// 	errorMessage = '';
+
+	// 	const validation = validateForm();
+	// 	if (validation) {
+	// 		event.preventDefault();
+	// 		errorMessage = validation;
+	// 		if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
+	// 			window.hcaptcha.reset();
+	// 		}
+	// 		return;
+	// 	}
+		
+
+	// 	isSubmitting = true;
+	// }
 
 	function resetForm() {
 		name = '';
@@ -148,21 +170,6 @@
 							<span class="text-base text-white/90 sm:text-lg">No commitment, no credit card required</span>
 						</div>
 					</div>
-
-					<!-- Trust indicators -->
-					<!-- <div class="mt-12 hidden lg:block" use:pageLoad={{ delay: 400 }}>
-						<p class="text-sm text-white/40 mb-4">Trusted by businesses worldwide</p>
-						<div class="flex items-center gap-8 opacity-60">
-							<div class="flex items-center gap-2">
-								<div class="flex -space-x-2">
-									<div class="h-8 w-8 rounded-full bg-linear-to-br from-[#334fff] to-[#7433ff] ring-2 ring-[#0a0f2a]"></div>
-									<div class="h-8 w-8 rounded-full bg-linear-to-br from-[#7433ff] to-[#a78bfa] ring-2 ring-[#0a0f2a]"></div>
-									<div class="h-8 w-8 rounded-full bg-linear-to-br from-[#334fff] to-[#7433ff] ring-2 ring-[#0a0f2a]"></div>
-								</div>
-								<span class="text-white/60 text-sm">50+ happy clients</span>
-							</div>
-						</div>
-					</div> -->
 				</div>
 
 				<!-- Right column: Form -->
@@ -328,21 +335,6 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- Mobile trust indicators -->
-	<!-- <div class="container mx-auto px-4 mt-12 lg:hidden">
-		<div class="text-center" use:pageLoad={{ delay: 400 }}>
-			<p class="text-sm text-white/40 mb-4">Trusted by businesses worldwide</p>
-			<div class="flex items-center justify-center gap-2">
-				<div class="flex -space-x-2">
-					<div class="h-8 w-8 rounded-full bg-linear-to-br from-[#334fff] to-[#7433ff] ring-2 ring-[#0a0f2a]"></div>
-					<div class="h-8 w-8 rounded-full bg-linear-to-br from-[#7433ff] to-[#a78bfa] ring-2 ring-[#0a0f2a]"></div>
-					<div class="h-8 w-8 rounded-full bg-linear-to-br from-[#334fff] to-[#7433ff] ring-2 ring-[#0a0f2a]"></div>
-				</div>
-				<span class="text-white/60 text-sm">50+ happy clients</span>
-			</div>
-		</div>
-	</div> -->
 </section>
 
 <!-- FAQ Section for additional conversion optimization -->
