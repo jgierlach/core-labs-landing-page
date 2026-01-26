@@ -191,14 +191,14 @@
 						<form
 							bind:this={formElement}
 							class="form-card rounded-2xl border border-white/10 bg-white/5 p-8 sm:p-10 backdrop-blur-xl"
-							action="https://www.corelabs.digital/f/74bcbe36-65c1-4ca2-b0c6-7d817681f319"
+							action="https://www.corelabs.digital/f/88cb8b1a-9ca0-4a91-8c99-abf67b402dd3"
 							method="POST"
 							onsubmit={handleSubmit}
 						>
 							<!-- Honeypot field -->
 							<input
 								type="text"
-								name="website_hp"
+								name="website"
 								style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden"
 								tabindex="-1"
 								autocomplete="off"
