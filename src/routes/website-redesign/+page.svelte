@@ -190,7 +190,7 @@
 					{:else}
 						<form
 							bind:this={formElement}
-							class="form-card rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl"
+							class="form-card rounded-2xl border border-white/10 bg-white/5 p-8 sm:p-10 backdrop-blur-xl"
 							action="https://www.corelabs.digital/f/74bcbe36-65c1-4ca2-b0c6-7d817681f319"
 							method="POST"
 							onsubmit={handleSubmit}
@@ -204,9 +204,9 @@
 								autocomplete="off"
 							/>
 
-							<div class="mb-6 text-center">
+							<div class="mb-8 text-center">
 								<h2 class="text-xl font-semibold text-white sm:text-2xl">Claim Your Free Design</h2>
-								<p class="mt-1 text-sm text-white/50">Takes less than 2 minutes</p>
+								<p class="mt-2 text-sm text-white/50">Takes less than 2 minutes</p>
 							</div>
 
 							{#if errorMessage}
@@ -215,10 +215,10 @@
 								</div>
 							{/if}
 
-							<div class="space-y-5">
+							<div class="space-y-6">
 								<!-- Name -->
 								<div>
-									<label for="name" class="mb-2 block text-sm font-medium text-white">
+									<label for="name" class="mb-3 block text-sm font-medium text-white">
 										Name <span class="text-[#a78bfa]">*</span>
 									</label>
 									<input
@@ -235,7 +235,7 @@
 
 								<!-- Email -->
 								<div>
-									<label for="email" class="mb-2 block text-sm font-medium text-white">
+									<label for="email" class="mb-3 block text-sm font-medium text-white">
 										Email <span class="text-[#a78bfa]">*</span>
 									</label>
 									<input
@@ -252,7 +252,7 @@
 
 								<!-- Phone (optional) -->
 								<div>
-									<label for="phone" class="mb-2 block text-sm font-medium text-white">
+									<label for="phone" class="mb-3 block text-sm font-medium text-white">
 										Phone Number <span class="text-white/40">(optional)</span>
 									</label>
 									<input
@@ -268,7 +268,7 @@
 
 								<!-- Current Website (optional) -->
 								<div>
-									<label for="current-website" class="mb-2 block text-sm font-medium text-white">
+									<label for="current-website" class="mb-3 block text-sm font-medium text-white">
 										Current Website <span class="text-white/40">(optional)</span>
 									</label>
 									<input
@@ -283,7 +283,7 @@
 
 								<!-- Creative Direction -->
 								<div>
-									<label for="creative-direction" class="mb-2 block text-sm font-medium text-white">
+									<label for="creative-direction" class="mb-3 block text-sm font-medium text-white">
 										Creative Direction <span class="text-[#a78bfa]">*</span>
 									</label>
 									<textarea
@@ -298,7 +298,7 @@
 								</div>
 
 								<!-- hCaptcha -->
-								<div class="flex justify-center pt-2">
+								<div class="flex justify-center pt-4">
 									<div class="h-captcha" data-sitekey="9f64291e-4d3a-4ae8-b4ee-5692268481b2" data-theme="dark"></div>
 								</div>
 
