@@ -137,7 +137,7 @@
 									<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
 								</svg>
 							</div>
-							<span class="text-base text-white/90 sm:text-lg">Custom mockups delivered within 5 business days</span>
+							<span class="text-base text-white/90 sm:text-lg">Custom mockups delivered within 5 days</span>
 						</div>
 						<div class="flex items-start gap-3">
 							<div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#10b981]/20">
