@@ -319,7 +319,7 @@
 								</button>
 
 								<p class="text-center text-xs text-white/40">
-									By submitting, you agree to receive communications from Core Labs. We respect your privacy.
+									By submitting, you agree to receive communications from Core Labs LLC. We respect your privacy.
 								</p>
 							</div>
 						</form>
