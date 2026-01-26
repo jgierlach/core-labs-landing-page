@@ -124,24 +124,24 @@
 
 					<div class="mt-10 mx-auto max-w-md lg:mx-0 lg:max-w-none space-y-4" use:pageLoad={{ delay: 300 }}>
 						<div class="flex items-start gap-3">
-							<div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500/20">
-								<svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+							<div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#10b981]/20">
+								<svg class="h-4 w-4 text-[#34d399]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
 									<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
 								</svg>
 							</div>
 							<span class="text-base text-white/90 sm:text-lg">Professional design valued at $2,500+</span>
 						</div>
 						<div class="flex items-start gap-3">
-							<div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500/20">
-								<svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+							<div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#10b981]/20">
+								<svg class="h-4 w-4 text-[#34d399]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
 									<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
 								</svg>
 							</div>
 							<span class="text-base text-white/90 sm:text-lg">Custom mockups delivered within 5 business days</span>
 						</div>
 						<div class="flex items-start gap-3">
-							<div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500/20">
-								<svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+							<div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#10b981]/20">
+								<svg class="h-4 w-4 text-[#34d399]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
 									<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
 								</svg>
 							</div>
