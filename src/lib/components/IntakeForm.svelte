@@ -55,18 +55,24 @@
 
 		const renderCaptcha = () => {
 			if (hcaptchaContainer && typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
-				// Only render if not already rendered
-				if (hcaptchaWidgetId === null && !hcaptchaContainer.querySelector('iframe')) {
-					try {
-						hcaptchaWidgetId = window.hcaptcha.render(hcaptchaContainer, {
-							sitekey: '9f64291e-4d3a-4ae8-b4ee-5692268481b2'
-						});
-					} catch (e) {
-						// Widget may already be rendered
-						console.warn('hCaptcha render warning:', e);
-					}
+				// Already rendered successfully
+				if (hcaptchaWidgetId !== null) {
+					return true;
 				}
-				return true;
+				// Check if widget was rendered by auto-render (has iframe)
+				if (hcaptchaContainer.querySelector('iframe')) {
+					return true;
+				}
+				// Try to render
+				try {
+					hcaptchaWidgetId = window.hcaptcha.render(hcaptchaContainer, {
+						sitekey: '9f64291e-4d3a-4ae8-b4ee-5692268481b2'
+					});
+					return true;
+				} catch (e) {
+					console.warn('hCaptcha render failed, will retry:', e);
+					return false;
+				}
 			}
 			return false;
 		};
