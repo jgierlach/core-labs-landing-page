@@ -1,4 +1,5 @@
 <script>
+	import { onMount } from 'svelte';
 	import { scrollReveal, pageLoad } from '$lib/actions/scrollReveal.js';
 
 	// Contact form fields
@@ -12,6 +13,46 @@
 
 	// hCaptcha site key
 	const HCAPTCHA_SITEKEY = '9f64291e-4d3a-4ae8-b4ee-5692268481b2';
+
+	// hCaptcha state
+	let hcaptchaWidgetId = $state(null);
+	let hcaptchaContainer = $state(null);
+
+	onMount(() => {
+		let checkInterval;
+
+		const renderCaptcha = () => {
+			if (hcaptchaContainer && typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
+				// Only render if not already rendered
+				if (hcaptchaWidgetId === null && !hcaptchaContainer.querySelector('iframe')) {
+					try {
+						hcaptchaWidgetId = window.hcaptcha.render(hcaptchaContainer, {
+							sitekey: HCAPTCHA_SITEKEY,
+							theme: 'dark'
+						});
+					} catch (e) {
+						// Widget may already be rendered
+						console.warn('hCaptcha render warning:', e);
+					}
+				}
+				return true;
+			}
+			return false;
+		};
+
+		// Try immediately, then poll if not ready
+		if (!renderCaptcha()) {
+			checkInterval = setInterval(() => {
+				if (renderCaptcha()) {
+					clearInterval(checkInterval);
+				}
+			}, 100);
+		}
+
+		return () => {
+			if (checkInterval) clearInterval(checkInterval);
+		};
+	});
 
 	// Form endpoint
 	const FORM_ENDPOINT = 'https://www.corelabs.digital/f/74bcbe36-65c1-4ca2-b0c6-7d817681f319';
@@ -101,7 +142,7 @@
 		name="description"
 		content="Get in touch with Core Labs. Let's discuss your custom software project and bring your vision to life."
 	/>
-	<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+	<script src="https://js.hcaptcha.com/1/api.js?render=explicit" async defer></script>
 </svelte:head>
 
 <!-- Hero Section -->
@@ -360,7 +401,7 @@
 
 						<!-- hCaptcha Widget -->
 						<div class="mt-6">
-							<div class="h-captcha" data-sitekey={HCAPTCHA_SITEKEY} data-theme="dark"></div>
+							<div bind:this={hcaptchaContainer} class="h-captcha"></div>
 						</div>
 
 						<div class="mt-8">

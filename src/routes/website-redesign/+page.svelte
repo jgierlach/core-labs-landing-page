@@ -15,22 +15,44 @@
 	let errorMessage = $state('');
 
 	// hCaptcha state
-	let hcaptchaLoaded = $state(false);
+	let hcaptchaWidgetId = $state(null);
+	let hcaptchaContainer = $state(null);
 	let formElement = $state(null);
 
 	onMount(() => {
-		if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
-			hcaptchaLoaded = true;
+		let checkInterval;
+
+		const renderCaptcha = () => {
+			if (hcaptchaContainer && typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
+				// Only render if not already rendered
+				if (hcaptchaWidgetId === null && !hcaptchaContainer.querySelector('iframe')) {
+					try {
+						hcaptchaWidgetId = window.hcaptcha.render(hcaptchaContainer, {
+							sitekey: '9f64291e-4d3a-4ae8-b4ee-5692268481b2',
+							theme: 'dark'
+						});
+					} catch (e) {
+						// Widget may already be rendered
+						console.warn('hCaptcha render warning:', e);
+					}
+				}
+				return true;
+			}
+			return false;
+		};
+
+		// Try immediately, then poll if not ready
+		if (!renderCaptcha()) {
+			checkInterval = setInterval(() => {
+				if (renderCaptcha()) {
+					clearInterval(checkInterval);
+				}
+			}, 100);
 		}
 
-		const checkHcaptcha = setInterval(() => {
-			if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
-				hcaptchaLoaded = true;
-				clearInterval(checkHcaptcha);
-			}
-		}, 100);
-
-		return () => clearInterval(checkHcaptcha);
+		return () => {
+			if (checkInterval) clearInterval(checkInterval);
+		};
 	});
 
 	function validateForm() {
@@ -54,8 +76,8 @@
     if (validation) {
         event.preventDefault();
         errorMessage = validation;
-        if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
-            window.hcaptcha.reset();
+        if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined' && hcaptchaWidgetId !== null) {
+            window.hcaptcha.reset(hcaptchaWidgetId);
         }
         return;
     }
@@ -102,7 +124,7 @@
 		name="description"
 		content="Get a free professional website redesign or custom design created from scratch. Limited availability - claim your free design today."
 	/>
-	<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+	<script src="https://js.hcaptcha.com/1/api.js?render=explicit" async defer></script>
 </svelte:head>
 
 <section class="hero-section relative min-h-screen pt-32 pb-20 sm:pt-40 sm:pb-32">
@@ -306,7 +328,7 @@
 
 								<!-- hCaptcha -->
 								<div class="flex justify-center pt-4">
-									<div class="h-captcha" data-sitekey="9f64291e-4d3a-4ae8-b4ee-5692268481b2" data-theme="dark"></div>
+									<div bind:this={hcaptchaContainer} class="h-captcha"></div>
 								</div>
 
 								<!-- Submit -->

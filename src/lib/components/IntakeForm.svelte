@@ -47,23 +47,42 @@
 	let errorMessage = $state('');
 
 	// hCaptcha state
-	let hcaptchaLoaded = $state(false);
+	let hcaptchaWidgetId = $state(null);
+	let hcaptchaContainer = $state(null);
 
 	onMount(() => {
-		// Check if hCaptcha is already loaded
-		if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
-			hcaptchaLoaded = true;
+		let checkInterval;
+
+		const renderCaptcha = () => {
+			if (hcaptchaContainer && typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
+				// Only render if not already rendered
+				if (hcaptchaWidgetId === null && !hcaptchaContainer.querySelector('iframe')) {
+					try {
+						hcaptchaWidgetId = window.hcaptcha.render(hcaptchaContainer, {
+							sitekey: '9f64291e-4d3a-4ae8-b4ee-5692268481b2'
+						});
+					} catch (e) {
+						// Widget may already be rendered
+						console.warn('hCaptcha render warning:', e);
+					}
+				}
+				return true;
+			}
+			return false;
+		};
+
+		// Try immediately, then poll if not ready
+		if (!renderCaptcha()) {
+			checkInterval = setInterval(() => {
+				if (renderCaptcha()) {
+					clearInterval(checkInterval);
+				}
+			}, 100);
 		}
 
-		// Listen for hCaptcha load
-		const checkHcaptcha = setInterval(() => {
-			if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
-				hcaptchaLoaded = true;
-				clearInterval(checkHcaptcha);
-			}
-		}, 100);
-
-		return () => clearInterval(checkHcaptcha);
+		return () => {
+			if (checkInterval) clearInterval(checkInterval);
+		};
 	});
 
 	function selectCountry(country) {
@@ -96,8 +115,8 @@
 			event.preventDefault();
 			errorMessage = validation;
 			// Reset hCaptcha if validation failed due to captcha
-			if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
-				window.hcaptcha.reset();
+			if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined' && hcaptchaWidgetId !== null) {
+				window.hcaptcha.reset(hcaptchaWidgetId);
 			}
 			return;
 		}
@@ -114,7 +133,7 @@
 </script>
 
 <svelte:head>
-	<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+	<script src="https://js.hcaptcha.com/1/api.js?render=explicit" async defer></script>
 </svelte:head>
 
 <svelte:window on:click={handleClickOutside} />
@@ -322,7 +341,7 @@
 						class="flex flex-wrap items-center justify-center gap-6 border-t border-gray-200 pt-6"
 					>
 						<!-- hCaptcha -->
-						<div class="h-captcha" data-sitekey="9f64291e-4d3a-4ae8-b4ee-5692268481b2"></div>
+						<div bind:this={hcaptchaContainer} class="h-captcha"></div>
 
 						<!-- Submit button -->
 						<button
