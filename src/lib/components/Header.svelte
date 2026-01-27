@@ -193,7 +193,7 @@
 	aria-label="Mobile navigation"
 	aria-hidden={!mobileMenuOpen}
 >
-	<div class="flex h-full flex-col justify-center px-8">
+	<div class="flex h-full flex-col justify-start px-8 pt-24">
 		<ul class="space-y-2">
 			<li class="mobile-nav-item" style="--delay: 0">
 				<a
@@ -236,7 +236,7 @@
 		</ul>
 
 		<!-- Mobile CTA -->
-		<div class="mobile-nav-item mt-12" style="--delay: 5">
+		<div class="mobile-nav-item mt-8 sm:mt-12" style="--delay: 5">
 			<a
 				href="/#intake-form"
 				class="nav-cta-gradient inline-flex items-center gap-2 rounded-full py-3 pr-3 pl-6 text-base font-medium text-white shadow-lg"
@@ -456,12 +456,20 @@
 	/* Mobile Nav Links */
 	.mobile-nav-link {
 		display: block;
-		padding: 1rem 0;
-		font-size: 1.75rem;
+		padding: 0.75rem 0;
+		font-size: 1.5rem;
 		font-weight: 600;
 		color: rgba(255, 255, 255, 0.7);
 		transition: all 0.3s ease;
 		position: relative;
+	}
+
+	/* Larger font on taller screens */
+	@media (min-height: 700px) {
+		.mobile-nav-link {
+			padding: 1rem 0;
+			font-size: 1.75rem;
+		}
 	}
 
 	.mobile-nav-link:hover,
