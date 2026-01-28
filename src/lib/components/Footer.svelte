@@ -18,9 +18,15 @@
 
 		<!-- Bottom Bar -->
 		<div class="mt-8 border-t border-white/10 pt-8">
-			<p class="text-center text-sm text-white/50">
-				© {new Date().getFullYear()} Core Labs. All rights reserved.
-			</p>
+			<div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6">
+				<p class="text-sm text-white/50">
+					© {new Date().getFullYear()} Core Labs. All rights reserved.
+				</p>
+				<div class="flex gap-4 text-sm">
+					<a href="/privacy-policy" class="text-white/50 transition-colors hover:text-white/80">Privacy Policy</a>
+					<a href="/terms-of-service" class="text-white/50 transition-colors hover:text-white/80">Terms of Service</a>
+				</div>
+			</div>
 		</div>
 	</div>
 </footer>
