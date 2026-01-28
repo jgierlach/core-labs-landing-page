@@ -107,13 +107,13 @@
 							</div>
 						{/if}
 					</div>
-					<a
+					<!-- <a
 						href="https://client.corelabs.digital/"
 						target="_blank"
 						class="nav-link block px-4 py-2 text-sm text-white/70 hover:text-white"
 					>
 						Client Portal
-					</a>
+					</a> -->
 					<a
 						href="/#intake-form"
 						class="nav-link px-3 py-2 text-sm font-medium text-white/70 transition-colors hover:text-white"
@@ -209,7 +209,7 @@
 					Services
 				</a>
 			</li>
-			<li class="mobile-nav-item" style="--delay: 2">
+			<!-- <li class="mobile-nav-item" style="--delay: 2">
 				<a
 					href="https://client.corelabs.digital/"
 					target="_blank"
@@ -218,7 +218,7 @@
 				>
 					Client Portal
 				</a>
-			</li>
+			</li> -->
 			<li class="mobile-nav-item" style="--delay: 3">
 				<a href="/#intake-form" class="mobile-nav-link" onclick={() => (mobileMenuOpen = false)}>
 					Work with us
