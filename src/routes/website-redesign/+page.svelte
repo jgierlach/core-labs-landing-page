@@ -75,42 +75,69 @@
 		return '';
 	}
 
-	function handleSubmit(event) {
-    errorMessage = '';
+  function handleSubmit(event) {
+  // Prevent accidental double submits
+  if (isSubmitting) {
+    event.preventDefault();
+    return;
+  }
 
-    const validation = validateForm();
-    if (validation) {
-        event.preventDefault();
-        errorMessage = validation;
-        if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined' && hcaptchaWidgetId !== null) {
-            window.hcaptcha.reset(hcaptchaWidgetId);
-        }
-        return;
+  errorMessage = '';
+
+  const validation = validateForm();
+  if (validation) {
+    event.preventDefault();
+    errorMessage = validation;
+    if (typeof window !== 'undefined' && window.hcaptcha && hcaptchaWidgetId !== null) {
+      window.hcaptcha.reset(hcaptchaWidgetId);
     }
+    return;
+  }
 
-    // Fire Meta Pixel Lead event
-    if (typeof window !== 'undefined' && typeof window.fbq !== 'undefined') {
-        window.fbq('track', 'Lead');
+  // Stop the browser's default POST so the pixel event isn't lost
+  event.preventDefault();
+
+  isSubmitting = true;
+
+  // Fire Meta Pixel Lead event (scoped to this form/page)
+  if (typeof window !== 'undefined' && window.fbq) {
+    window.fbq('track', 'Lead', {
+      content_name: 'Website Redesign',
+      lead_type: 'Free Design'
+    });
+  }
+
+  // Submit the form for real after a brief delay
+  setTimeout(() => {
+    if (formElement) {
+      formElement.submit();
+    } else {
+      isSubmitting = false;
+      errorMessage = 'Something went wrong. Please try again.';
     }
+  }, 150);
+}
 
-    isSubmitting = true;
-	}
 
 	// function handleSubmit(event) {
-	// 	errorMessage = '';
+  //   errorMessage = '';
 
-	// 	const validation = validateForm();
-	// 	if (validation) {
-	// 		event.preventDefault();
-	// 		errorMessage = validation;
-	// 		if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
-	// 			window.hcaptcha.reset();
-	// 		}
-	// 		return;
-	// 	}
-		
+  //   const validation = validateForm();
+  //   if (validation) {
+  //       event.preventDefault();
+  //       errorMessage = validation;
+  //       if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined' && hcaptchaWidgetId !== null) {
+  //           window.hcaptcha.reset(hcaptchaWidgetId);
+  //       }
+  //       return;
+  //   }
 
-	// 	isSubmitting = true;
+  //   // Fire Meta Pixel Lead event
+  //   if (typeof window !== 'undefined' && typeof window.fbq !== 'undefined') {
+  //       window.fbq('track', 'Lead');
+  //   }
+
+  //   isSubmitting = true;
 	// }
 
 	function resetForm() {
