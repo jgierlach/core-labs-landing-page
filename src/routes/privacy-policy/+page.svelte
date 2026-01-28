@@ -34,7 +34,7 @@
 <section class="content-gradient relative py-16 sm:py-20">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-4xl">
-			<article class="prose prose-invert prose-lg max-w-none" use:scrollReveal>
+			<article class="prose prose-invert prose-lg max-w-none" use:pageLoad={{ delay: 150 }}>
 				<!-- Introduction -->
 				<section class="legal-section">
 					<h2>Introduction</h2>
