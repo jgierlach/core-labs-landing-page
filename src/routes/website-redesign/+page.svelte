@@ -335,7 +335,7 @@
 									<input
 										id="current-website"
 										name="current_website"
-										type="url"
+										type="text"
 										class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/40 outline-none transition focus:border-[#7433ff] focus:ring-1 focus:ring-[#7433ff]"
 										placeholder="https://yourwebsite.com"
 										bind:value={currentWebsite}
