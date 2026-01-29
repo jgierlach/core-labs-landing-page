@@ -66,7 +66,6 @@
 		if (!email.trim()) return 'Please enter your email.';
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) return 'Please enter a valid email address.';
-		if (!creativeDirection.trim()) return 'Please describe your creative direction.';
 
 		// Check hCaptcha
 		const hcaptchaResponse = formElement?.querySelector('[name="h-captcha-response"]')?.value;
