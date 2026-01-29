@@ -346,7 +346,7 @@
 								<!-- Creative Direction -->
 								<div>
 									<label for="creative-direction" class="mb-3 block text-sm font-medium text-white">
-										Creative Direction <span class="text-[#a78bfa]">*</span>
+										Creative Direction <span class="text-white/40">(optional)</span>
 									</label>
 									<textarea
 										id="creative-direction"
@@ -355,7 +355,6 @@
 										class="w-full resize-y rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/40 outline-none transition focus:border-[#7433ff] focus:ring-1 focus:ring-[#7433ff]"
 										placeholder="Describe your vision — colors, style, vibe, inspiration sites, or specific features you'd like. The more detail, the better!"
 										bind:value={creativeDirection}
-										required
 									></textarea>
 								</div>
 
