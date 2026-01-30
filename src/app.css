@@ -97,6 +97,15 @@
   }
 }
 
+/* ===== Mobile Viewport Height Fix ===== */
+/* Fallback for browsers that don't support dvh units */
+@supports not (min-height: 100dvh) {
+  .min-h-dvh {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+}
+
 /* ===== Animation System ===== */
 
 /* Page Load Animation */

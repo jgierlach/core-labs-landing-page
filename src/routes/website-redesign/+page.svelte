@@ -159,7 +159,7 @@
 	<script src="https://js.hcaptcha.com/1/api.js?render=explicit" async defer></script>
 </svelte:head>
 
-<section class="hero-section relative min-h-screen pt-32 pb-20 sm:pt-40 sm:pb-32">
+<section class="hero-section relative min-h-dvh pt-32 pb-20 sm:pt-40 sm:pb-32">
 	<!-- Background decorations -->
 	<div class="pointer-events-none absolute inset-0 overflow-hidden">
 		<div class="absolute -top-1/2 left-1/2 h-[800px] w-[800px] -translate-x-1/2 rounded-full bg-[#7433ff]/10 blur-3xl"></div>
