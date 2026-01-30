@@ -5,9 +5,11 @@
 	// Form fields
 	let name = $state('');
 	let email = $state('');
-	let phone = $state('');
 	let currentWebsite = $state('');
 	let creativeDirection = $state('');
+	
+	// Urgency - spots remaining (persistent per session)
+	let spotsRemaining = $state(7);
 
 	// Submission state
 	let isSubmitting = $state(false);
@@ -142,11 +144,18 @@
 	function resetForm() {
 		name = '';
 		email = '';
-		phone = '';
 		currentWebsite = '';
 		creativeDirection = '';
 		showSuccess = false;
 		errorMessage = '';
+	}
+	
+	// Scroll to form on mobile
+	function scrollToForm() {
+		const form = document.querySelector('.form-card');
+		if (form) {
+			form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		}
 	}
 </script>
 
@@ -159,7 +168,7 @@
 	<script src="https://js.hcaptcha.com/1/api.js?render=explicit" async defer></script>
 </svelte:head>
 
-<section class="hero-section relative min-h-dvh pt-32 pb-20 sm:pt-40 sm:pb-32">
+<section class="hero-section relative min-h-dvh pt-24 pb-16 sm:pt-40 sm:pb-32">
 	<!-- Background decorations -->
 	<div class="pointer-events-none absolute inset-0 overflow-hidden">
 		<div class="absolute -top-1/2 left-1/2 h-[800px] w-[800px] -translate-x-1/2 rounded-full bg-[#7433ff]/10 blur-3xl"></div>
@@ -169,36 +178,36 @@
 
 	<div class="container relative mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-6xl">
-			<div class="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
+			<div class="grid gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-16 items-center">
 				<!-- Left column: Copy -->
 				<div class="text-center lg:text-left">
-					<div class="mb-6" use:pageLoad={{ delay: 0 }}>
+					<div class="mb-4 sm:mb-6" use:pageLoad={{ delay: 0 }}>
 						<span
-							class="inline-flex items-center gap-2 rounded-full bg-[#7433ff]/10 px-4 py-1.5 text-sm font-medium text-[#a78bfa] ring-1 ring-inset ring-[#7433ff]/20"
+							class="inline-flex items-center gap-2 rounded-full bg-[#ff4444]/10 px-4 py-1.5 text-sm font-medium text-[#ff6b6b] ring-1 ring-inset ring-[#ff4444]/20"
 						>
 							<span class="relative flex h-2 w-2">
-								<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#7433ff] opacity-75"></span>
-								<span class="relative inline-flex h-2 w-2 rounded-full bg-[#a78bfa]"></span>
+								<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff4444] opacity-75"></span>
+								<span class="relative inline-flex h-2 w-2 rounded-full bg-[#ff6b6b]"></span>
 							</span>
-							Limited Availability
+							Only {spotsRemaining} spots left this month
 						</span>
 					</div>
 
 					<h1
-						class="hero-heading text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl"
+						class="hero-heading text-3xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl"
 						use:pageLoad={{ delay: 100 }}
 					>
 						Get a <span class="text-gradient">Free Website</span> Design
 					</h1>
 
 					<p
-						class="mt-6 text-lg leading-8 text-white/70 sm:text-xl"
+						class="mt-4 sm:mt-6 text-base leading-7 text-white/70 sm:text-xl sm:leading-8"
 						use:pageLoad={{ delay: 200 }}
 					>
 						Whether you need a complete redesign or a brand new website built from scratch, our design team will create a stunning, high-converting design for you — <strong class="text-white">completely free</strong>.
 					</p>
 
-					<div class="mt-10 mx-auto max-w-md lg:mx-0 lg:max-w-none space-y-4" use:pageLoad={{ delay: 300 }}>
+					<div class="mt-6 sm:mt-10 mx-auto max-w-md lg:mx-0 lg:max-w-none space-y-3 sm:space-y-4" use:pageLoad={{ delay: 300 }}>
 						<div class="flex items-start gap-3">
 							<div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#10b981]/20">
 								<svg class="h-4 w-4 text-[#34d399]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -251,7 +260,7 @@
 					{:else}
 						<form
 							bind:this={formElement}
-							class="form-card rounded-2xl border border-white/10 bg-white/5 p-8 sm:p-10 backdrop-blur-xl"
+							class="form-card rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-10 backdrop-blur-xl"
 							action="https://www.corelabs.digital/f/88cb8b1a-9ca0-4a91-8c99-abf67b402dd3"
 							method="POST"
 							onsubmit={handleSubmit}
@@ -265,28 +274,28 @@
 								autocomplete="off"
 							/>
 
-							<div class="mb-8 text-center">
+							<div class="mb-6 text-center">
 								<h2 class="text-xl font-semibold text-white sm:text-2xl">Claim Your Free Design</h2>
-								<p class="mt-2 text-sm text-white/50">Takes less than 1 minute</p>
+								<p class="mt-1 text-sm text-white/50">Takes less than 1 minute</p>
 							</div>
 
 							{#if errorMessage}
-								<div class="mb-6 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">
+								<div class="mb-4 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">
 									{errorMessage}
 								</div>
 							{/if}
 
-							<div class="space-y-6">
+							<div class="space-y-4 sm:space-y-5">
 								<!-- Name -->
 								<div>
-									<label for="name" class="mb-3 block text-sm font-medium text-white">
+									<label for="name" class="mb-2 block text-sm font-medium text-white">
 										Name <span class="text-[#a78bfa]">*</span>
 									</label>
 									<input
 										id="name"
 										name="name"
 										type="text"
-										class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/40 outline-none transition focus:border-[#7433ff] focus:ring-1 focus:ring-[#7433ff]"
+										class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-4 text-base text-white placeholder:text-white/40 outline-none transition focus:border-[#7433ff] focus:ring-1 focus:ring-[#7433ff]"
 										placeholder="Your name"
 										bind:value={name}
 										autocomplete="name"
@@ -296,14 +305,14 @@
 
 								<!-- Email -->
 								<div>
-									<label for="email" class="mb-3 block text-sm font-medium text-white">
+									<label for="email" class="mb-2 block text-sm font-medium text-white">
 										Email <span class="text-[#a78bfa]">*</span>
 									</label>
 									<input
 										id="email"
 										name="email"
 										type="email"
-										class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/40 outline-none transition focus:border-[#7433ff] focus:ring-1 focus:ring-[#7433ff]"
+										class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-4 text-base text-white placeholder:text-white/40 outline-none transition focus:border-[#7433ff] focus:ring-1 focus:ring-[#7433ff]"
 										placeholder="you@example.com"
 										bind:value={email}
 										autocomplete="email"
@@ -311,32 +320,16 @@
 									/>
 								</div>
 
-								<!-- Phone (optional) -->
-								<div>
-									<label for="phone" class="mb-3 block text-sm font-medium text-white">
-										Phone Number <span class="text-white/40">(optional)</span>
-									</label>
-									<input
-										id="phone"
-										name="phone"
-										type="tel"
-										class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/40 outline-none transition focus:border-[#7433ff] focus:ring-1 focus:ring-[#7433ff]"
-										placeholder="+1 (555) 000-0000"
-										bind:value={phone}
-										autocomplete="tel"
-									/>
-								</div>
-
 								<!-- Current Website (optional) -->
 								<div>
-									<label for="current-website" class="mb-3 block text-sm font-medium text-white">
+									<label for="current-website" class="mb-2 block text-sm font-medium text-white">
 										Current Website <span class="text-white/40">(optional)</span>
 									</label>
 									<input
 										id="current-website"
 										name="current_website"
 										type="text"
-										class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/40 outline-none transition focus:border-[#7433ff] focus:ring-1 focus:ring-[#7433ff]"
+										class="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-4 text-base text-white placeholder:text-white/40 outline-none transition focus:border-[#7433ff] focus:ring-1 focus:ring-[#7433ff]"
 										placeholder="https://yourwebsite.com"
 										bind:value={currentWebsite}
 									/>
@@ -344,21 +337,21 @@
 
 								<!-- Creative Direction -->
 								<div>
-									<label for="creative-direction" class="mb-3 block text-sm font-medium text-white">
+									<label for="creative-direction" class="mb-2 block text-sm font-medium text-white">
 										Creative Direction <span class="text-white/40">(optional)</span>
 									</label>
 									<textarea
 										id="creative-direction"
 										name="creative_direction"
-										rows="4"
-										class="w-full resize-y rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/40 outline-none transition focus:border-[#7433ff] focus:ring-1 focus:ring-[#7433ff]"
-										placeholder="Describe your vision — colors, style, vibe, inspiration sites, or specific features you'd like. The more detail, the better!"
+										rows="3"
+										class="w-full resize-y rounded-lg border border-white/10 bg-white/5 px-4 py-4 text-base text-white placeholder:text-white/40 outline-none transition focus:border-[#7433ff] focus:ring-1 focus:ring-[#7433ff]"
+										placeholder="Describe your vision — colors, style, vibe, inspiration sites, or specific features you'd like."
 										bind:value={creativeDirection}
 									></textarea>
 								</div>
 
 								<!-- hCaptcha -->
-								<div class="flex justify-center pt-4">
+								<div class="flex justify-center pt-2">
 									<div bind:this={hcaptchaContainer} class="h-captcha"></div>
 								</div>
 
@@ -378,8 +371,24 @@
 									</span>
 								</button>
 
+								<!-- Trust indicators -->
+								<div class="flex items-center justify-center gap-4 pt-2">
+									<div class="flex items-center gap-1.5 text-xs text-white/50">
+										<svg class="h-3.5 w-3.5 text-[#34d399]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+											<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+										</svg>
+										100% Free
+									</div>
+									<div class="flex items-center gap-1.5 text-xs text-white/50">
+										<svg class="h-3.5 w-3.5 text-[#34d399]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+											<path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+										</svg>
+										No Card Required
+									</div>
+								</div>
+
 								<p class="text-center text-xs text-white/40">
-									By submitting, you agree to receive communications from Core Labs LLC. We respect your privacy.
+									By submitting, you agree to receive communications from Core Labs LLC.
 								</p>
 							</div>
 						</form>
@@ -390,8 +399,22 @@
 	</div>
 </section>
 
+<!-- Sticky Mobile CTA -->
+<div class="sticky-cta fixed bottom-0 left-0 right-0 z-50 p-4 lg:hidden">
+	<button
+		type="button"
+		onclick={scrollToForm}
+		class="submit-button w-full inline-flex items-center justify-center gap-2 rounded-full py-4 px-6 text-base font-semibold text-white shadow-2xl"
+	>
+		<span>Claim Your Free Design</span>
+		<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+			<path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+		</svg>
+	</button>
+</div>
+
 <!-- FAQ Section for additional conversion optimization -->
-<section class="faq-section relative py-20">
+<section class="faq-section relative py-20 pb-32 lg:pb-20">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-3xl text-center mb-12">
 			<h2 class="text-2xl font-bold text-white sm:text-3xl">Frequently Asked Questions</h2>
@@ -473,5 +496,15 @@
 
 	.submit-button:hover:not(:disabled) {
 		background: linear-gradient(109deg, #4560ff 13.24%, #8344ff 92.35%);
+	}
+
+	.sticky-cta {
+		background: linear-gradient(
+			to top,
+			rgba(10, 15, 42, 0.98) 0%,
+			rgba(10, 15, 42, 0.95) 50%,
+			rgba(10, 15, 42, 0) 100%
+		);
+		padding-bottom: env(safe-area-inset-bottom, 16px);
 	}
 </style>
