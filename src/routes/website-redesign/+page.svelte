@@ -204,7 +204,7 @@
 						class="mt-4 sm:mt-6 text-base leading-7 text-white/70 sm:text-xl sm:leading-8"
 						use:pageLoad={{ delay: 200 }}
 					>
-						Whether you need a complete redesign or a brand new website, we will create a stunning, high-converting design for you, <strong class="text-white">completely free</strong>.
+						Whether you need a complete redesign or a brand new website, we will create a stunning, high-converting design for you, <strong class="text-[#a78bfa]">completely free</strong>.
 					</p>
 
 					<div class="mt-6 sm:mt-10 mx-auto max-w-md lg:mx-0 lg:max-w-none space-y-3 sm:space-y-4" use:pageLoad={{ delay: 300 }}>
