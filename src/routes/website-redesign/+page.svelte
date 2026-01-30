@@ -204,7 +204,7 @@
 						class="mt-4 sm:mt-6 text-base leading-7 text-white/70 sm:text-xl sm:leading-8"
 						use:pageLoad={{ delay: 200 }}
 					>
-						Whether you need a complete redesign or a brand new website built from scratch, our design team will create a stunning, high-converting design for you — <strong class="text-white">completely free</strong>.
+						Whether you need a complete redesign or a brand new website, we will create a stunning, high-converting design for you, <strong class="text-white">completely free</strong>.
 					</p>
 
 					<div class="mt-6 sm:mt-10 mx-auto max-w-md lg:mx-0 lg:max-w-none space-y-3 sm:space-y-4" use:pageLoad={{ delay: 300 }}>
@@ -465,7 +465,7 @@
 	}
 
 	.text-gradient {
-		background: linear-gradient(109deg, #334fff 13.24%, #7433ff 92.35%);
+		background: linear-gradient(109deg, #a78bfa 0%, #c084fc 50%, #a855f7 100%);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
