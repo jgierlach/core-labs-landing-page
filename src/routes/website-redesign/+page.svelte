@@ -152,6 +152,10 @@
 	
 	// Scroll to form on mobile
 	function scrollToForm() {
+		// Close mobile menu if open
+		if (typeof window !== 'undefined') {
+			window.dispatchEvent(new CustomEvent('closeMobileMenu'));
+		}
 		const form = document.querySelector('.form-card');
 		if (form) {
 			form.scrollIntoView({ behavior: 'smooth', block: 'start' });

@@ -1,5 +1,6 @@
 <!-- Header.svelte -->
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 
 	let servicesOpen = $state(false);
@@ -37,6 +38,18 @@
 		if (typeof document !== 'undefined') {
 			document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
 		}
+	});
+
+	// Listen for custom event to close mobile menu
+	function handleCloseMobileMenu() {
+		mobileMenuOpen = false;
+	}
+
+	onMount(() => {
+		window.addEventListener('closeMobileMenu', handleCloseMobileMenu);
+		return () => {
+			window.removeEventListener('closeMobileMenu', handleCloseMobileMenu);
+		};
 	});
 </script>
 
