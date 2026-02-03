@@ -108,6 +108,15 @@
     });
   }
 
+	// Fire Google Ads conversion
+if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'conversion', {
+        send_to: 'AW-17916603986/WOM2CKmlnfIbENLcpt9C',
+        value: 100.0,
+        currency: 'USD'
+    });
+}
+
   // Submit the form for real after a brief delay
   setTimeout(() => {
     if (formElement) {
