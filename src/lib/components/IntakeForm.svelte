@@ -49,6 +49,26 @@
 	// hCaptcha state
 	let hcaptchaWidgetId = $state(null);
 	let hcaptchaContainer = $state(null);
+	let hcaptchaLoaded = $state(false);
+	let sectionElement = $state(null);
+
+	// Lazy-load hCaptcha script
+	function loadHcaptchaScript() {
+		if (hcaptchaLoaded || typeof window === 'undefined') return;
+		
+		// Check if already loaded
+		if (window.hcaptcha) {
+			hcaptchaLoaded = true;
+			return;
+		}
+
+		const script = document.createElement('script');
+		script.src = 'https://js.hcaptcha.com/1/api.js?render=explicit';
+		script.async = true;
+		script.defer = true;
+		document.head.appendChild(script);
+		hcaptchaLoaded = true;
+	}
 
 	onMount(() => {
 		let checkInterval;
@@ -77,16 +97,35 @@
 			return false;
 		};
 
-		// Try immediately, then poll if not ready
-		if (!renderCaptcha()) {
-			checkInterval = setInterval(() => {
-				if (renderCaptcha()) {
-					clearInterval(checkInterval);
-				}
-			}, 100);
+		// Use Intersection Observer to lazy-load hCaptcha when form is near viewport
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						loadHcaptchaScript();
+						observer.disconnect();
+						
+						// Start polling for hCaptcha to be ready
+						checkInterval = setInterval(() => {
+							if (renderCaptcha()) {
+								clearInterval(checkInterval);
+							}
+						}, 100);
+					}
+				});
+			},
+			{
+				rootMargin: '200px', // Start loading 200px before form is visible
+				threshold: 0
+			}
+		);
+
+		if (sectionElement) {
+			observer.observe(sectionElement);
 		}
 
 		return () => {
+			observer.disconnect();
 			if (checkInterval) clearInterval(checkInterval);
 		};
 	});
@@ -138,13 +177,9 @@
 	}
 </script>
 
-<svelte:head>
-	<script src="https://js.hcaptcha.com/1/api.js?render=explicit" async defer></script>
-</svelte:head>
-
 <svelte:window on:click={handleClickOutside} />
 
-<section id="intake-form" class="intake-section relative py-20 sm:py-32">
+<section id="intake-form" class="intake-section relative py-20 sm:py-32" bind:this={sectionElement}>
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-5xl" use:scrollReveal>
 			{#if showSuccess}
@@ -170,14 +205,16 @@
 					method="POST"
 					onsubmit={handleSubmit}
 				>
-					<!-- Honeypot field for spam protection -->
-					<input
-						type="text"
-						name="website"
-						style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden"
-						tabindex="-1"
-						autocomplete="off"
-					/>
+				<!-- Honeypot field for spam protection -->
+				<input
+					type="text"
+					name="website"
+					aria-hidden="true"
+					aria-label="Leave this field empty"
+					style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden"
+					tabindex="-1"
+					autocomplete="off"
+				/>
 
 					{#if errorMessage}
 						<div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">

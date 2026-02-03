@@ -205,6 +205,7 @@
 	class="mobile-menu {mobileMenuOpen ? 'open' : ''}"
 	aria-label="Mobile navigation"
 	aria-hidden={!mobileMenuOpen}
+	inert={!mobileMenuOpen ? true : undefined}
 >
 	<div class="flex h-full flex-col justify-start px-8 pt-24">
 		<ul class="space-y-2">
@@ -213,12 +214,13 @@
 					href="/"
 					class="mobile-nav-link {isActive('/', true) ? 'active' : ''}"
 					onclick={() => (mobileMenuOpen = false)}
+					tabindex={mobileMenuOpen ? 0 : -1}
 				>
 					Home
 				</a>
 			</li>
 			<li class="mobile-nav-item" style="--delay: 1">
-				<a href="/#intake-form" class="mobile-nav-link" onclick={() => (mobileMenuOpen = false)}>
+				<a href="/#intake-form" class="mobile-nav-link" onclick={() => (mobileMenuOpen = false)} tabindex={mobileMenuOpen ? 0 : -1}>
 					Services
 				</a>
 			</li>
@@ -233,7 +235,7 @@
 				</a>
 			</li> -->
 			<li class="mobile-nav-item" style="--delay: 3">
-				<a href="/#intake-form" class="mobile-nav-link" onclick={() => (mobileMenuOpen = false)}>
+				<a href="/#intake-form" class="mobile-nav-link" onclick={() => (mobileMenuOpen = false)} tabindex={mobileMenuOpen ? 0 : -1}>
 					Work with us
 				</a>
 			</li>
@@ -242,6 +244,7 @@
 					href="/contact"
 					class="mobile-nav-link {isActive('/contact') ? 'active' : ''}"
 					onclick={() => (mobileMenuOpen = false)}
+					tabindex={mobileMenuOpen ? 0 : -1}
 				>
 					Contact
 				</a>
@@ -254,6 +257,7 @@
 				href="/#intake-form"
 				class="nav-cta-gradient inline-flex items-center gap-2 rounded-full py-3 pr-3 pl-6 text-base font-medium text-white shadow-lg"
 				onclick={() => (mobileMenuOpen = false)}
+				tabindex={mobileMenuOpen ? 0 : -1}
 			>
 				Get Started
 				<span
