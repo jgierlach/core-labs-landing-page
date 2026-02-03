@@ -128,28 +128,6 @@ if (typeof window !== 'undefined' && window.gtag) {
   }, 150);
 }
 
-
-	// function handleSubmit(event) {
-  //   errorMessage = '';
-
-  //   const validation = validateForm();
-  //   if (validation) {
-  //       event.preventDefault();
-  //       errorMessage = validation;
-  //       if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined' && hcaptchaWidgetId !== null) {
-  //           window.hcaptcha.reset(hcaptchaWidgetId);
-  //       }
-  //       return;
-  //   }
-
-  //   // Fire Meta Pixel Lead event
-  //   if (typeof window !== 'undefined' && typeof window.fbq !== 'undefined') {
-  //       window.fbq('track', 'Lead');
-  //   }
-
-  //   isSubmitting = true;
-	// }
-
 	function resetForm() {
 		name = '';
 		email = '';
