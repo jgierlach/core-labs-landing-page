@@ -20,6 +20,26 @@
 	let hcaptchaWidgetId = $state(null);
 	let hcaptchaContainer = $state(null);
 	let formElement = $state(null);
+	let hcaptchaLoaded = $state(false);
+	let sectionElement = $state(null);
+
+	// Lazy-load hCaptcha script
+	function loadHcaptchaScript() {
+		if (hcaptchaLoaded || typeof window === 'undefined') return;
+		
+		// Check if already loaded
+		if (window.hcaptcha) {
+			hcaptchaLoaded = true;
+			return;
+		}
+
+		const script = document.createElement('script');
+		script.src = 'https://js.hcaptcha.com/1/api.js?render=explicit';
+		script.async = true;
+		script.defer = true;
+		document.head.appendChild(script);
+		hcaptchaLoaded = true;
+	}
 
 	onMount(() => {
 		let checkInterval;
@@ -49,16 +69,35 @@
 			return false;
 		};
 
-		// Try immediately, then poll if not ready
-		if (!renderCaptcha()) {
-			checkInterval = setInterval(() => {
-				if (renderCaptcha()) {
-					clearInterval(checkInterval);
-				}
-			}, 100);
+		// Use Intersection Observer to lazy-load hCaptcha when form is near viewport
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						loadHcaptchaScript();
+						observer.disconnect();
+						
+						// Start polling for hCaptcha to be ready
+						checkInterval = setInterval(() => {
+							if (renderCaptcha()) {
+								clearInterval(checkInterval);
+							}
+						}, 100);
+					}
+				});
+			},
+			{
+				rootMargin: '200px', // Start loading 200px before form is visible
+				threshold: 0
+			}
+		);
+
+		if (sectionElement) {
+			observer.observe(sectionElement);
 		}
 
 		return () => {
+			observer.disconnect();
 			if (checkInterval) clearInterval(checkInterval);
 		};
 	});
@@ -156,10 +195,9 @@ if (typeof window !== 'undefined' && window.gtag) {
 		name="description"
 		content="Get a free professional website redesign or custom design created from scratch. Limited availability - claim your free design today."
 	/>
-	<script src="https://js.hcaptcha.com/1/api.js?render=explicit" async defer></script>
 </svelte:head>
 
-<section class="hero-section relative min-h-dvh pt-24 pb-16 sm:pt-40 sm:pb-32">
+<section class="hero-section relative min-h-dvh pt-24 pb-16 sm:pt-40 sm:pb-32" bind:this={sectionElement}>
 	<!-- Background decorations -->
 	<div class="pointer-events-none absolute inset-0 overflow-hidden">
 		<div class="absolute -top-1/2 left-1/2 h-[800px] w-[800px] -translate-x-1/2 rounded-full bg-[#7433ff]/10 blur-3xl"></div>
@@ -256,14 +294,16 @@ if (typeof window !== 'undefined' && window.gtag) {
 							method="POST"
 							onsubmit={handleSubmit}
 						>
-							<!-- Honeypot field -->
-							<input
-								type="text"
-								name="website"
-								style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden"
-								tabindex="-1"
-								autocomplete="off"
-							/>
+						<!-- Honeypot field for spam protection -->
+						<input
+							type="text"
+							name="website"
+							aria-hidden="true"
+							aria-label="Leave this field empty"
+							style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden"
+							tabindex="-1"
+							autocomplete="off"
+						/>
 
 							<div class="mb-6 text-center">
 								<h2 class="text-xl font-semibold text-white sm:text-2xl">Claim Your Free Design</h2>
