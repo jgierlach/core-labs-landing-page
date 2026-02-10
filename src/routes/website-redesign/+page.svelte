@@ -7,6 +7,7 @@
 	let email = $state('');
 	let currentWebsite = $state('');
 	let creativeDirection = $state('');
+	let utmSource = $state('');
 	
 	// Urgency - spots remaining (persistent per session)
 	let spotsRemaining = $state(7);
@@ -42,6 +43,10 @@
 	}
 
 	onMount(() => {
+		// Capture UTM source from URL for deal tracking
+		const params = new URLSearchParams(window.location.search);
+		utmSource = params.get('utm_source') || '';
+
 		let checkInterval;
 
 		const renderCaptcha = () => {
@@ -304,6 +309,9 @@ if (typeof window !== 'undefined' && window.gtag) {
 							tabindex="-1"
 							autocomplete="off"
 						/>
+
+						<!-- UTM source for deal tracking -->
+						<input type="hidden" name="utm_source" value={utmSource} />
 
 							<div class="mb-6 text-center">
 								<h2 class="text-xl font-semibold text-white sm:text-2xl">Claim Your Free Design</h2>

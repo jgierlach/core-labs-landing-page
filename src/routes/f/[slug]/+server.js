@@ -1,10 +1,54 @@
 import { redirect, json } from '@sveltejs/kit';
 import { PUBLIC_API_BASE_URL } from '$env/static/public';
+import { supabase } from '$lib/server/supabase.js';
 
 /**
  * Public endpoint on marketing domain to accept client form submissions.
  * Proxies the submission to the public API domain (api.corelabs.digital) and redirects to pretty pages.
  */
+
+/** Slug for the website-redesign lead-gen form */
+const WEBSITE_REDESIGN_SLUG = '88cb8b1a-9ca0-4a91-8c99-abf67b402dd3';
+
+/**
+ * Map a utm_source query-param value to a human-readable deal source.
+ * @param {string} utmSource
+ * @returns {string}
+ */
+function mapDealSource(utmSource) {
+	const src = (utmSource || '').toLowerCase().trim();
+	if (src === 'facebook') return 'Facebook Ads';
+	if (src === 'google') return 'Google Ads';
+	return 'Unknown';
+}
+
+/**
+ * Fire-and-forget: insert a new deal row into Supabase.
+ * Errors are logged but never surface to the visitor.
+ * @param {Record<string, string>} fields
+ */
+function insertDeal(fields) {
+	const contactPerson = fields.name || '';
+	const dealSource = mapDealSource(fields.utm_source);
+
+	supabase
+		.from('deals')
+		.insert({
+			contact_person: contactPerson,
+			contact_email: fields.email || '',
+			website: fields.current_website || null,
+			notes: fields.creative_direction || null,
+			title: `${contactPerson} Deal`,
+			status: 'interest_shown',
+			deal_source: dealSource
+		})
+		.then(({ error }) => {
+			if (error) console.error('Supabase deal insert failed:', error);
+		})
+		.catch((err) => {
+			console.error('Supabase deal insert rejected:', err);
+		});
+}
 
 /**
  * @param {string | null} origin
@@ -66,6 +110,10 @@ export async function POST({ params, request, fetch, url }) {
 	const contentType = (request.headers.get('content-type') || '').toLowerCase();
 	const expectJson = wantsJson(request);
 
+	// Capture form fields for Supabase insert when this is the website-redesign form
+	/** @type {Record<string, string> | null} */
+	let dealFields = null;
+
 	/** @type {Response} */
 	let apiRes;
 	try {
@@ -86,6 +134,18 @@ export async function POST({ params, request, fetch, url }) {
 			contentType.includes('multipart/form-data')
 		) {
 			const formData = await request.formData();
+
+			// Capture fields for Supabase if this is the website-redesign form
+			if (slug === WEBSITE_REDESIGN_SLUG) {
+				dealFields = {
+					name: formData.get('name')?.toString() || '',
+					email: formData.get('email')?.toString() || '',
+					current_website: formData.get('current_website')?.toString() || '',
+					creative_direction: formData.get('creative_direction')?.toString() || '',
+					utm_source: formData.get('utm_source')?.toString() || ''
+				};
+			}
+
 			apiRes = await fetch(target, {
 				method: 'POST',
 				headers: {
@@ -145,6 +205,7 @@ export async function POST({ params, request, fetch, url }) {
 
 	if (expectJson) {
 		if (apiRes.ok && result && result.submission_id) {
+			if (dealFields) insertDeal(dealFields);
 			return json(
 				{ submission_id: result.submission_id },
 				{ status: 200, headers: corsHeaders(origin || null) }
@@ -161,6 +222,7 @@ export async function POST({ params, request, fetch, url }) {
 	}
 
 	if (apiRes.ok && result && result.submission_id) {
+		if (dealFields) insertDeal(dealFields);
 		throw redirect(
 			303,
 			`${url.origin}/f/${encodeURIComponent(slug)}/success?sid=${encodeURIComponent(result.submission_id)}`
