@@ -7,47 +7,88 @@ import { supabase } from '$lib/server/supabase.js';
  * Proxies the submission to the public API domain (api.corelabs.digital) and redirects to pretty pages.
  */
 
-/** Slug for the website-redesign lead-gen form */
+/** Slugs for forms that automatically create deals */
 const WEBSITE_REDESIGN_SLUG = '88cb8b1a-9ca0-4a91-8c99-abf67b402dd3';
+const HOMEPAGE_INTAKE_SLUG = '042ede32-d0d7-41a3-9140-87f484cfc6aa';
 
 /**
- * Map a utm_source query-param value to a human-readable deal source.
- * @param {string} utmSource
+ * Resolve the deal_source label.
+ * Uses utm_source when present; falls back to the self-reported foundVia value.
+ * @param {string} [utmSource]
+ * @param {string} [foundVia]
  * @returns {string}
  */
-function mapDealSource(utmSource) {
+function resolveDealSource(utmSource, foundVia = '') {
 	const src = (utmSource || '').toLowerCase().trim();
 	if (src === 'facebook') return 'Facebook Ads';
 	if (src === 'google') return 'Google Ads';
-	return 'Unknown';
+	if (src) return 'Unknown';
+	// No UTM param — fall back to the form's "how did you find us" value
+	return foundVia || 'Unknown';
 }
 
 /**
- * Fire-and-forget: insert a new deal row into Supabase.
+ * Fire-and-forget: insert a deal row into Supabase.
  * Errors are logged but never surface to the visitor.
- * @param {Record<string, string>} fields
+ * @param {Record<string, unknown>} deal - A ready-to-insert deals row.
  */
-function insertDeal(fields) {
-	const contactPerson = fields.name || '';
-	const dealSource = mapDealSource(fields.utm_source);
-
+function insertDeal(deal) {
 	supabase
 		.from('deals')
-		.insert({
-			contact_person: contactPerson,
-			contact_email: fields.email || '',
-			website: fields.current_website || null,
-			notes: fields.creative_direction || null,
-			title: `${contactPerson} Deal`,
-			status: 'interest_shown',
-			deal_source: dealSource
-		})
+		.insert(deal)
 		.then(({ error }) => {
 			if (error) console.error('Supabase deal insert failed:', error);
 		})
 		.catch((err) => {
 			console.error('Supabase deal insert rejected:', err);
 		});
+}
+
+/**
+ * Build a deal row from the website-redesign form fields.
+ * @param {FormData} formData
+ * @returns {Record<string, unknown>}
+ */
+function buildWebsiteRedesignDeal(formData) {
+	const name = formData.get('name')?.toString() || '';
+	return {
+		contact_person: name,
+		contact_email: formData.get('email')?.toString() || '',
+		website: formData.get('current_website')?.toString() || null,
+		notes: formData.get('creative_direction')?.toString() || null,
+		title: `${name} Deal`,
+		status: 'interest_shown',
+		deal_source: resolveDealSource(formData.get('utm_source')?.toString())
+	};
+}
+
+/**
+ * Build a deal row from the homepage intake form fields.
+ * @param {FormData} formData
+ * @returns {Record<string, unknown>}
+ */
+function buildHomepageIntakeDeal(formData) {
+	const name = formData.get('name')?.toString() || '';
+	const company = formData.get('company')?.toString() || '';
+	const helpWith = formData.get('help_with')?.toString() || '';
+	const message = formData.get('message')?.toString() || '';
+	const notes = [helpWith && `Looking for help with: ${helpWith}`, message]
+		.filter(Boolean)
+		.join('. ');
+
+	return {
+		contact_person: name,
+		contact_email: formData.get('email')?.toString() || '',
+		contact_phone_number: formData.get('phone')?.toString() || null,
+		company_name: company || null,
+		title: `${company || name} Deal`,
+		status: 'interest_shown',
+		notes: notes || null,
+		deal_source: resolveDealSource(
+			formData.get('utm_source')?.toString(),
+			formData.get('found_via')?.toString()
+		)
+	};
 }
 
 /**
@@ -110,9 +151,9 @@ export async function POST({ params, request, fetch, url }) {
 	const contentType = (request.headers.get('content-type') || '').toLowerCase();
 	const expectJson = wantsJson(request);
 
-	// Capture form fields for Supabase insert when this is the website-redesign form
-	/** @type {Record<string, string> | null} */
-	let dealFields = null;
+	// Capture deal row for Supabase insert when the slug matches a tracked form
+	/** @type {Record<string, unknown> | null} */
+	let dealRow = null;
 
 	/** @type {Response} */
 	let apiRes;
@@ -135,15 +176,11 @@ export async function POST({ params, request, fetch, url }) {
 		) {
 			const formData = await request.formData();
 
-			// Capture fields for Supabase if this is the website-redesign form
+			// Build a deal row if this is a tracked form
 			if (slug === WEBSITE_REDESIGN_SLUG) {
-				dealFields = {
-					name: formData.get('name')?.toString() || '',
-					email: formData.get('email')?.toString() || '',
-					current_website: formData.get('current_website')?.toString() || '',
-					creative_direction: formData.get('creative_direction')?.toString() || '',
-					utm_source: formData.get('utm_source')?.toString() || ''
-				};
+				dealRow = buildWebsiteRedesignDeal(formData);
+			} else if (slug === HOMEPAGE_INTAKE_SLUG) {
+				dealRow = buildHomepageIntakeDeal(formData);
 			}
 
 			apiRes = await fetch(target, {
@@ -205,7 +242,7 @@ export async function POST({ params, request, fetch, url }) {
 
 	if (expectJson) {
 		if (apiRes.ok && result && result.submission_id) {
-			if (dealFields) insertDeal(dealFields);
+			if (dealRow) insertDeal(dealRow);
 			return json(
 				{ submission_id: result.submission_id },
 				{ status: 200, headers: corsHeaders(origin || null) }
@@ -222,7 +259,7 @@ export async function POST({ params, request, fetch, url }) {
 	}
 
 	if (apiRes.ok && result && result.submission_id) {
-		if (dealFields) insertDeal(dealFields);
+		if (dealRow) insertDeal(dealRow);
 		throw redirect(
 			303,
 			`${url.origin}/f/${encodeURIComponent(slug)}/success?sid=${encodeURIComponent(result.submission_id)}`

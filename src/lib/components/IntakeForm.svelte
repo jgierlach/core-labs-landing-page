@@ -13,6 +13,9 @@
 	let foundUsVia = $state('');
 	let helpWith = $state('');
 
+	// UTM tracking
+	let utmSource = $state('');
+
 	// Country code for phone
 	let selectedCountry = $state({ code: '+1', flag: '🇺🇸', name: 'United States' });
 	let showCountryDropdown = $state(false);
@@ -71,6 +74,10 @@
 	}
 
 	onMount(() => {
+		// Capture UTM source from URL for deal tracking
+		const params = new URLSearchParams(window.location.search);
+		utmSource = params.get('utm_source') || '';
+
 		let checkInterval;
 
 		const renderCaptcha = () => {
@@ -215,6 +222,9 @@
 					tabindex="-1"
 					autocomplete="off"
 				/>
+
+				<!-- UTM source for deal tracking -->
+				<input type="hidden" name="utm_source" value={utmSource} />
 
 					{#if errorMessage}
 						<div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
