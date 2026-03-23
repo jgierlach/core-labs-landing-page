@@ -60,9 +60,6 @@
 		};
 	});
 
-	// Form endpoint
-	const FORM_ENDPOINT = 'https://www.corelabs.digital/f/74bcbe36-65c1-4ca2-b0c6-7d817681f319';
-
 	function validateForm() {
 		if (!name.trim() || !email.trim() || !message.trim()) {
 			return 'Please fill in all required fields.';
@@ -151,7 +148,7 @@
 	<script src="https://js.hcaptcha.com/1/api.js?render=explicit" async defer></script>
 </svelte:head>
 
-<!-- Hero Section -->
+<!-- section:hero {"type":"hero","id":"hero-contact"} -->
 <section class="hero-gradient relative pt-32 pb-16 sm:pt-40 sm:pb-20">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-4xl text-center">
@@ -164,7 +161,7 @@
 			</div>
 
 			<h1
-				class="hero-heading text-foreground text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl"
+				class="font-heading text-foreground text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl"
 				use:pageLoad={{ delay: 100 }}
 			>
 				Get in <span class="text-accent">touch</span>
@@ -180,8 +177,9 @@
 		</div>
 	</div>
 </section>
+<!-- /section:hero -->
 
-<!-- Contact Methods -->
+<!-- section:features {"type":"features","id":"features-contact-methods"} -->
 <section class="contact-methods-gradient relative py-12">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div
@@ -190,7 +188,7 @@
 		>
 			{#each contactMethods as method}
 				<div
-					class="contact-card card-animate group relative rounded-2xl border border-white/10 bg-white/5 p-6 text-center backdrop-blur-sm hover:border-white/20 hover:bg-white/10"
+					class="glass-card card-animate group relative rounded-2xl border border-white/10 bg-white/5 p-6 text-center backdrop-blur-sm hover:border-white/20 hover:bg-white/10"
 				>
 					<div
 						class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#334fff]/20 to-[#7433ff]/20"
@@ -259,16 +257,17 @@
 		</div>
 	</div>
 </section>
+<!-- /section:features -->
 
-<!-- Main Contact Form Section -->
+<!-- section:contact {"type":"contact","id":"contact-form"} -->
 <section class="form-gradient relative py-20 sm:py-28">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-6xl">
 			<div class="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
 				<!-- Left side: Info -->
 				<div use:scrollReveal>
-					<h2 class="section-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">
-						Let's build something <span class="text-gradient">extraordinary</span>
+					<h2 class="font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">
+						Let's build something <span class="text-gradient-blue">extraordinary</span>
 					</h2>
 					<p class="mt-6 text-lg leading-relaxed text-white/70">
 						Whether you're looking to replace expensive SaaS subscriptions, build a custom platform,
@@ -323,8 +322,8 @@
 				<!-- Right side: Form -->
 				<div use:scrollReveal={{ delay: 150 }}>
 					<form
-						class="contact-form rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm"
-						action={FORM_ENDPOINT}
+						class="glass-card rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm"
+						action="__FORM_ACTION__"
 						method="POST"
 						onsubmit={handleFormSubmit}
 					>
@@ -413,7 +412,7 @@
 						<div class="mt-8">
 							<button
 								type="submit"
-								class="submit-button btn-animate group inline-flex w-full items-center justify-center gap-3 rounded-full px-6 py-4 text-lg font-medium text-white shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:transform-none"
+								class="btn-gradient btn-animate group inline-flex w-full items-center justify-center gap-3 rounded-full px-6 py-4 text-lg font-medium text-white shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:transform-none"
 								disabled={isSubmitting}
 							>
 								{#if isSubmitting}
@@ -475,13 +474,14 @@
 		</div>
 	</div>
 </section>
+<!-- /section:contact -->
 
-<!-- FAQ Section -->
+<!-- section:faq {"type":"faq","id":"faq-contact"} -->
 <section class="faq-gradient relative py-20 sm:py-28">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-3xl">
 			<div class="text-center" use:scrollReveal>
-				<h2 class="section-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">
+				<h2 class="font-heading text-3xl font-bold tracking-tight text-white sm:text-4xl">
 					Frequently asked questions
 				</h2>
 				<p class="mt-4 text-lg text-white/70">Quick answers to questions you might have.</p>
@@ -492,7 +492,7 @@
 				use:scrollReveal={{ delay: 150, stagger: true, staggerDelay: 100 }}
 			>
 				{#each faqs as faq}
-					<div class="faq-card rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+					<div class="glass-card rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
 						<h3 class="text-lg font-semibold text-white">{faq.question}</h3>
 						<p class="mt-3 leading-relaxed text-white/70">{faq.answer}</p>
 					</div>
@@ -501,69 +501,4 @@
 		</div>
 	</div>
 </section>
-
-<style>
-	.hero-gradient {
-		background: radial-gradient(
-				ellipse 80% 50% at 50% 100%,
-				rgba(116, 51, 255, 0.4) 0%,
-				rgba(51, 79, 255, 0.2) 40%,
-				transparent 70%
-			),
-			linear-gradient(109deg, #0a0f2a 0%, #0d0a1f 30%, #150d2a 60%, #1a1035 100%);
-	}
-
-	.contact-methods-gradient {
-		background: linear-gradient(180deg, #1a1035 0%, #0d0a1f 100%);
-	}
-
-	.form-gradient {
-		background: radial-gradient(
-				ellipse 60% 40% at 80% 20%,
-				rgba(116, 51, 255, 0.12) 0%,
-				transparent 60%
-			),
-			radial-gradient(ellipse 60% 40% at 20% 80%, rgba(51, 79, 255, 0.08) 0%, transparent 60%),
-			linear-gradient(180deg, #0d0a1f 0%, #0a0f2a 50%, #1a1035 100%);
-	}
-
-	.faq-gradient {
-		background: radial-gradient(
-				ellipse 80% 50% at 50% 0%,
-				rgba(116, 51, 255, 0.15) 0%,
-				rgba(51, 79, 255, 0.08) 40%,
-				transparent 70%
-			),
-			linear-gradient(180deg, #1a1035 0%, #0d0a1f 50%, #0a0f2a 100%);
-	}
-
-	.hero-heading,
-	.section-heading {
-		font-family: 'Poppins', sans-serif;
-	}
-
-	.text-gradient {
-		background: linear-gradient(109deg, #334fff 13.24%, #7433ff 92.35%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-	}
-
-	.contact-card,
-	.contact-form,
-	.faq-card {
-		background: linear-gradient(
-			135deg,
-			rgba(255, 255, 255, 0.05) 0%,
-			rgba(255, 255, 255, 0.02) 100%
-		);
-	}
-
-	.submit-button {
-		background: linear-gradient(109deg, #334fff 13.24%, #7433ff 92.35%);
-	}
-
-	.submit-button:hover:not(:disabled) {
-		background: linear-gradient(109deg, #4560ff 13.24%, #8344ff 92.35%);
-	}
-</style>
+<!-- /section:faq -->

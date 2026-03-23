@@ -8,7 +8,7 @@
 	let currentWebsite = $state('');
 	let creativeDirection = $state('');
 	let utmSource = $state('');
-	
+
 	// Urgency - spots remaining (persistent per session)
 	let spotsRemaining = $state(7);
 
@@ -24,10 +24,30 @@
 	let hcaptchaLoaded = $state(false);
 	let sectionElement = $state(null);
 
+	// FAQ data
+	let faqs = $state([
+		{
+			question: 'Is this really free?',
+			answer: 'Yes, 100% free. We create a complete design concept for your website at no cost. If you love it and want us to build it, we can discuss development options — but there\'s absolutely no obligation.'
+		},
+		{
+			question: 'What will I receive?',
+			answer: 'You\'ll receive a professional design mockup of your homepage and key pages, showing exactly how your new website could look. This includes responsive designs for desktop and mobile.'
+		},
+		{
+			question: 'How long does it take?',
+			answer: 'We typically deliver your custom design within 5 business days. You\'ll receive an email with your design preview and a link to schedule a walkthrough call if you\'d like.'
+		},
+		{
+			question: 'What if I don\'t have a current website?',
+			answer: 'No problem! We work with businesses launching their first website all the time. Just describe your vision in the Creative Direction field, and we\'ll create something amazing from scratch.'
+		}
+	]);
+
 	// Lazy-load hCaptcha script
 	function loadHcaptchaScript() {
 		if (hcaptchaLoaded || typeof window === 'undefined') return;
-		
+
 		// Check if already loaded
 		if (window.hcaptcha) {
 			hcaptchaLoaded = true;
@@ -81,7 +101,7 @@
 					if (entry.isIntersecting) {
 						loadHcaptchaScript();
 						observer.disconnect();
-						
+
 						// Start polling for hCaptcha to be ready
 						checkInterval = setInterval(() => {
 							if (renderCaptcha()) {
@@ -180,14 +200,14 @@ if (typeof window !== 'undefined' && window.gtag) {
 		showSuccess = false;
 		errorMessage = '';
 	}
-	
+
 	// Scroll to form on mobile
 	function scrollToForm() {
 		// Close mobile menu if open
 		if (typeof window !== 'undefined') {
 			window.dispatchEvent(new CustomEvent('closeMobileMenu'));
 		}
-		const form = document.querySelector('.form-card');
+		const form = document.querySelector('.form-card-shadow');
 		if (form) {
 			form.scrollIntoView({ behavior: 'smooth', block: 'start' });
 		}
@@ -202,7 +222,8 @@ if (typeof window !== 'undefined' && window.gtag) {
 	/>
 </svelte:head>
 
-<section class="hero-section relative min-h-dvh pt-24 pb-16 sm:pt-40 sm:pb-32" bind:this={sectionElement}>
+<!-- section:hero {"type":"hero","id":"hero-redesign"} -->
+<section class="hero-section-bg relative min-h-dvh pt-24 pb-16 sm:pt-40 sm:pb-32" bind:this={sectionElement}>
 	<!-- Background decorations -->
 	<div class="pointer-events-none absolute inset-0 overflow-hidden">
 		<div class="absolute -top-1/2 left-1/2 h-[800px] w-[800px] -translate-x-1/2 rounded-full bg-[#7433ff]/10 blur-3xl"></div>
@@ -228,10 +249,10 @@ if (typeof window !== 'undefined' && window.gtag) {
 					</div>
 
 					<h1
-						class="hero-heading text-3xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl"
+						class="font-heading text-3xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl"
 						use:pageLoad={{ delay: 100 }}
 					>
-						Get a <span class="text-gradient">Free Website</span> Design
+						Get a <span class="text-gradient-purple">Free Website</span> Design
 					</h1>
 
 					<p
@@ -272,7 +293,7 @@ if (typeof window !== 'undefined' && window.gtag) {
 				<!-- Right column: Form -->
 				<div use:pageLoad={{ delay: 200 }}>
 					{#if showSuccess}
-						<div class="form-card rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl text-center">
+						<div class="glass-card-light form-card-shadow rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl text-center">
 							<div class="mb-4 text-5xl">🎉</div>
 							<h3 class="mb-2 text-2xl font-bold text-white">You're In!</h3>
 							<p class="text-white/70 mb-6">
@@ -280,7 +301,7 @@ if (typeof window !== 'undefined' && window.gtag) {
 							</p>
 							<button
 								type="button"
-								class="submit-button btn-animate group inline-flex items-center gap-3 rounded-full py-3 pr-3 pl-6 text-base font-medium text-white shadow-lg"
+								class="btn-gradient btn-animate group inline-flex items-center gap-3 rounded-full py-3 pr-3 pl-6 text-base font-medium text-white shadow-lg"
 								onclick={resetForm}
 							>
 								<span>Submit Another Request</span>
@@ -294,8 +315,8 @@ if (typeof window !== 'undefined' && window.gtag) {
 					{:else}
 						<form
 							bind:this={formElement}
-							class="form-card rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-10 backdrop-blur-xl"
-							action="https://www.corelabs.digital/f/88cb8b1a-9ca0-4a91-8c99-abf67b402dd3"
+							class="glass-card-light form-card-shadow rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-10 backdrop-blur-xl"
+							action="__FORM_ACTION__"
 							method="POST"
 							onsubmit={handleSubmit}
 						>
@@ -398,7 +419,7 @@ if (typeof window !== 'undefined' && window.gtag) {
 								<button
 									type="submit"
 									disabled={isSubmitting}
-									class="submit-button btn-animate group w-full inline-flex items-center justify-center gap-3 rounded-full py-4 px-6 text-lg font-medium text-white shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-60 {isSubmitting ? 'btn-loading' : ''}"
+									class="btn-gradient btn-animate group w-full inline-flex items-center justify-center gap-3 rounded-full py-4 px-6 text-lg font-medium text-white shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-60 {isSubmitting ? 'btn-loading' : ''}"
 								>
 									<span class={isSubmitting ? 'opacity-0' : ''}>Get My Free Design</span>
 									<span
@@ -437,13 +458,14 @@ if (typeof window !== 'undefined' && window.gtag) {
 		</div>
 	</div>
 </section>
+<!-- /section:hero -->
 
-<!-- Sticky Mobile CTA -->
-<div class="sticky-cta fixed bottom-0 left-0 right-0 z-50 p-4 lg:hidden">
+<!-- section:cta {"type":"cta","id":"cta-sticky"} -->
+<div class="sticky-cta-bg fixed bottom-0 left-0 right-0 z-50 p-4 lg:hidden">
 	<button
 		type="button"
 		onclick={scrollToForm}
-		class="submit-button w-full inline-flex items-center justify-center gap-2 rounded-full py-4 px-6 text-base font-semibold text-white shadow-2xl"
+		class="btn-gradient w-full inline-flex items-center justify-center gap-2 rounded-full py-4 px-6 text-base font-semibold text-white shadow-2xl"
 	>
 		<span>Claim Your Free Design</span>
 		<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -451,99 +473,23 @@ if (typeof window !== 'undefined' && window.gtag) {
 		</svg>
 	</button>
 </div>
+<!-- /section:cta -->
 
-<!-- FAQ Section for additional conversion optimization -->
-<section class="faq-section relative py-20 pb-32 lg:pb-20">
+<!-- section:faq {"type":"faq","id":"faq-redesign"} -->
+<section class="faq-section-bg relative py-20 pb-32 lg:pb-20">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-3xl text-center mb-12">
 			<h2 class="text-2xl font-bold text-white sm:text-3xl">Frequently Asked Questions</h2>
 		</div>
 
 		<div class="mx-auto max-w-3xl space-y-4">
-			<div class="faq-card rounded-xl border border-white/10 bg-white/5 p-6">
-				<h3 class="text-lg font-medium text-white mb-2">Is this really free?</h3>
-				<p class="text-white/60">Yes, 100% free. We create a complete design concept for your website at no cost. If you love it and want us to build it, we can discuss development options — but there's absolutely no obligation.</p>
-			</div>
-
-			<div class="faq-card rounded-xl border border-white/10 bg-white/5 p-6">
-				<h3 class="text-lg font-medium text-white mb-2">What will I receive?</h3>
-				<p class="text-white/60">You'll receive a professional design mockup of your homepage and key pages, showing exactly how your new website could look. This includes responsive designs for desktop and mobile.</p>
-			</div>
-
-			<div class="faq-card rounded-xl border border-white/10 bg-white/5 p-6">
-				<h3 class="text-lg font-medium text-white mb-2">How long does it take?</h3>
-				<p class="text-white/60">We typically deliver your custom design within 5 business days. You'll receive an email with your design preview and a link to schedule a walkthrough call if you'd like.</p>
-			</div>
-
-			<div class="faq-card rounded-xl border border-white/10 bg-white/5 p-6">
-				<h3 class="text-lg font-medium text-white mb-2">What if I don't have a current website?</h3>
-				<p class="text-white/60">No problem! We work with businesses launching their first website all the time. Just describe your vision in the Creative Direction field, and we'll create something amazing from scratch.</p>
-			</div>
+			{#each faqs as faq}
+				<div class="glass-card rounded-xl border border-white/10 bg-white/5 p-6">
+					<h3 class="text-lg font-medium text-white mb-2">{faq.question}</h3>
+					<p class="text-white/60">{faq.answer}</p>
+				</div>
+			{/each}
 		</div>
 	</div>
 </section>
-
-<style>
-	.hero-section {
-		background: 
-			radial-gradient(
-				ellipse 80% 50% at 50% 100%,
-				rgba(116, 51, 255, 0.25) 0%,
-				rgba(51, 79, 255, 0.12) 40%,
-				transparent 70%
-			),
-			linear-gradient(180deg, #0a0f2a 0%, #0d0a1f 50%, #1a1035 100%);
-	}
-
-	.faq-section {
-		background: linear-gradient(180deg, #1a1035 0%, #0d0a1f 50%, #0a0f2a 100%);
-	}
-
-	.hero-heading {
-		font-family: 'Poppins', sans-serif;
-	}
-
-	.text-gradient {
-		background: linear-gradient(109deg, #a78bfa 0%, #c084fc 50%, #a855f7 100%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-	}
-
-	.form-card {
-		background: linear-gradient(
-			135deg,
-			rgba(255, 255, 255, 0.08) 0%,
-			rgba(255, 255, 255, 0.02) 100%
-		);
-		box-shadow:
-			0 25px 50px -12px rgba(0, 0, 0, 0.5),
-			0 0 0 1px rgba(255, 255, 255, 0.05);
-	}
-
-	.faq-card {
-		background: linear-gradient(
-			135deg,
-			rgba(255, 255, 255, 0.05) 0%,
-			rgba(255, 255, 255, 0.02) 100%
-		);
-	}
-
-	.submit-button {
-		background: linear-gradient(109deg, #334fff 13.24%, #7433ff 92.35%);
-	}
-
-	.submit-button:hover:not(:disabled) {
-		background: linear-gradient(109deg, #4560ff 13.24%, #8344ff 92.35%);
-	}
-
-	.sticky-cta {
-		background: linear-gradient(
-			to top,
-			rgba(10, 15, 42, 0.98) 0%,
-			rgba(10, 15, 42, 0.95) 50%,
-			rgba(10, 15, 42, 0) 100%
-		);
-		padding-bottom: env(safe-area-inset-bottom, 16px);
-	}
-</style>
+<!-- /section:faq -->

@@ -1,11 +1,15 @@
 <script>
 	import '../app.css';
-	import Header from '$lib/components/Header.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	let { children } = $props();
+
+	$effect(() => {
+		document.documentElement.style.scrollBehavior = 'smooth';
+	});
 </script>
 
-<Header />
+<Navbar />
 <main>
 	{@render children()}
 </main>

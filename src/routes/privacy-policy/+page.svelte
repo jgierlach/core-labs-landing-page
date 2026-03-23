@@ -10,12 +10,12 @@
 	/>
 </svelte:head>
 
-<!-- Hero Section -->
+<!-- section:hero {"type":"hero","id":"hero-privacy"} -->
 <section class="hero-gradient relative pt-32 pb-16 sm:pt-40 sm:pb-20">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-4xl text-center">
 			<h1
-				class="hero-heading text-foreground text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl"
+				class="font-heading text-foreground text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl"
 				use:pageLoad={{ delay: 0 }}
 			>
 				Privacy <span class="text-accent">Policy</span>
@@ -29,12 +29,13 @@
 		</div>
 	</div>
 </section>
+<!-- /section:hero -->
 
-<!-- Content Section -->
+<!-- section:text {"type":"text","id":"text-privacy-content"} -->
 <section class="content-gradient relative py-16 sm:py-20">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-4xl">
-			<article class="prose prose-invert prose-lg max-w-none" use:pageLoad={{ delay: 150 }}>
+			<article class="prose prose-invert prose-lg prose-legal max-w-none" use:pageLoad={{ delay: 150 }}>
 				<!-- Introduction -->
 				<section class="legal-section">
 					<h2>Introduction</h2>
@@ -327,97 +328,4 @@
 		</div>
 	</div>
 </section>
-
-<style>
-	.hero-gradient {
-		background: radial-gradient(
-				ellipse 80% 50% at 50% 100%,
-				rgba(116, 51, 255, 0.4) 0%,
-				rgba(51, 79, 255, 0.2) 40%,
-				transparent 70%
-			),
-			linear-gradient(109deg, #0a0f2a 0%, #0d0a1f 30%, #150d2a 60%, #1a1035 100%);
-	}
-
-	.content-gradient {
-		background: radial-gradient(
-				ellipse 60% 40% at 80% 20%,
-				rgba(116, 51, 255, 0.08) 0%,
-				transparent 60%
-			),
-			radial-gradient(ellipse 60% 40% at 20% 80%, rgba(51, 79, 255, 0.06) 0%, transparent 60%),
-			linear-gradient(180deg, #1a1035 0%, #0d0a1f 50%, #0a0f2a 100%);
-	}
-
-	.hero-heading {
-		font-family: 'Poppins', sans-serif;
-	}
-
-	/* Prose customizations for legal content */
-	.prose {
-		--tw-prose-body: rgba(255, 255, 255, 0.8);
-		--tw-prose-headings: #fff;
-		--tw-prose-links: #7433ff;
-		--tw-prose-bold: #fff;
-		--tw-prose-bullets: rgba(116, 51, 255, 0.6);
-	}
-
-	.prose :global(h2) {
-		color: #fff;
-		font-family: 'Poppins', sans-serif;
-		font-size: 1.5rem;
-		font-weight: 600;
-		margin-top: 2.5rem;
-		margin-bottom: 1rem;
-		padding-bottom: 0.5rem;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-	}
-
-	.prose :global(h3) {
-		color: rgba(255, 255, 255, 0.95);
-		font-family: 'Poppins', sans-serif;
-		font-size: 1.125rem;
-		font-weight: 600;
-		margin-top: 1.5rem;
-		margin-bottom: 0.75rem;
-	}
-
-	.prose :global(p) {
-		color: rgba(255, 255, 255, 0.75);
-		line-height: 1.75;
-		margin-bottom: 1rem;
-	}
-
-	.prose :global(ul) {
-		color: rgba(255, 255, 255, 0.75);
-		margin-top: 0.5rem;
-		margin-bottom: 1rem;
-	}
-
-	.prose :global(li) {
-		margin-bottom: 0.5rem;
-	}
-
-	.prose :global(a) {
-		color: #7433ff;
-		text-decoration: none;
-		transition: color 0.2s ease;
-	}
-
-	.prose :global(a:hover) {
-		color: #8f5cff;
-		text-decoration: underline;
-	}
-
-	.prose :global(strong) {
-		color: rgba(255, 255, 255, 0.95);
-	}
-
-	.legal-section {
-		margin-bottom: 2rem;
-	}
-
-	.legal-section:first-of-type :global(h2) {
-		margin-top: 0;
-	}
-</style>
+<!-- /section:text -->

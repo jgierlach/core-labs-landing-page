@@ -1,5 +1,5 @@
 <script>
-	export let data;
+	let { data } = $props();
 </script>
 
 <svelte:head>
@@ -21,6 +21,7 @@
 	/>
 </svelte:head>
 
+<!-- section:text {"type":"text","id":"text-blog-listing"} -->
 <section
 	class="bg-gradient-to-b from-gray-50 to-gray-100 py-20 dark:from-gray-900 dark:to-gray-800"
 >
@@ -64,3 +65,4 @@
 		</div>
 	</div>
 </section>
+<!-- /section:text -->

@@ -1,7 +1,6 @@
 <footer class="footer-gradient border-t border-white/10">
 	<div class="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
 		<div class="flex flex-col items-center text-center">
-			<!-- Brand -->
 			<div class="mb-4 flex items-center space-x-2">
 				<div
 					class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#334fff] to-[#7433ff] shadow-[0_4px_15px_rgba(116,51,255,0.3)]"
@@ -16,7 +15,6 @@
 			</p>
 		</div>
 
-		<!-- Bottom Bar -->
 		<div class="mt-8 border-t border-white/10 pt-8">
 			<div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6">
 				<p class="text-sm text-white/50">
@@ -27,12 +25,9 @@
 					<a href="/terms-of-service" class="text-white/50 transition-colors hover:text-white/80">Terms of Service</a>
 				</div>
 			</div>
+			<p class="mt-4 text-center text-sm text-white/40">
+				Proudly made by <a href="https://www.corelabs.digital/" class="text-white/60 transition-colors hover:text-white/80">Core Labs</a>
+			</p>
 		</div>
 	</div>
 </footer>
-
-<style>
-	.footer-gradient {
-		background: linear-gradient(180deg, #1a1035 0%, #0a0a14 100%);
-	}
-</style>

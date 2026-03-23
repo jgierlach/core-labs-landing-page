@@ -1,5 +1,5 @@
 <script>
-	export let data;
+	let { data } = $props();
 </script>
 
 <svelte:head>
@@ -18,6 +18,7 @@
 	{/if}
 </svelte:head>
 
+<!-- section:text {"type":"text","id":"text-blog-post"} -->
 <div class="mx-auto max-w-4xl px-4 py-8">
 	<article class="prose mx-auto lg:prose-xl dark:prose-invert">
 		<h1>{data.post.title}</h1>
@@ -32,3 +33,4 @@
 		{@html data.post.html}
 	</article>
 </div>
+<!-- /section:text -->
