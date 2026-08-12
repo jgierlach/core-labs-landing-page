@@ -4,6 +4,14 @@ import { readFileSync } from 'fs';
 import path from 'path';
 
 export default defineConfig({
+	build: {
+		// Lighthouse targets modern Chromium/WebKit/Firefox; avoid emitting legacy syntax
+		// transforms/polyfills for Baseline JavaScript that these browsers already support.
+		target: 'es2022',
+		modulePreload: {
+			polyfill: false
+		}
+	},
 	plugins: [
 		sveltekit(),
 		{
