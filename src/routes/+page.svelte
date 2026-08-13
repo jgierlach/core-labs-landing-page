@@ -208,6 +208,19 @@
 		name="description"
 		content="Replace expensive SaaS subscriptions with custom software built specifically for your business. Reduce costs by 70% with unified solutions."
 	/>
+	<link rel="canonical" href="https://www.corelabs.digital/" />
+
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="Core Labs" />
+	<meta property="og:title" content="Core Labs - Custom Software Solutions" />
+	<meta property="og:description" content="Replace expensive SaaS subscriptions with custom software built specifically for your business. Reduce costs by 70% with unified solutions." />
+	<meta property="og:url" content="https://www.corelabs.digital/" />
+	<meta property="og:image" content="https://www.corelabs.digital/logos/core-labs-full-logo.png" />
+
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Core Labs - Custom Software Solutions" />
+	<meta name="twitter:description" content="Replace expensive SaaS subscriptions with custom software built specifically for your business. Reduce costs by 70% with unified solutions." />
+	<meta name="twitter:image" content="https://www.corelabs.digital/logos/core-labs-full-logo.png" />
 </svelte:head>
 
 <!-- section:hero {"type":"hero","id":"hero-1"} -->
