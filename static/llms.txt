@@ -1,0 +1,11 @@
+# Core Labs
+
+> Replace expensive SaaS subscriptions with custom software built specifically for your business. Reduce costs by 70% with unified solutions.
+
+## Pages
+
+- [Home](https://www.corelabs.digital/)
+- [Contact](https://www.corelabs.digital/contact/)
+- [Privacy Policy](https://www.corelabs.digital/privacy-policy/)
+- [Terms Of Service](https://www.corelabs.digital/terms-of-service/)
+- [Website Redesign](https://www.corelabs.digital/website-redesign/)
