@@ -15,7 +15,16 @@ export default {
 				background: 'var(--background)',
 				foreground: 'var(--foreground)',
 				border: 'var(--border)',
-				ring: 'var(--ring)'
+				ring: 'var(--ring)',
+				brand: {
+					purple: '#7433ff',
+					blue: '#334fff',
+					night: '#0d0a1f',
+					navy: '#0a0f2a',
+					surface: '#1a1035',
+					violet: '#a78bfa',
+					gold: '#ffb35f'
+				}
 			}
 		}
 	},
