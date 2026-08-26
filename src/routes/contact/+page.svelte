@@ -11,53 +11,57 @@
 	let isSubmitting = $state(false);
 	let errorMessage = $state('');
 
+	const CONTACT_FORM_SLUG = 'contact-page-533048';
+	const CONTACT_FORM_SUBMIT_URL = 'https://api.corelabs.digital/api/forms/contact-page-533048/submit';
+
 	// hCaptcha site key
 	const HCAPTCHA_SITEKEY = '9f64291e-4d3a-4ae8-b4ee-5692268481b2';
 
 	// hCaptcha state
 	let hcaptchaWidgetId = $state(null);
 	let hcaptchaContainer = $state(null);
+	let formElement = $state(null);
 
-	onMount(() => {
-		let checkInterval;
+	function loadHcaptcha() {
+		if (typeof window === 'undefined') return;
 
-		const renderCaptcha = () => {
-			if (hcaptchaContainer && typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
-				// Already rendered successfully
-				if (hcaptchaWidgetId !== null) {
-					return true;
-				}
-				// Check if widget was rendered by auto-render (has iframe)
-				if (hcaptchaContainer.querySelector('iframe')) {
-					return true;
-				}
-				// Try to render
-				try {
-					hcaptchaWidgetId = window.hcaptcha.render(hcaptchaContainer, {
-						sitekey: HCAPTCHA_SITEKEY,
-						theme: 'dark'
-					});
-					return true;
-				} catch (e) {
-					console.warn('hCaptcha render failed, will retry:', e);
-					return false;
-				}
-			}
-			return false;
-		};
-
-		// Try immediately, then poll if not ready
-		if (!renderCaptcha()) {
-			checkInterval = setInterval(() => {
-				if (renderCaptcha()) {
-					clearInterval(checkInterval);
-				}
-			}, 100);
+		if (!window._hcaptchaLoader) {
+			window._hcaptchaLoader = new Promise((resolve) => {
+				window._hcaptchaOnLoad = () => resolve(window.hcaptcha);
+				const script = document.createElement('script');
+				script.src = 'https://js.hcaptcha.com/1/api.js?render=explicit&onload=_hcaptchaOnLoad';
+				script.async = true;
+				document.head.append(script);
+			});
 		}
 
-		return () => {
-			if (checkInterval) clearInterval(checkInterval);
-		};
+		window._hcaptchaLoader.then((hcaptcha) => {
+			if (hcaptchaWidgetId === null && hcaptchaContainer) {
+				hcaptchaWidgetId = hcaptcha.render(hcaptchaContainer, {
+					sitekey: HCAPTCHA_SITEKEY,
+					theme: 'dark'
+				});
+			}
+		});
+	}
+
+	onMount(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries.some((entry) => entry.isIntersecting)) {
+					observer.disconnect();
+					loadHcaptcha();
+				}
+			},
+			{ rootMargin: '300px' }
+		);
+
+		if (formElement) {
+			observer.observe(formElement);
+			formElement.addEventListener('focusin', loadHcaptcha, { once: true });
+		}
+
+		return () => observer.disconnect();
 	});
 
 	function validateForm() {
@@ -71,29 +75,55 @@
 		return '';
 	}
 
-	function handleFormSubmit(event) {
+	async function handleFormSubmit(event) {
+		event.preventDefault();
 		errorMessage = '';
 
 		// Validate form fields
 		const validation = validateForm();
 		if (validation) {
-			event.preventDefault();
 			errorMessage = validation;
 			return;
 		}
 
 		// Check hCaptcha
-		const form = event.target;
-		const hcaptchaResponse = form.querySelector('[name="h-captcha-response"]')?.value || '';
+		const hcaptchaResponse = hcaptchaWidgetId === null ? '' : window.hcaptcha.getResponse(hcaptchaWidgetId);
 
 		if (!hcaptchaResponse) {
-			event.preventDefault();
 			errorMessage = 'Please complete the CAPTCHA verification.';
 			return;
 		}
 
-		// Form is valid - allow native submission
 		isSubmitting = true;
+
+		try {
+			const formData = new FormData(event.currentTarget);
+			formData.set('h-captcha-response', hcaptchaResponse);
+
+			const response = await fetch(CONTACT_FORM_SUBMIT_URL, {
+				method: 'POST',
+				body: new URLSearchParams(formData)
+			});
+			const body = await response.json().catch(() => ({}));
+
+			if (!response.ok) {
+				errorMessage =
+					body?.details?.map((detail) => detail.message).join(' ') ||
+					body?.error ||
+					'Something went wrong. Please try again.';
+				window.hcaptcha.reset(hcaptchaWidgetId);
+				return;
+			}
+
+			window.location.assign(
+				`https://www.corelabs.digital/f/${CONTACT_FORM_SLUG}/success?sid=${body.submission_id}`
+			);
+		} catch {
+			errorMessage = 'Something went wrong. Please try again.';
+			window.hcaptcha.reset(hcaptchaWidgetId);
+		} finally {
+			isSubmitting = false;
+		}
 	}
 
 	const contactMethods = [
@@ -145,7 +175,6 @@
 		name="description"
 		content="Get in touch with Core Labs. Let's discuss your custom software project and bring your vision to life."
 	/>
-	<script src="https://js.hcaptcha.com/1/api.js?render=explicit" async defer></script>
 </svelte:head>
 
 <!-- section:hero {"type":"hero","id":"hero-contact"} -->
@@ -322,16 +351,15 @@
 				<!-- Right side: Form -->
 				<div use:scrollReveal={{ delay: 150 }}>
 					<form
+						bind:this={formElement}
 						class="glass-card rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm"
-						action="__FORM_ACTION__"
-						method="POST"
 						onsubmit={handleFormSubmit}
 					>
 						<!-- Honeypot field for spam protection -->
 						<input
 							type="text"
 							name="website"
-							style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden"
+							class="absolute left-[-10000px] top-auto h-px w-px overflow-hidden"
 							tabindex="-1"
 							autocomplete="off"
 						/>
@@ -406,7 +434,7 @@
 
 						<!-- hCaptcha Widget -->
 						<div class="mt-6">
-							<div bind:this={hcaptchaContainer} class="h-captcha"></div>
+							<div bind:this={hcaptchaContainer} class="min-h-[78px]"></div>
 						</div>
 
 						<div class="mt-8">
