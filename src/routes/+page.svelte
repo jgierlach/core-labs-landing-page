@@ -55,6 +55,10 @@
 		}
 	]);
 
+	const CONTACT_FORM_SLUG = 'contact-c54421';
+	const CONTACT_FORM_URL = 'https://api.corelabs.digital/api/forms/contact-c54421/submit';
+	const HCAPTCHA_SITEKEY = '9f64291e-4d3a-4ae8-b4ee-5692268481b2';
+
 	// ===== Intake Form State =====
 	let fullName = $state('');
 	let companyName = $state('');
@@ -68,12 +72,9 @@
 	let showCountryDropdown = $state(false);
 	let formElement = $state(null);
 	let isSubmitting = $state(false);
-	let showSuccess = $state(false);
 	let errorMessage = $state('');
 	let hcaptchaWidgetId = $state(null);
 	let hcaptchaContainer = $state(null);
-	let hcaptchaLoaded = $state(false);
-	let sectionElement = $state(null);
 
 	let countries = $state([
 		{ code: '+1', flag: '🇺🇸', name: 'United States' },
@@ -96,67 +97,45 @@
 	let foundUsOptions = $state(['Google search', 'Word of mouth', 'Ad', 'Other']);
 	let helpWithOptions = $state(['Website', 'Custom Software', 'Other']);
 
-	function loadHcaptchaScript() {
-		if (hcaptchaLoaded || typeof window === 'undefined') return;
-		if (window.hcaptcha) {
-			hcaptchaLoaded = true;
-			return;
+	function loadHcaptcha() {
+		if (typeof window === 'undefined') return;
+
+		if (!window._hcaptchaLoader) {
+			window._hcaptchaLoader = new Promise((resolve) => {
+				window._hcaptchaOnLoad = () => resolve(window.hcaptcha);
+				const script = document.createElement('script');
+				script.src = 'https://js.hcaptcha.com/1/api.js?render=explicit&onload=_hcaptchaOnLoad';
+				script.async = true;
+				document.head.append(script);
+			});
 		}
-		const script = document.createElement('script');
-		script.src = 'https://js.hcaptcha.com/1/api.js?render=explicit';
-		script.async = true;
-		script.defer = true;
-		document.head.appendChild(script);
-		hcaptchaLoaded = true;
+
+		window._hcaptchaLoader.then((hcaptcha) => {
+			if (hcaptchaWidgetId === null && hcaptchaContainer) {
+				hcaptchaWidgetId = hcaptcha.render(hcaptchaContainer, { sitekey: HCAPTCHA_SITEKEY });
+			}
+		});
 	}
 
 	onMount(() => {
 		const params = new URLSearchParams(window.location.search);
 		utmSource = params.get('utm_source') || '';
 
-		let checkInterval;
-
-		const renderCaptcha = () => {
-			if (hcaptchaContainer && typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined') {
-				if (hcaptchaWidgetId !== null) return true;
-				if (hcaptchaContainer.querySelector('iframe')) return true;
-				try {
-					hcaptchaWidgetId = window.hcaptcha.render(hcaptchaContainer, {
-						sitekey: '9f64291e-4d3a-4ae8-b4ee-5692268481b2'
-					});
-					return true;
-				} catch (e) {
-					console.warn('hCaptcha render failed, will retry:', e);
-					return false;
-				}
-			}
-			return false;
-		};
-
 		const observer = new IntersectionObserver(
 			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						loadHcaptchaScript();
-						observer.disconnect();
-						checkInterval = setInterval(() => {
-							if (renderCaptcha()) {
-								clearInterval(checkInterval);
-							}
-						}, 100);
-					}
-				});
+				if (entries.some((entry) => entry.isIntersecting)) {
+					observer.disconnect();
+					loadHcaptcha();
+				}
 			},
-			{ rootMargin: '200px', threshold: 0 }
+			{ rootMargin: '300px', threshold: 0 }
 		);
 
-		if (sectionElement) {
-			observer.observe(sectionElement);
-		}
+		if (formElement) observer.observe(formElement);
+		formElement?.addEventListener('focusin', loadHcaptcha, { once: true });
 
 		return () => {
 			observer.disconnect();
-			if (checkInterval) clearInterval(checkInterval);
 		};
 	});
 
@@ -167,33 +146,63 @@
 
 	function validateForm() {
 		if (!fullName.trim()) return 'Please enter your name.';
-		if (!companyName.trim()) return 'Please enter your company name.';
 		if (!foundUsVia) return 'Please select how you found us.';
 		if (!helpWith) return 'Please select what you need help with.';
 		if (!email.trim()) return 'Please enter your email.';
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) return 'Please enter a valid email address.';
 		if (!projectDetails.trim()) return 'Please provide project details.';
-		const hcaptchaResponse = formElement?.querySelector('[name="h-captcha-response"]')?.value;
-		if (!hcaptchaResponse) return 'Please complete the CAPTCHA.';
 		return '';
 	}
 
-	function handleSubmit(event) {
+	async function handleSubmit(event) {
+		event.preventDefault();
 		errorMessage = '';
 		const validation = validateForm();
 		if (validation) {
-			event.preventDefault();
 			errorMessage = validation;
-			if (typeof window !== 'undefined' && typeof window.hcaptcha !== 'undefined' && hcaptchaWidgetId !== null) {
-				window.hcaptcha.reset(hcaptchaWidgetId);
-			}
 			return;
 		}
+
+		const hcaptchaResponse =
+			hcaptchaWidgetId === null ? '' : window.hcaptcha?.getResponse(hcaptchaWidgetId) || '';
+		if (!hcaptchaResponse) {
+			errorMessage = 'Please complete the CAPTCHA.';
+			return;
+		}
+
 		isSubmitting = true;
+		const data = new FormData(formElement);
+		data.set('h-captcha-response', hcaptchaResponse);
+
+		try {
+			const response = await fetch(CONTACT_FORM_URL, {
+				method: 'POST',
+				body: new URLSearchParams(data)
+			});
+			const body = await response.json().catch(() => ({}));
+
+			if (!response.ok) {
+				errorMessage =
+					body?.details?.map((detail) => detail.message).join(' ') ||
+					body?.error ||
+					'Something went wrong. Please try again.';
+				isSubmitting = false;
+				window.hcaptcha?.reset(hcaptchaWidgetId);
+				return;
+			}
+
+			window.location.assign(
+				`https://www.corelabs.digital/f/${CONTACT_FORM_SLUG}/success?sid=${body.submission_id}`
+			);
+		} catch {
+			errorMessage = 'Something went wrong. Please try again.';
+			isSubmitting = false;
+			window.hcaptcha?.reset(hcaptchaWidgetId);
+		}
 	}
 
-	function handleClickOutside(event) {
+	function handleClickOutside() {
 		if (showCountryDropdown) {
 			showCountryDropdown = false;
 		}
@@ -462,38 +471,21 @@
 <!-- /section:cta -->
 
 <!-- section:contact {"type":"contact","id":"contact-intake"} -->
-<section id="intake-form" class="intake-section-gradient relative py-20 sm:py-32" bind:this={sectionElement}>
+<section id="intake-form" class="intake-section-gradient relative py-20 sm:py-32">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-5xl" use:scrollReveal>
-			{#if showSuccess}
-				<div class="rounded-2xl bg-white p-8 text-center shadow-2xl sm:p-12">
-					<div class="mb-4 text-5xl">🎉</div>
-					<h3 class="mb-2 text-2xl font-bold text-gray-900">Thank you!</h3>
-					<p class="text-gray-600">
-						Your message has been sent successfully. We'll be in touch shortly.
-					</p>
-					<button
-						type="button"
-						class="mt-6 rounded-full bg-gradient-to-r from-[#334fff] to-[#7433ff] px-6 py-2 text-white transition hover:opacity-90"
-						onclick={() => (showSuccess = false)}
-					>
-						Submit another inquiry
-					</button>
-				</div>
-			{:else}
-				<form
-					bind:this={formElement}
-					class="intake-form-shadow rounded-2xl bg-white p-8 sm:p-12"
-					action="__FORM_ACTION__"
-					method="POST"
-					onsubmit={handleSubmit}
-				>
+			<form
+				bind:this={formElement}
+				class="intake-form-shadow rounded-2xl bg-white p-8 sm:p-12"
+				method="POST"
+				onsubmit={handleSubmit}
+			>
 				<input
 					type="text"
 					name="website"
 					aria-hidden="true"
 					aria-label="Leave this field empty"
-					style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden"
+					class="absolute left-[-10000px] top-auto h-px w-px overflow-hidden"
 					tabindex="-1"
 					autocomplete="off"
 				/>
@@ -511,7 +503,9 @@
 					>
 						<span class="shrink-0">Hi! My name is</span>
 						<div class="relative inline-flex min-w-44 flex-1 items-center">
+							<label for="intake-name" class="sr-only">Full name</label>
 							<input
+								id="intake-name"
 								type="text"
 								name="name"
 								bind:value={fullName}
@@ -522,12 +516,13 @@
 							<span class="ml-1 shrink-0 text-lg">👋</span>
 						</div>
 						<span class="shrink-0">and I work at</span>
+						<label for="intake-company" class="sr-only">Company name</label>
 						<input
+							id="intake-company"
 							type="text"
 							name="company"
 							bind:value={companyName}
 							placeholder="Type a company name"
-							required
 							class="inline-input min-w-44 flex-1 border-b-2 border-gray-300 bg-transparent px-2 py-1 text-center text-gray-600 placeholder:text-gray-400"
 						/>
 					</div>
@@ -550,7 +545,7 @@
 								</button>
 							{/each}
 						</div>
-						<input type="hidden" name="found_via" value={foundUsVia} />
+						<input type="hidden" name="how_did_you_find_us" value={foundUsVia} />
 					</div>
 
 					<div
@@ -571,14 +566,16 @@
 								</button>
 							{/each}
 						</div>
-						<input type="hidden" name="help_with" value={helpWith} />
+						<input type="hidden" name="what_do_you_need_help_with" value={helpWith} />
 					</div>
 
 					<div
 						class="mb-8 flex flex-wrap items-center gap-2 text-xl font-medium text-gray-800 sm:text-2xl"
 					>
 						<span>Feel free to email me at</span>
+						<label for="intake-email" class="sr-only">Email address</label>
 						<input
+							id="intake-email"
 							type="email"
 							name="email"
 							bind:value={email}
@@ -623,7 +620,9 @@
 								</div>
 							{/if}
 						</div>
+						<label for="intake-phone" class="sr-only">Phone number</label>
 						<input
+							id="intake-phone"
 							type="tel"
 							bind:value={phone}
 							placeholder={selectedCountry.code}
@@ -636,7 +635,9 @@
 						class="mb-8 flex flex-wrap items-start gap-2 text-xl font-medium text-gray-800 sm:text-2xl"
 					>
 						<span class="mt-2">Here is more information about the project:</span>
+						<label for="intake-message" class="sr-only">Project details</label>
 						<input
+							id="intake-message"
 							type="text"
 							name="message"
 							bind:value={projectDetails}
@@ -649,7 +650,7 @@
 					<div
 						class="flex flex-wrap items-center justify-center gap-6 border-t border-gray-200 pt-6"
 					>
-						<div class="h-captcha" data-sitekey="9f64291e-4d3a-4ae8-b4ee-5692268481b2" bind:this={hcaptchaContainer}></div>
+						<div bind:this={hcaptchaContainer} class="min-h-[78px]"></div>
 
 						<button
 							type="submit"
@@ -666,8 +667,7 @@
 							</span>
 						</button>
 					</div>
-				</form>
-			{/if}
+			</form>
 		</div>
 	</div>
 </section>
