@@ -21,6 +21,13 @@
 			(function () {
 				let loaded = false;
 
+				// Skip all marketing/analytics scripts on local dev: /_vercel/insights/script.js
+				// only exists on deployed Vercel sites (404s locally) and the rest would pollute
+				// production analytics with local traffic.
+				const isLocalhost = ['localhost', '127.0.0.1', '[::1]', ''].includes(
+					window.location.hostname
+				);
+
 				function loadScript(src) {
 					const script = document.createElement('script');
 					script.src = src;
@@ -29,7 +36,7 @@
 				}
 
 				function loadMarketingScripts() {
-					if (loaded) return;
+					if (loaded || isLocalhost) return;
 					loaded = true;
 
 					loadScript('/_vercel/insights/script.js');
