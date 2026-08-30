@@ -1,6 +1,6 @@
 # Core Labs
 
-> Replace expensive SaaS subscriptions with custom software built specifically for your business. Reduce costs by 70% with unified solutions.
+> Core Labs builds Sven, an agentic operating system for your business. Sven connects securely to the systems a company already runs on — accounting, ecommerce, CRM, documents, ads — and builds custom software around how that business actually works. It is sold as a subscription, and the platform keeps changing as the business does.
 
 ## Pages
 

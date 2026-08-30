@@ -618,3 +618,58 @@
   margin-top: 0;
 }
 
+
+/* ===== Reduced Motion ===== */
+/* Reveal animations start at opacity:0, so honoring the preference means forcing
+   the visible end-state, not just shortening the transition. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .page-load,
+  .scroll-reveal,
+  .stat-animate {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ===== Integration Orbit ===== */
+/* The ring rotates; each logo counter-rotates at the same rate so it stays upright.
+   Placement angle and counter-rotation live on separate elements so the transforms
+   never fight each other. */
+@keyframes orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-spin-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.orbit-ring {
+  animation: orbit-spin 48s linear infinite;
+}
+
+.orbit-counter {
+  animation: orbit-spin-reverse 48s linear infinite;
+}
+
+/* ===== Horizontal Portfolio Rail ===== */
+.rail-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.rail-scroll::-webkit-scrollbar {
+  display: none;
+}
