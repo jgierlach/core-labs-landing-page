@@ -117,13 +117,28 @@
 	let capabilities = $state([
 		{ label: 'Build a website', maps: 'Website' },
 		{ label: 'Build custom software', maps: 'Custom Software' },
-		{ label: 'Keep your product catalog up to date', maps: 'Other' },
 		{ label: 'Do your books', maps: 'Other' }
 	]);
 
+	let svenPrompt = $state('');
+
+	function goToIntakeForm() {
+		document.getElementById('intake-form')?.scrollIntoView({ behavior: 'smooth' });
+	}
+
 	function askSven(capability) {
 		helpWith = capability.maps;
-		document.getElementById('intake-form')?.scrollIntoView({ behavior: 'smooth' });
+		goToIntakeForm();
+	}
+
+	// Carries whatever was typed here into the form's project-details field.
+	function sendPromptToForm() {
+		const prompt = svenPrompt.trim();
+		if (!prompt) return;
+		projectDetails = prompt;
+		helpWith = helpWith || 'Other';
+		goToIntakeForm();
+		document.getElementById('intake-message')?.focus({ preventScroll: true });
 	}
 
 	// ===== What Sven built recently =====
@@ -280,11 +295,6 @@
 			answer:
 				'The platform itself, the connections into your existing systems, hosting and maintenance, and continued development. New features are part of the subscription rather than a separate project every time something changes.'
 		},
-		{
-			question: 'Do you work with our existing team?',
-			answer:
-				'Often, yes. If you have developers or an IT lead, we build alongside them and hand over documentation so they can maintain and extend the platform themselves.'
-		}
 	]);
 
 	const faqJsonLd = {
@@ -590,16 +600,16 @@
 			<div class="flex flex-wrap items-center justify-center gap-3">
 				{#each integrations as integration}
 					<span
-						class="inline-flex items-center gap-2 rounded-full border border-dashed border-white/15 px-4 py-2 text-sm text-white/35"
+						class="inline-flex items-center gap-2 rounded-full border border-dashed border-white/20 px-4 py-2 text-sm text-white/60"
 					>
 						<img
 							src="/logos/integrations/{integration.file}"
 							alt=""
-							width="18"
-							height="18"
+							width="20"
+							height="20"
 							loading="lazy"
 							decoding="async"
-							class="h-[18px] w-[18px] opacity-40 grayscale"
+							class="h-5 w-5"
 						/>
 						{integration.name}
 					</span>
@@ -630,11 +640,11 @@
 			</p>
 		</div>
 
-		<div class="mx-auto mt-16 max-w-lg" use:scrollReveal={{ delay: 100 }}>
-			<div class="relative mx-auto aspect-square w-full max-w-[26rem]">
+		<div class="mx-auto mt-16 max-w-xl" use:scrollReveal={{ delay: 100 }}>
+			<div class="relative mx-auto aspect-square w-full max-w-[30rem]">
 				<!-- orbit tracks -->
 				<div
-					class="absolute inset-[14%] rounded-full border border-white/[0.08]"
+					class="absolute inset-[18%] rounded-full border border-white/[0.08]"
 					aria-hidden="true"
 				></div>
 				<div
@@ -646,10 +656,10 @@
 				<div class="absolute inset-0 z-10 flex items-center justify-center">
 					<!-- Same mark as the navbar, scaled up. -->
 					<div
-						class="flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-[#334fff] to-[#7433ff] shadow-lg sm:h-28 sm:w-28 sm:rounded-[2rem]"
+						class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#334fff] to-[#7433ff] shadow-lg sm:h-20 sm:w-20 sm:rounded-[1.4rem]"
 					>
 						<span
-							class="text-4xl font-bold tracking-tight text-white sm:text-5xl"
+							class="text-2xl font-bold tracking-tight text-white sm:text-3xl"
 							aria-hidden="true">CL</span
 						>
 						<span class="sr-only">Core Labs</span>
@@ -657,23 +667,23 @@
 				</div>
 
 				<!-- orbiting systems -->
-				<div class="orbit-ring absolute inset-[14%]">
+				<div class="orbit-ring absolute inset-[18%]">
 					{#each integrations as integration, index}
 						<div class="absolute inset-0 {ORBIT_PLACE[index]}">
 							<div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
 								<div class={ORBIT_UNPLACE[index]}>
 									<div class="orbit-counter">
 										<span
-											class="flex h-14 w-14 items-center justify-center rounded-xl border border-white/10 bg-[#0d0a1f] shadow-lg sm:h-16 sm:w-16"
+											class="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-2xl border border-white/10 bg-[#0d0a1f] shadow-lg sm:h-20 sm:w-20"
 										>
 											<img
 												src="/logos/integrations/{integration.file}"
 												alt={integration.name}
-												width="32"
-												height="32"
+												width="44"
+												height="44"
 												loading="lazy"
 												decoding="async"
-												class="h-8 w-8"
+												class="h-10 w-10 sm:h-11 sm:w-11"
 											/>
 										</span>
 									</div>
@@ -790,7 +800,7 @@
 			<div
 				class="mt-12 rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:p-7"
 			>
-				<div class="flex flex-wrap justify-center gap-3">
+				<div class="flex flex-wrap justify-center gap-3 sm:flex-nowrap">
 					{#each capabilities as capability}
 						<button
 							type="button"
@@ -802,14 +812,26 @@
 					{/each}
 				</div>
 
-				<div
-					class="mt-6 flex items-center gap-3 rounded-full border border-white/10 bg-[#0d0a1f] px-5 py-4"
+				<form
+					onsubmit={(event) => {
+						event.preventDefault();
+						sendPromptToForm();
+					}}
+					class="mt-6 flex items-center gap-3 rounded-full border border-white/10 bg-[#0d0a1f] py-2 pr-2 pl-5 focus-within:border-white/25"
 				>
-					<span class="flex-1 text-sm text-white/35 sm:text-base">…or tell Sven what you need</span>
-					<a
-						href="/#intake-form"
-						class="btn-gradient flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white"
-						aria-label="Go to the project form"
+					<label for="sven-prompt" class="sr-only">Tell Sven what you need</label>
+					<input
+						id="sven-prompt"
+						type="text"
+						bind:value={svenPrompt}
+						placeholder="…or tell Sven what you need"
+						class="min-w-0 flex-1 border-0 bg-transparent px-0 py-2 text-sm text-white placeholder:text-white/35 focus:ring-0 focus:outline-none sm:text-base"
+					/>
+					<button
+						type="submit"
+						disabled={!svenPrompt.trim()}
+						class="btn-gradient flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+						aria-label="Send this to the project form"
 					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -822,8 +844,8 @@
 						>
 							<path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6" />
 						</svg>
-					</a>
-				</div>
+					</button>
+				</form>
 			</div>
 		</div>
 	</div>
@@ -972,7 +994,7 @@
 				<h2
 					class="font-heading mt-4 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
 				>
-					Four examples, not a catalog
+					Four examples
 				</h2>
 				<p class="mt-4 text-lg text-pretty text-white/70">
 					These are things businesses have asked Sven for. The list is not the limit — it is four
@@ -1016,7 +1038,7 @@
 				You are already paying for this
 			</h2>
 			<p class="mt-4 text-lg text-pretty text-white/70">
-				Set it to match your stack. Then count how many of those vendors will build you something new
+				Set it to match your stack. Then count how many of those vendors will create a custom solution for your business
 				this year.
 			</p>
 		</div>
