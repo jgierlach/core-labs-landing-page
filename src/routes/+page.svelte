@@ -142,37 +142,70 @@
 	}
 
 	// ===== What Sven built recently =====
-	// TODO: swap `image` in for a real screenshot once one exists for each build.
+	// Screenshots live in /static/portfolio and were captured from the live sites.
 	let recentBuilds = $state([
 		{
 			title: 'Crypto tax-loss harvesting platform',
+			client: 'RAI Digital Assets',
 			tag: 'Fintech',
+			url: 'https://www.raidigitalsolutions.com/',
+			image: 'rai.jpg',
 			description:
-				'Tracks positions across exchanges, finds harvestable losses before year end, and produces the filings an accountant can actually use.'
+				'Automated tax optimisation for digital asset portfolios — a lot-selection engine that scans continuously and executes across every account under management.'
 		},
 		{
 			title: 'Warehouse management platform',
+			client: 'Hometown Industries',
 			tag: 'Operations',
+			url: 'https://www.hometown-industries.com/',
+			image: 'hometown.jpg',
 			description:
-				'Receiving, putaway, picking, and cycle counts on one screen, wired to the systems that already hold the inventory.'
+				'Receiving, storage, and fulfilment for a full-service supply chain partner, wired to the systems that already hold the inventory.'
 		},
 		{
-			title: 'Mission trip registration platform',
+			title: 'Food pantry and volunteer site',
+			client: 'Wilkinsburg Community Ministry',
 			tag: 'Nonprofit',
+			url: 'https://www.wcm15221.org/',
+			image: 'wcm.jpg',
 			description:
-				'Applications, background checks, payments, and travel documents for hundreds of participants, without a spreadsheet in sight.'
+				'A choice-model pantry where neighbours walk the aisles and take what their family will eat, free. Pantry hours, volunteer signup, and giving campaigns in one place.'
 		},
 		{
 			title: 'Recruiting platform',
+			client: 'GreySource',
 			tag: 'Hiring',
+			url: 'https://greysource.com/',
+			image: 'greysource.jpg',
 			description:
-				'Sourcing, screening, and scheduling in one pipeline, tuned to how this team hires rather than how a job board assumes they do.'
+				'Sourcing, screening, and scheduling for a certified DEI recruiting team, built around how they actually place candidates.'
 		},
 		{
-			title: 'And a lot of websites',
-			tag: 'Web',
+			title: 'Creator roster and brand pipeline',
+			client: 'Never Settle Media',
+			tag: 'Creative Agency',
+			url: 'https://www.neversettlemedia.com/',
+			image: 'neversettle.jpg',
 			description:
-				'Fast, accessible marketing sites that rank and convert, with the application behind them when the site has to do more than describe the business.'
+				'A roster, brand-partnership pipeline, and booking front door for a boutique management company representing underrepresented creators.'
+		},
+		{
+			title: 'Hotel management portfolio',
+			client: 'Alberigo Hotel Management',
+			tag: 'Hospitality',
+			url: 'https://www.alberigohotelmgt.com/',
+			image: 'alberigo.jpg',
+			description:
+				'Properties, leadership, and careers for a hotel management group, with every brand they operate presented in one place.'
+		},
+		{
+			title: 'Permit processing site',
+			client: 'Permits & More',
+			tag: 'Trades',
+			url: 'https://www.permitsandmore.com/',
+			image: 'permits.jpg',
+			description:
+				'Services, project history, and intake for a permit expediting firm that moves builds from first concept to final approval.'
 		}
 	]);
 
@@ -917,31 +950,57 @@
 			aria-label="Recent projects, scrollable"
 		>
 			{#each recentBuilds as build}
-				<article data-rail-card class="group w-[19rem] shrink-0 snap-start sm:w-[23rem]">
-				<!-- Placeholder canvas: swap for a real screenshot when there is one. -->
-				<div
-					class="glass-card relative flex aspect-[4/3] items-end overflow-hidden rounded-2xl border border-white/10 p-6"
-				>
-					<div
-						class="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#334fff]/25 via-transparent to-[#7433ff]/25"
-						aria-hidden="true"
-					></div>
-					<span
-						class="font-heading relative text-5xl font-bold text-white/10 tabular-nums select-none"
-						aria-hidden="true"
+				<article data-rail-card class="w-[19rem] shrink-0 snap-start sm:w-[23rem]">
+					<a
+						href={build.url}
+						target="_blank"
+						rel="noopener"
+						class="group block rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/40"
 					>
-						{build.tag}
-					</span>
-				</div>
+						<div
+							class="relative aspect-[16/10] overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]"
+						>
+							<img
+								src="/portfolio/{build.image}"
+								alt="{build.client} homepage"
+								width="1200"
+								height="750"
+								loading="lazy"
+								decoding="async"
+								class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+							/>
+						</div>
 
-				<div class="mt-5">
-					<h3 class="font-heading text-xl font-semibold text-balance text-white">
-						{build.title}
-					</h3>
-					<p class="mt-2 text-sm leading-relaxed text-pretty text-white/60">
-						{build.description}
-					</p>
-				</div>
+						<div class="mt-5">
+							<p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">
+								{build.tag}
+							</p>
+							<h3 class="font-heading mt-2 text-xl font-semibold text-balance text-white">
+								{build.title}
+							</h3>
+							<p class="mt-1 text-sm text-white/50">{build.client}</p>
+							<p class="mt-3 text-sm leading-relaxed text-pretty text-white/60">
+								{build.description}
+							</p>
+							<span
+								class="relative mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-white/70 transition-colors group-hover:text-white"
+							>
+								Visit site
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-3.5 w-3.5"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									stroke-width="2"
+									aria-hidden="true"
+								>
+									<path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+								</svg>
+								<span class="sr-only">(opens in a new tab)</span>
+							</span>
+						</div>
+					</a>
 				</article>
 			{/each}
 		</div>
