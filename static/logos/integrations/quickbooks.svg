@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="QuickBooks">
+  <circle cx="32" cy="32" r="30" fill="#2CA01C"/>
+  <path d="M27 20a12 12 0 0 0 0 24h3v-6h-3a6 6 0 0 1 0-12h3v-6z" fill="#fff"/>
+  <path d="M37 20a12 12 0 0 1 0 24h-3v-6h3a6 6 0 0 0 0-12h-3v-6z" fill="#fff"/>
+</svg>
