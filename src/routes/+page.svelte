@@ -516,23 +516,23 @@
 <svelte:window onclick={handleClickOutside} />
 
 <svelte:head>
-	<title>Core Labs - Custom Software Solutions</title>
+	<title>Core Labs — An agentic operating system for your business</title>
 	<meta
 		name="description"
-		content="Replace expensive SaaS subscriptions with custom software built specifically for your business. Reduce costs by 70% with unified solutions."
+		content="Sven connects securely to the tools your business already runs on, then builds and keeps improving the software you need. One subscription, no ceiling."
 	/>
 	<link rel="canonical" href="https://www.corelabs.digital/" />
 
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content="Core Labs" />
-	<meta property="og:title" content="Core Labs - Custom Software Solutions" />
-	<meta property="og:description" content="Replace expensive SaaS subscriptions with custom software built specifically for your business. Reduce costs by 70% with unified solutions." />
+	<meta property="og:title" content="Core Labs — An agentic operating system for your business" />
+	<meta property="og:description" content="Sven connects securely to the tools your business already runs on, then builds and keeps improving the software you need. One subscription, no ceiling." />
 	<meta property="og:url" content="https://www.corelabs.digital/" />
 	<meta property="og:image" content="https://www.corelabs.digital/logos/core-labs-full-logo.png" />
 
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="Core Labs - Custom Software Solutions" />
-	<meta name="twitter:description" content="Replace expensive SaaS subscriptions with custom software built specifically for your business. Reduce costs by 70% with unified solutions." />
+	<meta name="twitter:title" content="Core Labs — An agentic operating system for your business" />
+	<meta name="twitter:description" content="Sven connects securely to the tools your business already runs on, then builds and keeps improving the software you need. One subscription, no ceiling." />
 	<meta name="twitter:image" content="https://www.corelabs.digital/logos/core-labs-full-logo.png" />
 
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -- built above from local literals, no user input -->
