@@ -29,18 +29,9 @@
 	]);
 	*/
 
-	// ===== Stats Data =====
-	let stats = $state([
-		{ value: '40%', label: 'Cost Savings' },
-		{ value: '100%', label: 'Custom Fit' },
-		{ value: '24/7', label: 'Support' },
-		{ value: '∞', label: 'Scalability' }
-	]);
-
 	// ===== Pricing Data =====
 	let plans = $state([
 		{
-			name: 'Core Labs Platform',
 			price: 'Priced to your business',
 			description: 'One subscription for a platform that is built around you and keeps changing',
 			features: [
@@ -53,8 +44,7 @@
 				'Training and documentation',
 				'Priority support'
 			],
-			cta: 'Book a call',
-			popular: true
+			cta: 'Book a call'
 		}
 	]);
 
@@ -207,6 +197,20 @@
 			description:
 				'Services, project history, and intake for a permit expediting firm that moves builds from first concept to final approval.'
 		}
+	]);
+
+	// ===== Hero stats =====
+	// Each tile mirrors something the page states further down — the process, the FAQ,
+	// and the portfolio — so the hero cannot drift away from the rest of the page.
+	// The industry count is derived, so adding or removing a build keeps it honest.
+	let stats = $derived([
+		{ value: '2 weeks', label: 'Between releases' },
+		{ value: '3–6 mo', label: 'Typical time to launch' },
+		{
+			value: String(new Set(recentBuilds.map((build) => build.tag)).size),
+			label: 'Industries shipped'
+		},
+		{ value: '∞', label: 'Features included' }
 	]);
 
 	let railElement = $state(null);
@@ -561,7 +565,7 @@
 				class="text-muted-foreground mx-auto mt-8 max-w-3xl text-xl leading-8 text-pretty sm:text-2xl"
 				use:pageLoad={{ delay: 200 }}
 			>
-				With the team and platform to take your project from idea to launch
+				With the team and platform to scale AI in your business
 			</p>
 
 			<div
@@ -602,8 +606,14 @@
 			>
 				{#each stats as stat}
 					<div class="text-center">
-						<div class="text-foreground text-4xl font-bold">{stat.value}</div>
-						<div class="text-muted-foreground text-base">{stat.label}</div>
+						<div
+							class="text-foreground text-3xl font-bold whitespace-nowrap tabular-nums sm:text-4xl"
+						>
+							{stat.value}
+						</div>
+						<div class="text-muted-foreground mt-1 text-sm text-balance sm:text-base">
+							{stat.label}
+						</div>
 					</div>
 				{/each}
 			</div>
@@ -1341,19 +1351,8 @@
 					<div
 						class="glass-card card-animate relative w-full rounded-2xl border border-white/10 p-8 backdrop-blur-sm"
 					>
-						{#if plan.popular}
-							<div class="absolute -top-3 left-1/2 -translate-x-1/2 transform">
-								<span
-									class="popular-badge inline-flex rounded-full px-4 py-1 text-sm font-medium text-white"
-								>
-									Most Popular
-								</span>
-							</div>
-						{/if}
-
 						<div class="pb-8 text-center">
-							<h3 class="text-2xl font-semibold text-white">{plan.name}</h3>
-							<p class="font-heading mt-3 text-3xl font-bold text-balance text-white">{plan.price}</p>
+							<p class="font-heading text-3xl font-bold text-balance text-white">{plan.price}</p>
 							<p class="mt-4 text-white/70">{plan.description}</p>
 						</div>
 
