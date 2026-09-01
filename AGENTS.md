@@ -20,13 +20,14 @@ This file is the **single source of truth** for conventions in this repo (`CLAUD
 
 - **Content-only edits:** `npm run check`. svelte-check catches every compile/syntax error a content change can realistically introduce; the full build is not required.
 - **Structural work:** `npm run build` must pass before declaring success. A prerender error means that page needs `export const prerender = false`.
+- **Anything touching `src/lib/components/sections/`:** also run `npm run check:tokens` if that script exists in `package.json`. It is instant and dependency-free, and CI fails without it.
 - Setup: `npm install`. Dev server: `npm run dev`.
 
 ## Tech conventions
 
 - **Svelte 5 runes only** (`$state`, `$derived`, `$props`, `$effect`) — no Svelte 4 (`export let`, reactive `$:`, stores).
 - **Plain JavaScript, no TypeScript** — use JSDoc if you need type annotations.
-- **Tailwind utilities only** — no inline `style=""`, no `<style>` blocks, no CSS variables or preprocessors. Arbitrary values (`bg-[#7433ff]`) are fine.
+- **Tailwind utilities only** — no inline `style=""`, no `<style>` blocks, no preprocessors. CSS variables belong in the token block in `src/app.css` and nowhere else. Arbitrary values (`bg-[#7433ff]`) are acceptable for a genuine one-off in a page, but **never in a component under `src/lib/components/sections/`** — if this site has that directory, those files are token-only and CI rejects a raw colour in them.
 - **Prerendering stays on** (`+layout.js`). A page that adds a server `load` or form `action` sets `export const prerender = false` on that page only.
 - Most edits are UI/content in `src/routes/**/+page.svelte` and `src/lib/components/`. Match the existing structure and style.
 
@@ -36,8 +37,75 @@ This file is the **single source of truth** for conventions in this repo (`CLAUD
 - **Repeatable content** (feature cards, testimonials, team members): declare an array in the page's `<script>` block and render with `{#each}`. These are small static sites — keep the data in the page; don't build data layers or content abstractions.
 - **Anchor links** use the `/#section` format (leading slash + hash), and the target section carries the matching `id` (e.g. `<section id="services">`).
 - **Navbar & Footer** are self-contained components in `src/lib/components/`, rendered **only** in `src/routes/+layout.svelte` — never in page files. **The footer keeps the Core Labs branding link** (`<a href="https://www.corelabs.digital/">Core Labs</a>`); never remove or modify it.
+- **Page sections:** newer sites keep each section as a component in `src/lib/components/sections/`, taking its content as props, with `+page.svelte` holding the data and composing them. Older sites have every section inline in `+page.svelte`. **Match what this site already does** — converting between the two is a task someone asks for, not something to do in passing.
 - **SEO head**: every `+page.svelte` keeps a `<svelte:head>` with a unique `<title>` + `<meta name="description">` (full SEO requirements in the Lighthouse section).
 - **Error page**: `src/routes/+error.svelte` is the branded 404/error page (`noindex`, links back home). Restyle it alongside the rest of the site during build-out — never delete it.
+
+## Visual design
+
+Correctness is not the same as looking good, and a client judges this site on how
+it looks. The full bar — composition, type scale, spacing rhythm, colour
+discipline, and the "templated look" tells to avoid — is the `web-design-bar`
+skill, which is preloaded on any run that changes what a visitor sees. Two rules
+live here because they are repo conventions:
+
+- **The site's design tokens are the source of truth.** Style by the ROLE a colour
+  plays, never the colour itself. **Read what this site actually defines before
+  you write a class** — the fleet is not uniform. Sites built from the current
+  boilerplate use `--brand`, `--brand-ink`, `--accent`, `--surface`,
+  `--surface-alt`, `--ink`, `--ink-muted`, `--line`, `--radius`,
+  `--font-display`, `--font-body` in one `:root` block in `src/app.css`, exposed
+  as `bg-brand`, `text-ink`, `text-ink-muted`, `border-line`, `rounded-token`.
+  Older sites define their own names, in `src/app.css`, in `theme.extend` in
+  `tailwind.config.js`, or both. Use whichever this site has.
+
+  What holds everywhere: changing a brand colour must be a one-line edit in one
+  place, not a find-and-replace across a dozen pages. Anything used more than
+  once becomes a named token. **Never hardcode a raw colour** — not
+  `bg-blue-600`, not `text-gray-900`, not `text-[#192b28]`.
+
+  Where this site has `src/lib/components/sections/`, those components are
+  token-only and `npm run check:tokens` enforces it — run it if the script exists
+  in `package.json`. The rule is strict there because those components get lifted
+  into a shared catalogue across client sites: one that hardcodes a client's
+  colours cannot serve another, and a catalogue carrying design rather than
+  structure makes every site look the same.
+- **Reuse the scale that is already here.** Section padding, heading sizes,
+  border radii, and the neutral ramp are decisions this site has already made.
+  A page that invents its own is the main way these sites drift into looking
+  unfinished — match what the other pages do.
+
+**Look at what you built.** Any change a visitor can see gets screenshotted at
+390/768/1440 and reviewed before you declare it done; the run prompt gives you
+the screenshot tool's path. A page you have never seen is a guess.
+
+## The site's style guide (`/styleguide`)
+
+Some of these sites carry a `/styleguide` route. It is an internal REFERENCE, not
+a page for visitors: it imports and renders this site's real components, type
+scale, palette, buttons and spacing on one page, so that a later run — quite
+possibly you — can see what this site already looks like before adding to it.
+
+Its value comes entirely from being TRUE. A style guide that has drifted from the
+site is worse than none, because it will confidently point the next run at a
+design that no longer exists.
+
+- **Keep it accurate.** Add, remove or rename a component in
+  `src/lib/components/` and the style guide is now wrong — update it in the same
+  change. This is the one place where "I'll tidy that later" actively causes harm.
+- **It renders the real components** (`import Hero from '$lib/components/sections/Hero.svelte'`
+  … `<Hero {...} />`). Never replace those with copied markup, however much
+  simpler it looks — a copy goes stale silently, which is the exact failure the
+  page exists to prevent.
+- **It records, it does not improve.** If two buttons on this site disagree, the
+  style guide shows both, disagreeing. Fixing the disagreement is a different
+  task, and one a human asked for.
+- **`noindex, nofollow` stays, and it stays out of the nav.** Both are deliberate.
+- **Never delete it**, and don't restyle it to look like the marketing site.
+
+If a site has no `/styleguide`, that is not an omission to fix on your own
+initiative — it means nobody has locked that site's design in yet, and staff
+generate it deliberately when they do.
 
 ## Forms
 
@@ -139,6 +207,7 @@ Core Labs sites must score in the high 90s–100 on Google Lighthouse (Performan
   - Below-the-fold images: add `loading="lazy"` and `decoding="async"`.
   - The hero / largest above-the-fold image: do NOT lazy-load it; add `fetchpriority="high"`.
   - Prefer modern formats (`.webp`/`.avif`) and reasonably sized files; never ship a 4000px image into a 600px slot.
+  - **Finding imagery when the client has supplied none.** A site with no photographs on it reads as a wireframe no matter how good the type is, so build-outs must not silently ship without any. Check `/static` and the brief first; if there is nothing, and `$PEXELS_API_KEY` is in the environment, search the Pexels API (`https://api.pexels.com/v1/search?query=…&orientation=landscape`, header `Authorization: <key>`) for images that match this client's actual trade and region, and download the `src.large2x` rendition. If no key is available, compose the layout with properly sized image slots and say in your summary that the site needs photography. **Never present stock (or generated) imagery as the client's own crew, premises, customers or completed work** — atmosphere and context only — and always name the stock images you used so a human knows which to replace.
   - **Stock imagery (Unsplash etc.)**: download the image into `/static` and optimize it first (webp, ≤ 1920px wide for heroes / ≤ 1200px for content images, roughly ≤ 250KB) — fetch a pre-sized rendition (Unsplash supports `?auto=format&fit=crop&w=1920&q=75` at download time) or convert locally (`npx @squoosh/cli`, `sharp`, `cwebp`). Never hotlink a full-resolution stock URL. If an external image URL is unavoidable, append its CDN sizing params and add a `<link rel="preconnect">` for that origin.
   - **Hero backgrounds**: use an absolutely-positioned `<img class="absolute inset-0 h-full w-full object-cover" fetchpriority="high" width height alt>` inside a `relative` section instead of a CSS `background-image` — the browser can prioritize it and it can't shift layout.
 - **Fonts**: the default is the system font stack — it costs zero bytes and is perfectly acceptable. When the brand calls for custom type, **self-host** it: `npm install @fontsource-variable/<font>` and import it once at the top of `src/app.css` (e.g. `@import '@fontsource-variable/inter';`), then reference the family in `tailwind.config.js` `theme.extend.fontFamily`. **NEVER add a `<link>` to `fonts.googleapis.com`, `use.typekit.net`, or any third-party font CSS** — render-blocking cross-origin CSS is one of the biggest Lighthouse penalties. Maximum 2 font families per site; prefer variable fonts.
@@ -171,7 +240,7 @@ Core Labs sites must score in the high 90s–100 on Google Lighthouse (Performan
 
 ### Never strip on "cleanup"
 
-Canonical/OG/JSON-LD tags, image `width`/`height`, the skip link, `lang`, or landmark elements — they are functional, not decorative.
+Canonical/OG/JSON-LD tags, image `width`/`height`, the skip link, `lang`, or landmark elements — they are functional, not decorative. The same goes for `/styleguide`'s `noindex` and its absence from the nav.
 
 ## Legacy section markers
 
