@@ -622,27 +622,35 @@
 </section>
 <!-- /section:hero -->
 
-<section aria-labelledby="free-website-redesign-heading" class="border-y border-border bg-card py-20 sm:py-32">
+<section
+	id="free-website-redesign"
+	aria-labelledby="free-website-redesign-heading"
+	class="faq-gradient relative py-20 sm:py-32"
+>
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto flex max-w-6xl flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
-			<div class="max-w-2xl">
+		<div
+			class="mx-auto flex max-w-6xl flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12"
+		>
+			<div class="max-w-2xl" use:scrollReveal>
 				<h2
 					id="free-website-redesign-heading"
-					class="font-heading text-3xl font-bold tracking-tight text-balance text-foreground sm:text-4xl lg:text-5xl"
+					class="font-heading text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
 				>
 					Free Website Redesign
 				</h2>
-				<p class="mt-6 text-lg leading-relaxed text-pretty text-foreground/80 sm:text-xl">
+				<p class="mt-6 text-lg leading-relaxed text-pretty text-white/70 sm:text-xl">
 					See what your website could look like with a free custom design preview, tailored to
 					your business. No commitment, no credit card required.
 				</p>
 			</div>
-			<a
-				href="/website-redesign"
-				class="btn-gradient inline-flex w-full shrink-0 items-center justify-center rounded-full px-8 py-5 text-center text-lg font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-card sm:w-auto sm:self-start lg:self-center"
-			>
-				Get My Free Design Preview
-			</a>
+			<div class="shrink-0 sm:self-start lg:self-center" use:scrollReveal={{ delay: 150 }}>
+				<a
+					href="/website-redesign"
+					class="btn-gradient btn-animate inline-flex w-full items-center justify-center rounded-full px-8 py-5 text-center text-lg font-semibold text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background sm:w-auto"
+				>
+					Get My Free Design Preview
+				</a>
+			</div>
 		</div>
 	</div>
 </section>
