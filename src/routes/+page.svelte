@@ -166,7 +166,7 @@
 			client: 'GreySource',
 			tag: 'Hiring',
 			url: 'https://greysource.com/',
-			image: 'greysource.jpg',
+			image: 'greysource-landing-20260923.webp',
 			description:
 				'Sourcing, screening, and scheduling for a certified DEI recruiting team, built around how they actually place candidates.'
 		},
