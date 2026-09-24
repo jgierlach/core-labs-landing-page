@@ -34,6 +34,14 @@
 		{ value: '∞', label: 'Scalability' }
 	]);
 
+	// ===== Free Website Redesign =====
+	// Mirrors the promises on /website-redesign — keep the two in step.
+	const redesignPerks = [
+		'Homepage and key pages, designed for desktop and mobile',
+		'Delivered within 5 business days',
+		'Professional design valued at $2,500+, free'
+	];
+
 	// ===== What we've built recently =====
 	// Screenshots live in /static/portfolio and were captured from the live sites.
 	let recentBuilds = $state([
@@ -399,31 +407,128 @@
 <section
 	id="free-website-redesign"
 	aria-labelledby="free-website-redesign-heading"
-	class="faq-gradient relative py-20 sm:py-32"
+	class="faq-gradient relative overflow-hidden py-20 sm:py-32"
 >
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div
-			class="mx-auto flex max-w-6xl flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12"
+			class="glass-card relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-white/10 p-6 sm:p-10 lg:p-14"
 		>
-			<div class="max-w-2xl" use:scrollReveal>
-				<h2
-					id="free-website-redesign-heading"
-					class="font-heading text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
-				>
-					Free Website Redesign
-				</h2>
-				<p class="mt-6 text-lg leading-relaxed text-pretty text-white/70 sm:text-xl">
-					See what your website could look like with a free custom design preview, tailored to
-					your business. No commitment, no credit card required.
-				</p>
-			</div>
-			<div class="shrink-0 sm:self-start lg:self-center" use:scrollReveal={{ delay: 150 }}>
-				<a
-					href="/website-redesign"
-					class="btn-gradient btn-animate inline-flex w-full items-center justify-center rounded-full px-8 py-5 text-center text-lg font-semibold text-white shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background sm:w-auto"
-				>
-					Get My Free Design Preview
-				</a>
+			<!-- Soft glow behind the mockup -->
+			<div
+				class="pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-[#7433ff]/20 blur-3xl"
+				aria-hidden="true"
+			></div>
+
+			<div class="relative grid items-center gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-14">
+				<div use:scrollReveal>
+					<span
+						class="bg-accent/10 text-accent ring-accent/20 inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium ring-1 ring-inset"
+						>Free design preview</span
+					>
+					<h2
+						id="free-website-redesign-heading"
+						class="font-heading mt-6 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
+					>
+						Free Website <span class="text-gradient-purple">Redesign</span>
+					</h2>
+					<p class="mt-6 text-lg leading-relaxed text-pretty text-white/70">
+						See what your website could look like with a free custom design preview, tailored to
+						your business. No commitment, no credit card required.
+					</p>
+
+					<ul class="mt-8 space-y-4">
+						{#each redesignPerks as perk}
+							<li class="flex items-start gap-3">
+								<span
+									class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#334fff]/20"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-4 w-4 text-[#a78bfa]"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+										stroke-width="2"
+										aria-hidden="true"
+									>
+										<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+									</svg>
+								</span>
+								<span class="text-white/90">{perk}</span>
+							</li>
+						{/each}
+					</ul>
+
+					<div class="mt-10 flex flex-col items-center gap-3 sm:items-start">
+						<a
+							href="/website-redesign"
+							class="btn-gradient btn-animate group inline-flex items-center justify-center gap-3 rounded-full py-3 pr-3 pl-6 text-base font-medium whitespace-nowrap text-white shadow-lg sm:text-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background focus-visible:outline-none"
+						>
+							Get My Free Design Preview
+							<span
+								class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/10 transition-colors group-hover:bg-white/20"
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+								</svg>
+							</span>
+						</a>
+						<p class="text-sm text-white/50">Takes less than a minute to request</p>
+					</div>
+				</div>
+
+				<!-- Before → after mockup. Decorative: the copy beside it carries the offer. -->
+				<div class="relative mx-auto mb-6 w-full max-w-md lg:mb-0 lg:max-w-none" aria-hidden="true" use:scrollReveal={{ delay: 150 }}>
+					<!-- Today -->
+					<div
+						class="absolute top-0 left-0 w-[70%] -rotate-3 rounded-xl border border-white/10 bg-white/[0.04] p-3 opacity-60"
+					>
+						<div class="flex items-center gap-1.5">
+							<span class="h-2 w-2 rounded-full bg-white/20"></span>
+							<span class="h-2 w-2 rounded-full bg-white/20"></span>
+							<span class="h-2 w-2 rounded-full bg-white/20"></span>
+							<span class="ml-2 text-[10px] font-semibold tracking-[0.2em] text-white/50 uppercase">Today</span>
+						</div>
+						<div class="mt-4 space-y-2">
+							<div class="h-2.5 w-2/3 rounded bg-white/15"></div>
+							<div class="h-2 w-full rounded bg-white/10"></div>
+							<div class="h-2 w-5/6 rounded bg-white/10"></div>
+							<div class="mt-3 h-14 rounded bg-white/5"></div>
+						</div>
+					</div>
+
+					<!-- Preview -->
+					<div
+						class="relative mt-16 ml-auto w-[85%] rounded-2xl border border-white/15 bg-[#0d0a1f] shadow-2xl shadow-[#7433ff]/20"
+					>
+						<div class="flex items-center gap-1.5 border-b border-white/10 px-4 py-3">
+							<span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+							<span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+							<span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+							<span class="ml-3 h-4 flex-1 rounded-full bg-white/5"></span>
+						</div>
+						<div class="p-5 sm:p-6">
+							<div class="rounded-xl bg-gradient-to-br from-[#334fff]/40 to-[#7433ff]/40 p-5">
+								<div class="h-3 w-3/4 rounded bg-white/90"></div>
+								<div class="mt-2 h-3 w-1/2 rounded bg-white/90"></div>
+								<div class="mt-4 h-2 w-5/6 rounded bg-white/40"></div>
+								<div class="btn-gradient mt-5 h-6 w-24 rounded-full"></div>
+							</div>
+							<div class="mt-4 grid grid-cols-3 gap-3">
+								<div class="h-14 rounded-lg border border-white/10 bg-white/5"></div>
+								<div class="h-14 rounded-lg border border-white/10 bg-white/5"></div>
+								<div class="h-14 rounded-lg border border-white/10 bg-white/5"></div>
+							</div>
+						</div>
+
+						<div
+							class="absolute -bottom-5 -left-4 flex items-center gap-2 rounded-full border border-white/15 bg-[#1a1035] px-4 py-2 text-sm font-medium text-white shadow-lg sm:-left-8"
+						>
+							<span class="h-2 w-2 rounded-full bg-[#a78bfa]"></span>
+							Your preview in 5 business days
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
