@@ -3,8 +3,6 @@
 	import { scrollReveal, pageLoad } from '$lib/actions/scrollReveal.js';
 
 	// ===== Features Data =====
-	// Commented out alongside the features section markup below.
-	/*
 	let features = $state([
 		{
 			title: 'Unified Platform',
@@ -27,109 +25,14 @@
 			icon: '🚀'
 		}
 	]);
-	*/
 
-	// ===== Pricing Data =====
-	let plans = $state([
-		{
-			price: 'Priced to your business',
-			description: 'One subscription for a platform that is built around you and keeps changing',
-			features: [
-				'A platform built for your business, not the market average',
-				'Secure connections into the systems you already use',
-				'Continued development — new features are included, not quoted',
-				'Data migration from the tools you are replacing',
-				'Hosting, maintenance, and monitoring',
-				'Mobile and web',
-				'Training and documentation',
-				'Priority support'
-			],
-			cta: 'Book a call'
-		}
+	// ===== Stats Data =====
+	let stats = $state([
+		{ value: '40%', label: 'Cost Savings' },
+		{ value: '100%', label: 'Custom Fit' },
+		{ value: '24/7', label: 'Support' },
+		{ value: '∞', label: 'Scalability' }
 	]);
-
-	// Literal class strings so Tailwind's scanner generates these rotations.
-	const ORBIT_PLACE = [
-		'rotate-[0deg]',
-		'rotate-[72deg]',
-		'rotate-[144deg]',
-		'rotate-[216deg]',
-		'rotate-[288deg]'
-	];
-	const ORBIT_UNPLACE = [
-		'rotate-[0deg]',
-		'rotate-[-72deg]',
-		'rotate-[-144deg]',
-		'rotate-[-216deg]',
-		'rotate-[-288deg]'
-	];
-
-	// ===== Why AI stalls: the systems Sven connects to =====
-	let integrations = $state([
-		{ name: 'QuickBooks', file: 'quickbooks.svg', role: 'Books and revenue' },
-		{ name: 'Shopify', file: 'shopify.svg', role: 'Orders and catalog' },
-		{ name: 'HubSpot', file: 'hubspot.svg', role: 'Pipeline and contacts' },
-		{ name: 'Dropbox', file: 'dropbox.svg', role: 'Documents' },
-		{ name: 'Meta', file: 'meta.svg', role: 'Ads and audiences' }
-	]);
-
-	// ===== Sven in action =====
-	// Illustrative conversations. Figures are examples of the shape of an answer,
-	// not results from a real account.
-	let conversations = $state([
-		{
-			id: 'context',
-			eyebrow: 'Context, not guesswork',
-			title: 'It answers from your actual numbers',
-			ask: 'How many unique visitors did we get to our website, and how would you gauge the success of our new Meta ads campaign?',
-			reply:
-				'4,812 unique visitors last week, up 18%. The Meta campaign brought 1,240 of them at $2.14 a click. Eleven converted, and Shopify puts their average order at $94 — so the campaign is close to break-even. The creative you launched on the 14th is converting four times better than the rest. I would move the budget onto it.'
-		},
-		{
-			id: 'proactive',
-			eyebrow: 'Proactive instead of reactive',
-			title: 'It does the work before you ask twice',
-			ask: 'Using all the knowledge you have of our business, can you generate a research report for me to review every week of new growth ideas?',
-			reply:
-				'Set. Every Monday at 7am I will pull revenue from QuickBooks, your catalog from Shopify, and pipeline from HubSpot, then send five ideas with the numbers behind each one. The first lands tomorrow. Do you want it as a doc in Dropbox or in your inbox?'
-		},
-		{
-			id: 'learning',
-			eyebrow: 'Self improving by design',
-			title: 'It remembers how you like to work',
-			ask: 'I liked the way you created that report. Can you make a note of it for next time?',
-			reply:
-				'Noted. From now on I will lead with the numbers, then the reasoning, then a single recommendation. I have saved that to your preferences and will use it for the weekly report and anything like it.'
-		}
-	]);
-
-	// ===== What can Sven do today =====
-	let capabilities = $state([
-		{ label: 'Build a website', maps: 'Website' },
-		{ label: 'Build custom software', maps: 'Custom Software' },
-		{ label: 'Do your books', maps: 'Other' }
-	]);
-
-	let svenPrompt = $state('');
-
-	function goToIntakeForm() {
-		document.getElementById('intake-form')?.scrollIntoView({ behavior: 'smooth' });
-	}
-
-	function askSven(capability) {
-		helpWith = capability.maps;
-		goToIntakeForm();
-	}
-
-	// Carries whatever was typed here into the form's project-details field.
-	function sendPromptToForm() {
-		const prompt = svenPrompt.trim();
-		if (!prompt) return;
-		projectDetails = prompt;
-		helpWith = helpWith || 'Other';
-		goToIntakeForm();
-		document.getElementById('intake-message')?.focus({ preventScroll: true });
-	}
 
 	// ===== What Sven built recently =====
 	// Screenshots live in /static/portfolio and were captured from the live sites.
@@ -199,20 +102,6 @@
 		}
 	]);
 
-	// ===== Hero stats =====
-	// Each tile mirrors something the page states further down — the process, the FAQ,
-	// and the portfolio — so the hero cannot drift away from the rest of the page.
-	// The industry count is derived, so adding or removing a build keeps it honest.
-	let stats = $derived([
-		{ value: '2 weeks', label: 'Between releases' },
-		{ value: '3–6 mo', label: 'Typical time to launch' },
-		{
-			value: String(new Set(recentBuilds.map((build) => build.tag)).size),
-			label: 'Industries shipped'
-		},
-		{ value: '∞', label: 'Features included' }
-	]);
-
 	let railElement = $state(null);
 	let railIndex = $state(0);
 
@@ -227,127 +116,26 @@
 		railElement.scrollLeft = cards[railIndex].offsetLeft - cards[0].offsetLeft;
 	}
 
-	// ===== What We Build =====
-	let disciplines = $state([
+	// ===== Pricing Data =====
+	let plans = $state([
 		{
-			name: 'Internal operations platforms',
-			description:
-				'The system your team lives in all day — orders, inventory, scheduling, approvals — built around how you actually work instead of how a vendor assumed you would.'
-		},
-		{
-			name: 'Client and customer portals',
-			description:
-				'A branded place for the people you serve to check status, upload documents, approve work, and pay, without emailing your team for an update.'
-		},
-		{
-			name: 'Integrations and data pipelines',
-			description:
-				'Your existing tools, connected properly. No more exporting a CSV out of one system every Monday to paste into another.'
-		},
-		{
-			name: 'Marketing sites and web apps',
-			description:
-				'Fast, accessible sites that rank and convert — and the application behind them when the site needs to do more than describe the business.'
+			name: 'Custom Build',
+			price: 'From $25K',
+			description: 'Complete custom software solution built for your specific needs',
+			features: [
+				'Fully custom platform',
+				'Mobile & web compatible',
+				'Database migration',
+				'Advanced integrations',
+				'Dedicated development team',
+				'Training & documentation',
+				'Ongoing feature development',
+				'24/7 priority support'
+			],
+			cta: 'Get Started',
+			popular: true
 		}
 	]);
-
-	// ===== SaaS Teardown =====
-	// Illustrative list rates the visitor adjusts; nothing here is presented as a client figure.
-	let seats = $state(12);
-	let stack = $state([
-		{ name: 'CRM', unit: 'per seat', rate: 62, perSeat: true, on: true },
-		{ name: 'Project management', unit: 'per seat', rate: 19, perSeat: true, on: true },
-		{ name: 'Support desk', unit: 'per seat', rate: 65, perSeat: true, on: true },
-		{ name: 'Reporting and BI', unit: 'per seat', rate: 70, perSeat: true, on: true },
-		{ name: 'File storage and docs', unit: 'per seat', rate: 18, perSeat: true, on: true },
-		{ name: 'Billing and invoicing', unit: 'flat rate', rate: 299, perSeat: false, on: true },
-		{ name: 'Integration middleware', unit: 'flat rate', rate: 199, perSeat: false, on: true }
-	]);
-
-	const lineTotal = (tool) => (tool.perSeat ? tool.rate * seats : tool.rate);
-	const money = (value) => value.toLocaleString('en-US');
-
-	let stackMonthly = $derived(
-		stack.reduce((sum, tool) => (tool.on ? sum + lineTotal(tool) : sum), 0)
-	);
-	let stackYearly = $derived(stackMonthly * 12);
-	let activeCount = $derived(stack.filter((tool) => tool.on).length);
-
-	function toggleTool(index) {
-		stack[index].on = !stack[index].on;
-	}
-
-	// ===== Process =====
-	let phases = $state([
-		{
-			title: 'Discovery',
-			body: "We map your current stack — every tool, every seat, and the workflows that don't fit. You get the real number you're spending before we quote anything."
-		},
-		{
-			title: 'Scope and plan',
-			body: 'You get a written plan of what Sven builds first, what it connects to, and what it costs to run. You decide whether to start.'
-		},
-		{
-			title: 'Build',
-			body: 'Two-week increments. At the end of each one you get working software to click through, not a status report.'
-		},
-		{
-			title: 'Launch and migration',
-			body: "We move your data across and run the old tools alongside the new platform until you're confident enough to cancel them."
-		},
-		{
-			title: 'It keeps evolving',
-			body: 'Launch is the start, not the finish. Sven keeps building — new features, new workflows, new connections — as the business changes. That is what the subscription is for.'
-		}
-	]);
-
-	let spineElement = $state(null);
-	let spineDrawn = $state(false);
-
-	// ===== FAQ =====
-	// Answers are mirrored verbatim into FAQPage JSON-LD below — edit both together.
-	let faqs = $state([
-		{
-			question: 'How long does a build take?',
-			answer:
-				'Most platforms reach launch in three to six months, depending on how many workflows they replace. You see working software every two weeks from the start, so you are never waiting months to find out what was built.'
-		},
-		{
-			question: 'How is this different from the SaaS we already pay for?',
-			answer:
-				'Every SaaS product is built for the average of its market, so you bend your process to fit it. Sven is built around your process and keeps changing as you do. It is a subscription like theirs, to a product that is only yours.'
-		},
-		{
-			question: 'What happens to the data in our current tools?',
-			answer:
-				'We migrate it. Before launch we move your records across and run the old tools in parallel until you are confident the new platform is correct, then you cancel the subscriptions.'
-		},
-		{
-			question: 'What if our needs change after launch?',
-			answer:
-				'That is the whole point. Tell Sven what changed and it builds the change. Nothing about your platform is fixed at launch, and you are not filing a feature request with a vendor who may never build it.'
-		},
-		{
-			question: 'What does the subscription include?',
-			answer:
-				'The platform itself, the connections into your existing systems, hosting and maintenance, and continued development. New features are part of the subscription rather than a separate project every time something changes.'
-		},
-	]);
-
-	const faqJsonLd = {
-		'@context': 'https://schema.org',
-		'@type': 'FAQPage',
-		mainEntity: faqs.map((faq) => ({
-			'@type': 'Question',
-			name: faq.question,
-			acceptedAnswer: { '@type': 'Answer', text: faq.answer }
-		}))
-	};
-
-	// Svelte renders <script> contents as raw text, so structured data has to be
-	// injected as a string. The closing tag is split so it cannot terminate this block.
-	const faqJsonLdTag =
-		'<script type="application/ld+json">' + JSON.stringify(faqJsonLd) + '<' + '/script>';
 
 	const CONTACT_FORM_SLUG = 'contact-c54421';
 	const CONTACT_FORM_URL = 'https://api.corelabs.digital/api/forms/contact-c54421/submit';
@@ -428,22 +216,8 @@
 		if (formElement) observer.observe(formElement);
 		formElement?.addEventListener('focusin', loadHcaptcha, { once: true });
 
-		// Draw the process spine once the timeline scrolls into view.
-		const spineObserver = new IntersectionObserver(
-			(entries) => {
-				if (entries.some((entry) => entry.isIntersecting)) {
-					spineDrawn = true;
-					spineObserver.disconnect();
-				}
-			},
-			{ threshold: 0.1 }
-		);
-
-		if (spineElement) spineObserver.observe(spineElement);
-
 		return () => {
 			observer.disconnect();
-			spineObserver.disconnect();
 		};
 	});
 
@@ -520,27 +294,24 @@
 <svelte:window onclick={handleClickOutside} />
 
 <svelte:head>
-	<title>Core Labs — An agentic operating system for your business</title>
+	<title>Core Labs - Custom Software Solutions</title>
 	<meta
 		name="description"
-		content="Sven connects securely to the tools your business already runs on, then builds and keeps improving the software you need. One subscription, no ceiling."
+		content="Replace expensive SaaS subscriptions with custom software built specifically for your business. Reduce costs by 70% with unified solutions."
 	/>
 	<link rel="canonical" href="https://www.corelabs.digital/" />
 
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content="Core Labs" />
-	<meta property="og:title" content="Core Labs — An agentic operating system for your business" />
-	<meta property="og:description" content="Sven connects securely to the tools your business already runs on, then builds and keeps improving the software you need. One subscription, no ceiling." />
+	<meta property="og:title" content="Core Labs - Custom Software Solutions" />
+	<meta property="og:description" content="Replace expensive SaaS subscriptions with custom software built specifically for your business. Reduce costs by 70% with unified solutions." />
 	<meta property="og:url" content="https://www.corelabs.digital/" />
 	<meta property="og:image" content="https://www.corelabs.digital/logos/core-labs-full-logo.png" />
 
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="Core Labs — An agentic operating system for your business" />
-	<meta name="twitter:description" content="Sven connects securely to the tools your business already runs on, then builds and keeps improving the software you need. One subscription, no ceiling." />
+	<meta name="twitter:title" content="Core Labs - Custom Software Solutions" />
+	<meta name="twitter:description" content="Replace expensive SaaS subscriptions with custom software built specifically for your business. Reduce costs by 70% with unified solutions." />
 	<meta name="twitter:image" content="https://www.corelabs.digital/logos/core-labs-full-logo.png" />
-
-	<!-- eslint-disable-next-line svelte/no-at-html-tags -- built above from local literals, no user input -->
-	{@html faqJsonLdTag}
 </svelte:head>
 
 <!-- section:hero {"type":"hero","id":"hero-1"} -->
@@ -558,14 +329,14 @@
 				class="font-heading text-foreground text-5xl font-bold tracking-tight text-balance sm:text-6xl lg:text-7xl"
 				use:pageLoad={{ delay: 100 }}
 			>
-				An agentic operating system for your <span class="text-accent">business</span>
+				We create stunning software and websites for leading <span class="text-accent">brands</span>
 			</h1>
 
 			<p
 				class="text-muted-foreground mx-auto mt-8 max-w-3xl text-xl leading-8 text-pretty sm:text-2xl"
 				use:pageLoad={{ delay: 200 }}
 			>
-				With the team and platform to scale AI in your business
+				With the team and platform to take your project from idea to launch
 			</p>
 
 			<div
@@ -606,14 +377,8 @@
 			>
 				{#each stats as stat}
 					<div class="text-center">
-						<div
-							class="text-foreground text-3xl font-bold whitespace-nowrap tabular-nums sm:text-4xl"
-						>
-							{stat.value}
-						</div>
-						<div class="text-muted-foreground mt-1 text-sm text-balance sm:text-base">
-							{stat.label}
-						</div>
+						<div class="text-foreground text-4xl font-bold">{stat.value}</div>
+						<div class="text-muted-foreground text-base">{stat.label}</div>
 					</div>
 				{/each}
 			</div>
@@ -655,278 +420,40 @@
 	</div>
 </section>
 
-<!-- The problem: AI without context -->
-<section id="why-ai-stalls" class="hero-section-bg relative py-20 sm:py-32">
-	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto max-w-4xl text-center" use:scrollReveal>
-			<p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">The problem</p>
-			<h2
-				class="font-heading mt-4 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
-			>
-				Why isn't AI improving your business?
-			</h2>
-			<p
-				class="font-heading mx-auto mt-8 max-w-3xl text-xl leading-relaxed text-balance text-white/80 sm:text-2xl"
-			>
-				It lacks the context and secure access to the systems your company relies on.
-			</p>
-		</div>
-
-		<!-- Chat models sit outside everything that matters. Shown, not asserted. -->
-		<div class="mx-auto mt-16 max-w-3xl" use:scrollReveal={{ delay: 120 }}>
-			<div class="flex flex-wrap items-center justify-center gap-3">
-				{#each integrations as integration}
-					<span
-						class="inline-flex items-center gap-2 rounded-full border border-dashed border-white/20 px-4 py-2 text-sm text-white/60"
-					>
-						<img
-							src="/logos/integrations/{integration.file}"
-							alt=""
-							width="20"
-							height="20"
-							loading="lazy"
-							decoding="async"
-							class="h-5 w-5"
-						/>
-						{integration.name}
-					</span>
-				{/each}
-			</div>
-			<p class="mt-8 text-center text-base text-pretty text-white/50">
-				A general chat model can write you a paragraph about your industry. It cannot see last
-				week's orders, your ad spend, or what your accountant filed — so it guesses, and you check
-				its work.
-			</p>
-		</div>
-	</div>
-</section>
-
-<!-- The fix: secure connections into the systems that hold the context -->
-<section id="connect" class="faq-gradient relative py-20 sm:py-32">
+<!-- section:features {"type":"features","id":"features-1"} -->
+<section id="features" class="features-gradient relative py-20 sm:py-32">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-2xl text-center" use:scrollReveal>
-			<p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">The fix</p>
-			<h2
-				class="font-heading mt-4 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
-			>
-				Securely connect context to our system
+			<h2 class="font-heading text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl">
+				Why businesses choose custom over SaaS
 			</h2>
-			<p class="mt-4 text-lg text-pretty text-white/70">
-				Sven reads from the tools your business already runs on, with scoped access you grant and
-				can revoke.
+			<p class="mt-4 text-lg text-white/70 text-pretty">
+				Traditional SaaS forces you to adapt your business to their software. We build software that
+				adapts to your business.
 			</p>
 		</div>
 
-		<div class="mx-auto mt-16 max-w-xl" use:scrollReveal={{ delay: 100 }}>
-			<div class="relative mx-auto aspect-square w-full max-w-[30rem]">
-				<!-- orbit tracks -->
-				<div
-					class="absolute inset-[18%] rounded-full border border-white/[0.08]"
-					aria-hidden="true"
-				></div>
-				<div
-					class="absolute inset-[30%] rounded-full border border-white/[0.06]"
-					aria-hidden="true"
-				></div>
-
-				<!-- Core Labs at the centre -->
-				<div class="absolute inset-0 z-10 flex items-center justify-center">
-					<!-- Same mark as the navbar, scaled up. -->
-					<div
-						class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#334fff] to-[#7433ff] shadow-lg sm:h-20 sm:w-20 sm:rounded-[1.4rem]"
-					>
-						<span
-							class="text-2xl font-bold tracking-tight text-white sm:text-3xl"
-							aria-hidden="true">CL</span
-						>
-						<span class="sr-only">Core Labs</span>
-					</div>
-				</div>
-
-				<!-- orbiting systems -->
-				<div class="orbit-ring absolute inset-[18%]">
-					{#each integrations as integration, index}
-						<div class="absolute inset-0 {ORBIT_PLACE[index]}">
-							<div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-								<div class={ORBIT_UNPLACE[index]}>
-									<div class="orbit-counter">
-										<span
-											class="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-2xl border border-white/10 bg-[#0d0a1f] shadow-lg sm:h-20 sm:w-20"
-										>
-											<img
-												src="/logos/integrations/{integration.file}"
-												alt={integration.name}
-												width="44"
-												height="44"
-												loading="lazy"
-												decoding="async"
-												class="h-10 w-10 sm:h-11 sm:w-11"
-											/>
-										</span>
-									</div>
-								</div>
-							</div>
-						</div>
-					{/each}
-				</div>
-			</div>
-
-			<!-- The orbit is decorative; this list is what a screen reader and a crawler get. -->
-			<ul class="mt-12 grid gap-x-8 gap-y-3 sm:grid-cols-2">
-				{#each integrations as integration}
-					<li class="flex items-baseline justify-between gap-4 border-b border-white/10 pb-3">
-						<span class="text-sm font-medium text-white/80">{integration.name}</span>
-						<span class="text-xs text-white/40">{integration.role}</span>
-					</li>
-				{/each}
-			</ul>
-			<p class="mt-6 text-center text-xs text-white/35">
-				Connections are read-scoped by default and revocable from your side at any time.
-			</p>
-		</div>
-	</div>
-</section>
-
-<!-- Sven in action -->
-<section id="sven" class="hero-section-bg relative py-20 sm:py-32">
-	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto max-w-2xl text-center" use:scrollReveal>
-			<p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">Sven in action</p>
-			<h2
-				class="font-heading mt-4 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
-			>
-				What that changes, in practice
-			</h2>
-		</div>
-
-		<div class="mx-auto mt-16 max-w-5xl space-y-16 sm:space-y-24">
-			{#each conversations as conversation}
-				<div class="grid gap-8 md:grid-cols-12 md:gap-12" use:scrollReveal={{ delay: 60 }}>
-					<div class="md:col-span-4">
-						<p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">
-							{conversation.eyebrow}
-						</p>
-						<h3
-							class="font-heading mt-3 text-2xl font-semibold text-balance text-white sm:text-3xl"
-						>
-							{conversation.title}
-						</h3>
-					</div>
-
-					<div class="md:col-span-8">
-						<div
-							class="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-sm"
-						>
-							<div class="flex items-center gap-2 border-b border-white/10 px-5 py-3">
-								<span class="h-2.5 w-2.5 rounded-full bg-white/15" aria-hidden="true"></span>
-								<span class="h-2.5 w-2.5 rounded-full bg-white/15" aria-hidden="true"></span>
-								<span class="h-2.5 w-2.5 rounded-full bg-white/15" aria-hidden="true"></span>
-								<span class="ml-2 text-xs tracking-wide text-white/35">Sven</span>
-							</div>
-
-							<div class="space-y-5 p-5 sm:p-7">
-								<!-- what you ask -->
-								<div class="flex justify-end">
-									<p
-										class="max-w-[85%] rounded-2xl rounded-br-sm bg-white/10 px-4 py-3 text-sm text-pretty text-white/90 sm:text-base"
-									>
-										{conversation.ask}
-									</p>
-								</div>
-
-								<!-- what comes back -->
-								<div class="flex items-start gap-3">
-									<span
-										class="btn-gradient mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold text-white"
-										aria-hidden="true">S</span
-									>
-									<p
-										class="max-w-[85%] rounded-2xl rounded-tl-sm border border-white/10 bg-white/[0.04] px-4 py-3 text-sm leading-relaxed text-pretty text-white/75 sm:text-base"
-									>
-										{conversation.reply}
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			{/each}
-		</div>
-
-		<p class="mx-auto mt-14 max-w-2xl text-center text-xs text-white/35">
-			Illustrative conversations. Figures show the shape of an answer, not results from a real
-			account.
-		</p>
-	</div>
-</section>
-
-<!-- What can Sven do today -->
-<section id="ask-sven" class="faq-gradient relative py-20 sm:py-32">
-	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto max-w-3xl" use:scrollReveal>
-			<div class="text-center">
-				<p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">Get started</p>
-				<h2
-					class="font-heading mt-4 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
-				>
-					What can Sven do for you today?
-				</h2>
-			</div>
-
-			<!-- Composer-styled entry point: pick one and it carries through to the form. -->
+		<div class="mx-auto mt-16 max-w-7xl">
 			<div
-				class="mt-12 rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:p-7"
+				class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
+				use:scrollReveal={{ stagger: true, staggerDelay: 100 }}
 			>
-				<div class="flex flex-wrap justify-center gap-3 sm:flex-nowrap">
-					{#each capabilities as capability}
-						<button
-							type="button"
-							onclick={() => askSven(capability)}
-							class="rounded-full border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-medium text-white/80 transition-colors duration-200 hover:border-white/35 hover:bg-white/10 hover:text-white sm:text-base"
-						>
-							{capability.label}
-						</button>
-					{/each}
-				</div>
-
-				<form
-					onsubmit={(event) => {
-						event.preventDefault();
-						sendPromptToForm();
-					}}
-					class="mt-6 flex items-center gap-3 rounded-full border border-white/10 bg-[#0d0a1f] py-2 pr-2 pl-5 focus-within:border-white/25"
-				>
-					<label for="sven-prompt" class="sr-only">Tell Sven what you need</label>
-					<input
-						id="sven-prompt"
-						type="text"
-						bind:value={svenPrompt}
-						placeholder="…or tell Sven what you need"
-						class="min-w-0 flex-1 border-0 bg-transparent px-0 py-2 text-sm text-white placeholder:text-white/35 focus:ring-0 focus:outline-none sm:text-base"
-					/>
-					<button
-						type="submit"
-						disabled={!svenPrompt.trim()}
-						class="btn-gradient flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
-						aria-label="Send this to the project form"
+				{#each features as feature}
+					<div
+						class="glass-card card-animate group relative rounded-2xl border border-white/10 p-6 backdrop-blur-sm hover:border-white/20 hover:bg-white/10"
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="h-4 w-4"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							stroke-width="2"
-							aria-hidden="true"
-						>
-							<path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6" />
-						</svg>
-					</button>
-				</form>
+						<div class="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#334fff]/20 to-[#7433ff]/20 text-3xl">
+							{feature.icon}
+						</div>
+						<h3 class="text-xl font-semibold text-white">{feature.title}</h3>
+						<p class="mt-4 leading-relaxed text-white/70">{feature.description}</p>
+					</div>
+				{/each}
 			</div>
 		</div>
 	</div>
 </section>
+<!-- /section:features -->
 
 <!-- What Sven built recently -->
 <section id="recent-work" class="hero-section-bg relative py-20 sm:py-32">
@@ -1051,319 +578,6 @@
 	</div>
 </section>
 
-
-<!-- Features section commented out at the client's request.
-     Re-enable together with the `features` array in the script block above. -->
-<!--
-<section id="features" class="features-gradient relative py-20 sm:py-32">
-	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto max-w-2xl text-center" use:scrollReveal>
-			<h2 class="font-heading text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl">
-				Why businesses choose custom over SaaS
-			</h2>
-			<p class="mt-4 text-lg text-white/70 text-pretty">
-				Traditional SaaS forces you to adapt your business to their software. We build software that
-				adapts to your business.
-			</p>
-		</div>
-
-		<div class="mx-auto mt-16 max-w-7xl">
-			<div
-				class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
-				use:scrollReveal={{ stagger: true, staggerDelay: 100 }}
-			>
-				{#each features as feature}
-					<div
-						class="glass-card card-animate group relative rounded-2xl border border-white/10 p-6 backdrop-blur-sm hover:border-white/20 hover:bg-white/10"
-					>
-						<div class="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#334fff]/20 to-[#7433ff]/20 text-3xl">
-							{feature.icon}
-						</div>
-						<h3 class="text-xl font-semibold text-white">{feature.title}</h3>
-						<p class="mt-4 leading-relaxed text-white/70">{feature.description}</p>
-					</div>
-				{/each}
-			</div>
-		</div>
-	</div>
-</section>
--->
-<!-- What we build -->
-<section id="what-we-build" class="faq-gradient relative py-20 sm:py-32">
-	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto max-w-6xl">
-			<div class="max-w-2xl" use:scrollReveal>
-				<p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">What we build</p>
-				<h2
-					class="font-heading mt-4 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
-				>
-					Four examples
-				</h2>
-				<p class="mt-4 text-lg text-pretty text-white/70">
-					These are things businesses have asked Sven for. The list is not the limit — it is four
-					points on a range that has no edges.
-				</p>
-			</div>
-
-			<div class="mt-14 border-t border-white/10" use:scrollReveal={{ stagger: true, staggerDelay: 90 }}>
-				{#each disciplines as discipline}
-					<div
-						class="group grid gap-3 border-b border-white/10 py-8 transition-colors duration-300 hover:bg-white/[0.03] md:grid-cols-12 md:gap-8 md:py-10"
-					>
-						<h3
-							class="font-heading text-xl font-semibold text-balance text-white md:col-span-5 md:text-2xl"
-						>
-							{discipline.name}
-						</h3>
-						<p class="text-base leading-relaxed text-pretty text-white/60 md:col-span-7">
-							{discipline.description}
-						</p>
-					</div>
-				{/each}
-			</div>
-
-			<p class="mt-8 text-base text-white/50" use:scrollReveal>
-				…and whatever else your business actually runs on. If it is not on this list, that is the
-				point — describe it and Sven builds it.
-			</p>
-		</div>
-	</div>
-</section>
-
-<!-- SaaS teardown: the stack you already pay for, priced out -->
-<section id="teardown" class="hero-section-bg relative py-20 sm:py-32">
-	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto max-w-2xl text-center" use:scrollReveal>
-			<p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">The math</p>
-			<h2
-				class="font-heading mt-4 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
-			>
-				You are already paying for this
-			</h2>
-			<p class="mt-4 text-lg text-pretty text-white/70">
-				Set it to match your stack. Then count how many of those vendors will create a custom solution for your business
-				this year.
-			</p>
-		</div>
-
-		<div class="mx-auto mt-14 max-w-3xl" use:scrollReveal={{ delay: 100 }}>
-			<div class="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-sm">
-				<!-- Ledger header + seat control -->
-				<div
-					class="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-5 py-5 sm:px-8"
-				>
-					<p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">
-						Your current stack
-					</p>
-					<div class="flex items-center gap-3">
-						<label for="seat-count" class="text-sm whitespace-nowrap text-white/50">Team size</label>
-						<span class="relative flex h-11 w-32 items-center sm:w-40">
-							<span
-								class="pointer-events-none absolute inset-x-0 h-1 rounded-full bg-white/15"
-								aria-hidden="true"
-							></span>
-							<input
-								id="seat-count"
-								type="range"
-								min="1"
-								max="50"
-								bind:value={seats}
-								class="relative h-11 w-full cursor-pointer appearance-none bg-transparent accent-[#7433ff]"
-							/>
-						</span>
-						<span
-							class="w-[4.5rem] text-sm font-medium whitespace-nowrap text-white tabular-nums"
-							>{seats} {seats === 1 ? 'seat' : 'seats'}</span
-						>
-					</div>
-				</div>
-
-				<!-- Line items: deliberately drab. Toggle a row off if you don't pay for it. -->
-				<ul class="divide-y divide-white/[0.07]">
-					{#each stack as tool, index}
-						<li>
-							<button
-								type="button"
-								aria-pressed={tool.on}
-								onclick={() => toggleTool(index)}
-								class="flex w-full items-center gap-3 px-5 py-4 text-left transition-colors duration-200 hover:bg-white/[0.04] sm:gap-4 sm:px-8"
-							>
-								<span
-									class="flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors duration-200 {tool.on
-										? 'border-white/40 bg-white/15'
-										: 'border-white/15'}"
-								>
-									{#if tool.on}
-										<svg
-											class="h-3 w-3 text-white/80"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-											stroke-width="3"
-											aria-hidden="true"
-										>
-											<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-										</svg>
-									{/if}
-								</span>
-								<span
-									class="min-w-0 flex-1 truncate text-sm transition-colors duration-200 sm:text-base {tool.on
-										? 'text-white/70'
-										: 'text-white/25 line-through'}"
-								>
-									{tool.name}
-								</span>
-								<span
-									class="hidden w-20 shrink-0 text-right text-xs tracking-wide transition-colors duration-200 sm:block {tool.on
-										? 'text-white/30'
-										: 'text-white/15'}"
-								>
-									{tool.unit}
-								</span>
-								<span
-									class="w-24 shrink-0 text-right text-sm font-medium tabular-nums transition-colors duration-200 sm:text-base {tool.on
-										? 'text-white/80'
-										: 'text-white/20'}"
-								>
-									${money(lineTotal(tool))}
-								</span>
-							</button>
-						</li>
-					{/each}
-				</ul>
-
-				<!-- Subtotal -->
-				<div class="border-t border-white/10 px-5 py-6 sm:px-8">
-					<div class="flex items-baseline justify-between gap-4">
-						<span class="text-sm text-white/50"
-							>{activeCount} {activeCount === 1 ? 'subscription' : 'subscriptions'}, every month</span
-						>
-						<span class="font-heading text-3xl font-bold text-white tabular-nums sm:text-4xl"
-							>${money(stackMonthly)}</span
-						>
-					</div>
-					<div class="mt-2 flex items-baseline justify-between gap-4">
-						<span class="text-sm text-white/40">Over a year</span>
-						<span class="text-lg font-medium text-white/60 tabular-nums">${money(stackYearly)}</span>
-					</div>
-				</div>
-
-				<!-- The one bright row: everything above, consolidated -->
-				<div class="btn-gradient px-5 py-6 sm:px-8">
-					<div class="grid items-baseline gap-x-6 gap-y-3 sm:grid-cols-[1fr_auto]">
-						<div>
-							<p class="text-xs font-semibold tracking-[0.22em] text-white/70 uppercase">
-								One Core Labs platform
-							</p>
-							<p class="font-heading mt-2 text-xl font-semibold text-white sm:text-2xl">
-								Everything above, in one system that keeps changing.
-							</p>
-						</div>
-						<div class="flex items-baseline gap-2 sm:flex-col sm:items-end sm:gap-0">
-							<span class="font-heading text-2xl font-bold text-white sm:text-3xl"
-								>Priced to your business</span
-							>
-							<p class="text-sm whitespace-nowrap text-white/70">one subscription</p>
-						</div>
-					</div>
-
-					<div class="mt-5 border-t border-white/25 pt-5">
-						<p class="text-base text-white sm:text-lg">
-							{#if activeCount > 0}
-								That is <span class="font-semibold tabular-nums">${money(stackMonthly)}</span> a month
-								to {activeCount}
-								{activeCount === 1 ? 'vendor' : 'vendors'}, none of whom will build you anything you
-								ask for. Sven is one subscription that will.
-							{:else}
-								Turn on the tools you pay for to see what the stack actually costs.
-							{/if}
-						</p>
-						<a
-							href="/#intake-form"
-							class="group mt-5 inline-flex items-center gap-3 rounded-full border border-white/40 bg-white/10 py-3 pr-3 pl-6 text-base font-medium text-white transition-colors hover:bg-white/20"
-						>
-							Get your number
-							<span
-								class="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 transition-colors group-hover:bg-white/20"
-							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									class="h-4 w-4"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="2"
-									aria-hidden="true"
-								>
-									<path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-								</svg>
-							</span>
-						</a>
-					</div>
-				</div>
-			</div>
-
-			<p class="mt-4 text-center text-xs text-white/35">
-				Illustrative list prices, adjustable above — not a quote. Your real stack and your
-				subscription are priced during discovery.
-			</p>
-		</div>
-	</div>
-</section>
-
-<!-- How it works -->
-<section id="process" class="faq-gradient relative py-20 sm:py-32">
-	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto max-w-2xl text-center" use:scrollReveal>
-			<p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">How it works</p>
-			<h2
-				class="font-heading mt-4 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
-			>
-				What happens after you send the form
-			</h2>
-			<p class="mt-4 text-lg text-pretty text-white/70">
-				Five steps. The fifth one never really ends.
-			</p>
-		</div>
-
-		<div class="relative mx-auto mt-16 max-w-3xl">
-			<!-- The spine: the brand gradient doing structural work, drawn on scroll -->
-			<div
-				class="absolute top-2 bottom-2 left-[15px] w-px bg-white/10 md:left-[19px]"
-				aria-hidden="true"
-			></div>
-			<div
-				bind:this={spineElement}
-				class="btn-gradient absolute top-2 bottom-2 left-[15px] w-px origin-top transition-transform duration-[1400ms] ease-out md:left-[19px] {spineDrawn
-					? 'scale-y-100'
-					: 'scale-y-0'}"
-				aria-hidden="true"
-			></div>
-
-			<ol class="space-y-10 sm:space-y-12">
-				{#each phases as phase, index}
-					<li class="relative flex gap-5 sm:gap-7" use:scrollReveal={{ delay: index * 60 }}>
-						<span
-							class="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/20 bg-[#0d0a1f] text-sm font-semibold text-white/70 tabular-nums md:h-10 md:w-10 md:text-base"
-						>
-							{index + 1}
-						</span>
-						<div class="pt-1 md:pt-1.5">
-							<h3 class="font-heading text-xl font-semibold text-white sm:text-2xl">
-								{phase.title}
-							</h3>
-							<p class="mt-2 text-base leading-relaxed text-pretty text-white/60">
-								{phase.body}
-							</p>
-						</div>
-					</li>
-				{/each}
-			</ol>
-		</div>
-	</div>
-</section>
-
-
 <!-- section:pricing {"type":"pricing","id":"pricing-1"} -->
 <section id="pricing" class="pricing-gradient relative py-20 sm:py-32">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -1371,11 +585,10 @@
 			<h2
 				class="font-heading text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
 			>
-				One subscription, no ceiling
+				Investment that pays for itself
 			</h2>
 			<p class="mt-4 text-lg text-pretty text-white/70">
-				Priced against what your business needs and what it replaces. Every quote starts with a
-				conversation, not a pricing table.
+				Compare our one-time investment to your annual SaaS subscription costs
 			</p>
 		</div>
 
@@ -1385,8 +598,18 @@
 					<div
 						class="glass-card card-animate relative w-full rounded-2xl border border-white/10 p-8 backdrop-blur-sm"
 					>
+						{#if plan.popular}
+							<div class="absolute -top-3 left-1/2 -translate-x-1/2 transform">
+								<span
+									class="popular-badge inline-flex rounded-full px-4 py-1 text-sm font-medium text-white"
+								>
+									Most Popular
+								</span>
+							</div>
+						{/if}
+
 						<div class="pb-8 text-center">
-							<p class="font-heading text-3xl font-bold text-balance text-white">{plan.price}</p>
+							<h3 class="text-2xl font-semibold text-white">{plan.name}</h3>
 							<p class="mt-4 text-white/70">{plan.description}</p>
 						</div>
 
@@ -1426,51 +649,6 @@
 	</div>
 </section>
 <!-- /section:pricing -->
-<!-- FAQ: native details/summary — no JS, keyboard accessible by default -->
-<section id="faq" class="faq-gradient relative py-20 sm:py-32">
-	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto max-w-2xl text-center" use:scrollReveal>
-			<p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">Questions</p>
-			<h2
-				class="font-heading mt-4 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
-			>
-				The things people ask before signing
-			</h2>
-		</div>
-
-		<div class="mx-auto mt-14 max-w-3xl border-t border-white/10" use:scrollReveal={{ delay: 100 }}>
-			{#each faqs as faq}
-				<details class="group border-b border-white/10">
-					<summary
-						class="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-left transition-colors duration-200 hover:text-white [&::-webkit-details-marker]:hidden"
-					>
-						<h3 class="font-heading text-lg font-medium text-balance text-white sm:text-xl">
-							{faq.question}
-						</h3>
-						<span
-							class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/20 text-white/60 transition-all duration-300 group-hover:border-white/40 group-open:rotate-45 group-open:border-white/40"
-							aria-hidden="true"
-						>
-							<svg
-								class="h-4 w-4"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
-							</svg>
-						</span>
-					</summary>
-					<p class="max-w-2xl pb-6 text-base leading-relaxed text-pretty text-white/60">
-						{faq.answer}
-					</p>
-				</details>
-			{/each}
-		</div>
-	</div>
-</section>
-
 
 <!-- section:cta {"type":"cta","id":"cta-1"} -->
 <section class="cta-section-gradient relative py-20 sm:py-32">
