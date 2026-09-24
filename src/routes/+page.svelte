@@ -38,13 +38,22 @@
 	// Screenshots live in /static/portfolio and were captured from the live sites.
 	let recentBuilds = $state([
 		{
-			title: 'Crypto tax-loss harvesting platform',
-			client: 'RAI Digital Assets',
-			tag: 'Fintech',
-			url: 'https://www.raidigitalsolutions.com/',
-			image: 'rai.jpg',
+			title: 'Creator roster and brand pipeline',
+			client: 'Never Settle Media',
+			tag: 'Creative Agency',
+			url: 'https://www.neversettlemedia.com/',
+			image: 'neversettle.jpg',
 			description:
-				'Automated tax optimisation for digital asset portfolios — a lot-selection engine that scans continuously and executes across every account under management.'
+				'A roster, brand-partnership pipeline, and booking front door for a boutique management company representing underrepresented creators.'
+		},
+		{
+			title: 'Expense-to-donation platform',
+			client: 'Purpose In Expenses',
+			tag: 'Social Impact',
+			url: 'https://www.purposeinexpenses.com/',
+			image: 'purposeinexpenses.webp',
+			description:
+				'Turns the bills a business already pays into recurring donations to nonprofits, with a live impact estimator that prices the good before anyone signs up.'
 		},
 		{
 			title: 'Warehouse management platform',
@@ -65,6 +74,15 @@
 				'A choice-model pantry where neighbours walk the aisles and take what their family will eat, free. Pantry hours, volunteer signup, and giving campaigns in one place.'
 		},
 		{
+			title: 'Crypto tax-loss harvesting platform',
+			client: 'RAI Digital Assets',
+			tag: 'Fintech',
+			url: 'https://www.raidigitalsolutions.com/',
+			image: 'rai.jpg',
+			description:
+				'Automated tax optimisation for digital asset portfolios — a lot-selection engine that scans continuously and executes across every account under management.'
+		},
+		{
 			title: 'Recruiting platform',
 			client: 'GreySource',
 			tag: 'Hiring',
@@ -72,15 +90,6 @@
 			image: 'greysource-landing-20260923.webp',
 			description:
 				'Sourcing, screening, and scheduling for a certified DEI recruiting team, built around how they actually place candidates.'
-		},
-		{
-			title: 'Creator roster and brand pipeline',
-			client: 'Never Settle Media',
-			tag: 'Creative Agency',
-			url: 'https://www.neversettlemedia.com/',
-			image: 'neversettle.jpg',
-			description:
-				'A roster, brand-partnership pipeline, and booking front door for a boutique management company representing underrepresented creators.'
 		},
 		{
 			title: 'Hotel management portfolio',
