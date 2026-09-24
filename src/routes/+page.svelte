@@ -34,7 +34,7 @@
 		{ value: '∞', label: 'Scalability' }
 	]);
 
-	// ===== What Sven built recently =====
+	// ===== What we've built recently =====
 	// Screenshots live in /static/portfolio and were captured from the live sites.
 	let recentBuilds = $state([
 		{
@@ -455,7 +455,7 @@
 </section>
 <!-- /section:features -->
 
-<!-- What Sven built recently -->
+<!-- What we've built recently -->
 <section id="recent-work" class="hero-section-bg relative py-20 sm:py-32">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="flex flex-wrap items-end justify-between gap-6" use:scrollReveal>
@@ -464,7 +464,7 @@
 				<h2
 					class="font-heading mt-4 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
 				>
-					What Sven built recently
+					What we've built recently
 				</h2>
 			</div>
 
