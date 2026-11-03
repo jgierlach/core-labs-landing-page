@@ -24,7 +24,7 @@
 	<div class="container mx-auto px-4 pt-20 pb-10 sm:px-6 sm:pt-28 lg:px-8">
 		<div class="grid gap-16 lg:grid-cols-[1.2fr_1fr]">
 			<div>
-				<a href="/" class="inline-flex items-center gap-4 sm:gap-5" aria-label="Core Labs home">
+				<a href="/" class="sd-wordmark inline-flex items-center gap-4 sm:gap-5" aria-label="Core Labs home">
 					<span
 						class="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.25rem] bg-gradient-to-br from-brand-blue to-brand-violet shadow-[0_10px_40px_-8px_rgba(116,51,255,0.6)] sm:h-24 sm:w-24 sm:rounded-[1.75rem]"
 					>

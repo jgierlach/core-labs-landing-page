@@ -1,6 +1,9 @@
 <script>
 	import { onMount } from 'svelte';
 	import { scrollReveal } from '$lib/actions/scrollReveal.js';
+	import { splitWords, scramble, countUp } from '$lib/actions/motion.js';
+	import { fly } from 'svelte/transition';
+	import { prefersReducedMotion } from 'svelte/motion';
 
 	// ===== Features Data =====
 	// Each reason is paired with a real build that shows it, rendered in the tabbed panel.
@@ -360,7 +363,7 @@
 			? 'justify-center'
 			: ''}"
 	>
-		<span aria-hidden="true">/</span>{text}
+		<span aria-hidden="true">/</span><span use:scramble>{text}</span>
 	</p>
 {/snippet}
 
@@ -394,7 +397,7 @@
 
 <!-- Hero: an inset rounded panel, headline anchored bottom-left, real work on the right -->
 <section class="px-2 pt-2 sm:px-3 sm:pt-3">
-	<div class="hero-gradient relative isolate overflow-hidden rounded-[2rem] sm:rounded-[2.5rem]">
+	<div class="hero-gradient sd-recede relative isolate overflow-hidden rounded-[2rem] sm:rounded-[2.5rem]">
 		<div
 			class="grid-lines absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_at_70%_40%,black,transparent_70%)]"
 			aria-hidden="true"
@@ -402,7 +405,7 @@
 
 		<div class="container mx-auto px-5 pt-28 pb-12 sm:px-8 sm:pt-40 sm:pb-16 lg:px-12 lg:pt-44 lg:pb-20">
 			<div class="grid items-end gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-12">
-				<div>
+				<div class="sd-lift">
 					<p class="flex items-center gap-3 font-mono text-xs tracking-widest text-white/60 uppercase">
 						<span class="h-2 w-2 rounded-full bg-gradient-to-r from-brand-blue to-brand-violet"></span>
 						Custom software &amp; websites
@@ -440,7 +443,7 @@
 				</div>
 
 				<!-- Two real builds, stacked like windows -->
-				<div class="relative mx-auto w-full max-w-xl pb-6 lg:max-w-none">
+				<div class="hero-window-in relative mx-auto w-full max-w-xl pb-6 lg:max-w-none">
 					<div
 						class="absolute top-0 right-0 w-[72%] rotate-3 overflow-hidden rounded-2xl border border-white/10 opacity-60 shadow-2xl"
 					>
@@ -477,9 +480,9 @@
 					</div>
 
 					<div
-						class="absolute right-0 bottom-0 rounded-2xl border border-white/10 bg-surface-raised/95 px-5 py-4 shadow-xl backdrop-blur"
+						class="hero-chip-in absolute right-0 bottom-0 rounded-2xl border border-white/10 bg-surface-raised/95 px-5 py-4 shadow-xl backdrop-blur"
 					>
-						<p class="font-heading text-3xl font-medium text-white tabular-nums">40%</p>
+						<p class="font-heading text-3xl font-medium text-white tabular-nums" use:countUp>40%</p>
 						<span
 							class="mt-1 inline-flex rounded-md bg-lilac/15 px-2 py-0.5 font-mono text-[10px] tracking-wider text-lilac uppercase"
 							>Lower cost vs. SaaS</span
@@ -494,9 +497,10 @@
 <!-- Client wall -->
 <section aria-labelledby="clients-heading" class="py-20 sm:py-28">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="grid gap-6 lg:grid-cols-[1fr_2fr]" use:scrollReveal>
+		<div class="grid gap-6 lg:grid-cols-[1fr_2fr]">
 			{@render eyebrow('Who we build for')}
 			<h2
+				use:splitWords
 				id="clients-heading"
 				class="font-heading text-3xl leading-[1.1] font-medium tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
 			>
@@ -506,7 +510,10 @@
 			</h2>
 		</div>
 
-		<ul class="mt-14 grid grid-cols-2 border-t border-l border-white/10 sm:grid-cols-4">
+		<ul
+			class="mt-14 grid grid-cols-2 border-t border-l border-white/10 sm:grid-cols-4"
+			use:scrollReveal={{ stagger: true, staggerDelay: 70 }}
+		>
 			{#each recentBuilds as build}
 				<li class="border-r border-b border-white/10">
 					<a
@@ -530,23 +537,23 @@
 	class="scroll-mt-24 pb-20 sm:pb-28"
 >
 	<div class="container mx-auto px-4 text-center sm:px-6 lg:px-8">
-		<div use:scrollReveal>
+		<div>
 			{@render eyebrow('Free design preview', true)}
 			<h2
+				use:splitWords
 				id="free-website-redesign-heading"
 				class="font-heading mx-auto mt-6 max-w-4xl text-3xl leading-[1.1] font-medium tracking-tight text-balance text-white sm:text-5xl lg:text-6xl"
 			>
 				<span class="text-gradient-purple">Free Website Redesign.</span> See what your site could look
 				like, tailored to your business.
 			</h2>
-			<p class="mx-auto mt-6 max-w-xl text-lg text-pretty text-white/60">
+			<p class="mx-auto mt-6 max-w-xl text-lg text-pretty text-white/60" use:scrollReveal={{ delay: 250 }}>
 				A free custom design preview. No commitment, no credit card required.
 			</p>
 		</div>
 
 		<div
-			class="relative mx-auto mt-14 max-w-3xl overflow-hidden rounded-[2rem] border border-white/10 bg-surface px-6 pt-10 pb-14 sm:px-14 sm:pt-14"
-			use:scrollReveal={{ delay: 100 }}
+			class="sd-rise relative mx-auto mt-14 max-w-3xl overflow-hidden rounded-[2rem] border border-white/10 bg-surface px-6 pt-10 pb-14 sm:px-14 sm:pt-14"
 		>
 			<div
 				class="pointer-events-none absolute -top-24 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-brand-violet/25 blur-3xl"
@@ -556,7 +563,7 @@
 			<!-- Before → after mockup. Decorative: the copy around it carries the offer. -->
 			<div class="relative mx-auto w-full max-w-md text-left" aria-hidden="true">
 				<div
-					class="absolute top-0 left-0 w-[70%] -rotate-3 rounded-xl border border-white/10 bg-white/[0.04] p-3 opacity-60"
+					class="sd-fall-back absolute top-0 left-0 w-[70%] -rotate-3 rounded-xl border border-white/10 bg-white/[0.04] p-3 opacity-60"
 				>
 					<div class="flex items-center gap-1.5">
 						<span class="h-2 w-2 rounded-full bg-white/20"></span>
@@ -605,7 +612,10 @@
 			</div>
 		</div>
 
-		<ul class="mx-auto mt-10 flex max-w-3xl flex-wrap justify-center gap-2">
+		<ul
+			class="mx-auto mt-10 flex max-w-3xl flex-wrap justify-center gap-2"
+			use:scrollReveal={{ stagger: true, staggerDelay: 90 }}
+		>
 			{#each redesignPerks as perk}
 				<li
 					class="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-left text-sm text-white/85"
@@ -635,19 +645,20 @@
 
 <!-- Why custom: numbered tabs over a single panel -->
 <section id="features" class="scroll-mt-24 px-2 sm:px-3">
-	<div class="rounded-[2rem] bg-surface py-20 sm:rounded-[2.5rem] sm:py-28">
+	<div class="sd-rise rounded-[2rem] bg-surface py-20 sm:rounded-[2.5rem] sm:py-28">
 		<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="grid gap-6 lg:grid-cols-[1fr_2fr]" use:scrollReveal>
+			<div class="grid gap-6 lg:grid-cols-[1fr_2fr]">
 				{@render eyebrow('Why custom')}
 				<div>
 					<h2
+				use:splitWords
 						class="font-heading text-3xl leading-[1.1] font-medium tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
 					>
 						Software that adapts to your business, <span class="text-white/40"
 							>not the other way around.</span
 						>
 					</h2>
-					<p class="mt-5 max-w-2xl text-lg text-pretty text-white/60">
+					<p class="mt-5 max-w-2xl text-lg text-pretty text-white/60" use:scrollReveal={{ delay: 250 }}>
 						Traditional SaaS forces you to adapt your business to their software. We build software
 						that adapts to your business.
 					</p>
@@ -699,7 +710,10 @@
 					aria-labelledby="feature-tab-{activeFeature}"
 					class="mt-4 grid gap-10 rounded-[1.75rem] border border-white/10 bg-background/60 p-6 sm:p-10 lg:grid-cols-2 lg:gap-14 lg:p-12"
 				>
-					<div class="flex flex-col">
+					<div
+						class="flex flex-col"
+						in:fly={{ y: 24, duration: prefersReducedMotion.current ? 0 : 600, opacity: 0 }}
+					>
 						<h3 class="font-heading flex items-center gap-3 text-2xl font-medium text-white sm:text-3xl">
 							<span class="h-2.5 w-2.5 shrink-0 rounded-full bg-lilac" aria-hidden="true"></span>
 							{feature.title}
@@ -713,7 +727,10 @@
 							{/each}
 						</ul>
 						<div class="mt-10 lg:mt-auto lg:pt-12">
-							<p class="font-heading text-6xl font-medium tracking-tight text-white tabular-nums sm:text-7xl">
+							<p
+								class="font-heading text-6xl font-medium tracking-tight text-white tabular-nums sm:text-7xl"
+								use:countUp
+							>
 								{feature.stat}
 							</p>
 							<span
@@ -723,25 +740,28 @@
 						</div>
 					</div>
 
-					<figure
-						class="relative self-center overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-brand-blue/40 to-brand-violet/40 p-3 sm:p-5"
-					>
-						<img
-							src="/portfolio/{feature.image}"
-							alt="{feature.client} {feature.caption.toLowerCase()}"
-							width="1200"
-							height="750"
-							loading="lazy"
-							decoding="async"
-							class="aspect-[16/10] w-full rounded-[1rem] border border-white/10 object-cover object-top shadow-2xl"
-						/>
-						<figcaption
-							class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 px-1 font-mono text-[11px] tracking-wider text-white/70 uppercase"
+					<div class="sd-drift self-center">
+						<figure
+							in:fly={{ y: 40, duration: prefersReducedMotion.current ? 0 : 750, delay: 80, opacity: 0 }}
+							class="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-brand-blue/40 to-brand-violet/40 p-3 sm:p-5"
 						>
-							<span class="rounded-md bg-background/80 px-2 py-0.5 text-white">{feature.client}</span>
-							{feature.caption}
-						</figcaption>
-					</figure>
+							<img
+								src="/portfolio/{feature.image}"
+								alt="{feature.client} {feature.caption.toLowerCase()}"
+								width="1200"
+								height="750"
+								loading="lazy"
+								decoding="async"
+								class="aspect-[16/10] w-full rounded-[1rem] border border-white/10 object-cover object-top shadow-2xl"
+							/>
+							<figcaption
+								class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 px-1 font-mono text-[11px] tracking-wider text-white/70 uppercase"
+							>
+								<span class="rounded-md bg-background/80 px-2 py-0.5 text-white">{feature.client}</span>
+								{feature.caption}
+							</figcaption>
+						</figure>
+					</div>
 				</div>
 			{/each}
 		</div>
@@ -752,10 +772,11 @@
 <!-- What we've built recently -->
 <section id="recent-work" class="scroll-mt-24 py-20 sm:py-28">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="flex flex-wrap items-end justify-between gap-6" use:scrollReveal>
+		<div class="flex flex-wrap items-end justify-between gap-6">
 			<div class="max-w-2xl">
 				{@render eyebrow('Recent work')}
 				<h2
+				use:splitWords
 					class="font-heading mt-6 text-3xl leading-[1.1] font-medium tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
 				>
 					What we've built <span class="text-gradient-purple">recently</span>
@@ -809,7 +830,8 @@
 		<!-- A scrollable region has to be focusable, or keyboard users cannot scroll it. -->
 		<div
 			bind:this={railElement}
-			class="rail-scroll flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/40"
+			use:scrollReveal={{ stagger: true, staggerDelay: 90 }}
+				class="rail-scroll flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/40"
 			tabindex="0"
 			role="region"
 			aria-label="Recent projects, scrollable"
@@ -879,7 +901,7 @@ To restore: remove this comment wrapper, and re-enable the "Pricing" links in
 Navbar.svelte and Footer.svelte.
 <section id="pricing" class="scroll-mt-24 py-20 sm:py-28">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="grid gap-6 lg:grid-cols-[1fr_2fr]" use:scrollReveal>
+		<div class="grid gap-6 lg:grid-cols-[1fr_2fr]">
 			{@render eyebrow('Outcomes')}
 			<div>
 				<h2
@@ -887,7 +909,7 @@ Navbar.svelte and Footer.svelte.
 				>
 					An investment that <span class="text-gradient-purple">pays for itself</span>
 				</h2>
-				<p class="mt-5 max-w-2xl text-lg text-pretty text-white/60">
+				<p class="mt-5 max-w-2xl text-lg text-pretty text-white/60" use:scrollReveal={{ delay: 250 }}>
 					Compare one Core Labs subscription to everything you pay SaaS vendors today.
 				</p>
 			</div>
@@ -976,21 +998,22 @@ Navbar.svelte and Footer.svelte.
 
 <!-- Closing CTA + intake form in one dark panel -->
 <section id="intake-form" class="scroll-mt-20 px-2 pb-2 sm:px-3 sm:pb-3">
-	<div class="dot-field rounded-[2rem] border border-white/10 py-20 sm:rounded-[2.5rem] sm:py-28">
+	<div class="dot-field sd-rise rounded-[2rem] border border-white/10 py-20 sm:rounded-[2.5rem] sm:py-28">
 		<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="grid gap-6 lg:grid-cols-[1fr_2fr]" use:scrollReveal>
+			<div class="grid gap-6 lg:grid-cols-[1fr_2fr]">
 				{@render eyebrow('Start a project')}
 				<div>
 					<h2
+				use:splitWords
 						class="font-heading text-3xl leading-[1.1] font-medium tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
 					>
 						Ready to bring your vision to <span class="text-gradient-purple">life?</span>
 					</h2>
-					<p class="mt-5 max-w-2xl text-lg text-pretty text-white/60">
+					<p class="mt-5 max-w-2xl text-lg text-pretty text-white/60" use:scrollReveal={{ delay: 250 }}>
 						Let's build something extraordinary together. From concept to launch, we're here to make
 						it happen.
 					</p>
-					<p class="mt-6 font-mono text-xs tracking-widest text-white/50 uppercase">
+					<p class="mt-6 font-mono text-xs tracking-widest text-white/50 uppercase" use:scrollReveal={{ delay: 250 }}>
 						Free consultation · No commitment · Response within 24 hours
 					</p>
 				</div>
