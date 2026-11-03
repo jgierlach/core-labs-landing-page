@@ -38,11 +38,22 @@
   --sidebar-accent-foreground: oklch(0.98 0 0);
   --sidebar-border: oklch(0.25 0 0);
   --sidebar-ring: oklch(0.7 0.2 280);
+
+  /* Brand gradient endpoints + panel surfaces (one place to change the brand) */
+  --brand-blue: #334fff;
+  --brand-violet: #7433ff;
+  --lilac: #a78bfa;
+  --surface: #110d20;
+  --surface-raised: #1a1433;
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-violet: var(--brand-violet);
+  --color-lilac: var(--lilac);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -662,6 +673,37 @@
 
 .orbit-counter {
   animation: orbit-spin-reverse 48s linear infinite;
+}
+
+/* ===== Panel textures ===== */
+
+/* Hairline grid behind the client wall */
+.grid-lines {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Dot field + violet bloom for the closing CTA panel */
+.dot-field {
+  background:
+    radial-gradient(ellipse 60% 55% at 85% 0%, rgba(116, 51, 255, 0.35) 0%, rgba(51, 79, 255, 0.12) 45%, transparent 75%),
+    radial-gradient(rgba(167, 139, 250, 0.22) 1px, transparent 1.5px) 0 0 / 22px 22px,
+    var(--surface);
+}
+
+/* Footer: deep black with a brand glow bleeding in from the top right */
+.footer-glow {
+  background:
+    radial-gradient(ellipse 55% 70% at 90% 0%, rgba(116, 51, 255, 0.45) 0%, rgba(51, 79, 255, 0.18) 40%, transparent 70%),
+    #05040a;
+}
+
+/* Frosted stat pill on the gradient bento card */
+.glass-pill {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.08) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 12px 30px -12px rgba(10, 6, 30, 0.6);
 }
 
 /* ===== Horizontal Portfolio Rail ===== */
