@@ -23,6 +23,41 @@
 		mobileMenuOpen = false;
 	});
 
+	// ===== Scroll-spy for homepage section links =====
+	// Sections the nav links to. A section counts as "current" while it crosses a thin
+	// band just above the middle of the viewport, so only one is ever active at a time.
+	const SPY_SECTIONS = ['recent-work', 'pricing'];
+	let activeSection = $state('');
+
+	$effect(() => {
+		if ($page.url.pathname !== '/') {
+			activeSection = '';
+			return;
+		}
+
+		const targets = SPY_SECTIONS.map((id) => document.getElementById(id)).filter(Boolean);
+		if (!targets.length) return;
+
+		const visible = new Set();
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) visible.add(entry.target.id);
+					else visible.delete(entry.target.id);
+				}
+				activeSection = SPY_SECTIONS.find((id) => visible.has(id)) ?? '';
+			},
+			{ rootMargin: '-40% 0px -55% 0px' }
+		);
+		targets.forEach((el) => observer.observe(el));
+		return () => observer.disconnect();
+	});
+
+	/** True when a homepage section link should show as current. @param {string} id */
+	function isSectionActive(id) {
+		return $page.url.pathname === '/' && activeSection === id;
+	}
+
 	$effect(() => {
 		if (typeof document !== 'undefined') {
 			document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
@@ -41,127 +76,136 @@
 	});
 </script>
 
-<header class="absolute top-0 right-0 left-0 z-50">
-	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="flex h-20 items-center justify-between">
-			<div class="flex items-center">
-				<a href="/" class="logo-app-icon group flex items-center">
-					<div
-						class="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#334fff] to-[#7433ff]"
-					>
-						<span class="text-lg font-bold tracking-tight text-white">CL</span>
-					</div>
-				</a>
+<header class="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4">
+	<div
+		class="mx-auto flex h-14 max-w-7xl items-center justify-between rounded-full border border-white/10 bg-background/75 pr-2 pl-3 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.8)] backdrop-blur-xl sm:pl-4"
+	>
+		<a href="/" class="logo-app-icon group flex items-center gap-2.5" aria-label="Core Labs home">
+			<div
+				class="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-blue to-brand-violet"
+			>
+				<span class="text-base font-bold tracking-tight text-white">CL</span>
 			</div>
+			<span class="font-heading text-lg font-semibold tracking-tight text-white">Core Labs</span>
+		</a>
 
-			<nav class="hidden md:block" aria-label="Primary">
-				<div class="flex items-center space-x-8">
-					<a
-						href="/"
-						class="nav-link px-3 py-2 text-sm font-medium transition-colors hover:text-white {isActive(
-							'/',
-							true
-						)
-							? 'active text-white'
+		<nav class="hidden md:block" aria-label="Primary">
+			<div class="flex items-center gap-1 lg:gap-2">
+				<div class="relative">
+					<button
+						class="flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium transition-colors hover:text-white {servicesOpen
+							? 'text-white'
 							: 'text-white/70'}"
+						aria-expanded={servicesOpen}
+						onclick={() => (servicesOpen = !servicesOpen)}
+						onblur={() => setTimeout(() => (servicesOpen = false), 150)}
 					>
-						Home
-					</a>
-					<div class="relative">
-						<button
-							class="flex items-center gap-1 px-3 py-2 text-sm font-medium transition-colors hover:text-white {servicesOpen
-								? 'text-white'
-								: 'text-white/70'}"
-							onclick={() => (servicesOpen = !servicesOpen)}
-							onblur={() => setTimeout(() => (servicesOpen = false), 150)}
-						>
-							Services
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								class="h-4 w-4 transition-transform {servicesOpen ? 'rotate-180' : ''}"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-							</svg>
-						</button>
-						{#if servicesOpen}
-							<div
-								class="absolute top-full left-0 mt-2 w-48 rounded-lg border border-white/10 bg-[#1a1035] py-2 shadow-xl"
-							>
-								<a
-									href="/#intake-form"
-									class="block px-4 py-2 text-sm text-white/70 hover:bg-white/10 hover:text-white"
-								>
-									Website
-								</a>
-								<a
-									href="/#intake-form"
-									class="block px-4 py-2 text-sm text-white/70 hover:bg-white/10 hover:text-white"
-								>
-									Custom Software
-								</a>
-							</div>
-						{/if}
-					</div>
-					<a
-						href="/#intake-form"
-						class="nav-link px-3 py-2 text-sm font-medium text-white/70 transition-colors hover:text-white"
-					>
-						Work with us
-					</a>
-					<a
-						href="/contact"
-						class="nav-link block px-4 py-2 text-sm transition-colors hover:text-white {isActive(
-							'/contact'
-						)
-							? 'active text-white'
-							: 'text-white/70'}"
-					>
-						Contact
-					</a>
-				</div>
-			</nav>
-
-			<div class="flex items-center gap-4">
-				<a
-					href="/#intake-form"
-					class="nav-cta-gradient btn-animate group inline-flex items-center gap-2 rounded-full py-2 pr-2 pl-5 text-sm font-medium text-white shadow-lg {mobileMenuOpen
-						? 'hidden md:inline-flex'
-						: ''}"
-				>
-					Get Started
-					<span
-						class="flex h-8 w-8 items-center justify-center rounded-full border border-white/30 bg-white/10 transition-colors group-hover:bg-white/20"
-					>
+						Services
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
-							class="h-3 w-3"
+							class="h-4 w-4 text-lilac transition-transform {servicesOpen ? 'rotate-180' : ''}"
 							fill="none"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
 							stroke-width="2"
+							aria-hidden="true"
 						>
-							<path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+							<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
 						</svg>
-					</span>
-				</a>
-
-				<button
-					class="relative z-50 flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-white/10 md:hidden"
-					onclick={() => (mobileMenuOpen = !mobileMenuOpen)}
-					aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-					aria-expanded={mobileMenuOpen}
+					</button>
+					{#if servicesOpen}
+						<div
+							class="absolute top-full left-0 mt-3 w-56 rounded-2xl border border-white/10 bg-surface-raised p-2 shadow-2xl"
+						>
+							<a
+								href="/#intake-form"
+								class="block rounded-xl px-4 py-3 text-sm text-white/70 hover:bg-white/5 hover:text-white"
+							>
+								Websites
+							</a>
+							<a
+								href="/#intake-form"
+								class="block rounded-xl px-4 py-3 text-sm text-white/70 hover:bg-white/5 hover:text-white"
+							>
+								Custom Software
+							</a>
+							<a
+								href="/website-redesign"
+								class="block rounded-xl px-4 py-3 text-sm text-white/70 hover:bg-white/5 hover:text-white"
+							>
+								Free Website Redesign
+							</a>
+						</div>
+					{/if}
+				</div>
+				<a
+					href="/#recent-work"
+					onclick={() => (activeSection = 'recent-work')}
+					aria-current={isSectionActive('recent-work') ? 'location' : undefined}
+					class="rounded-full px-3 py-2 text-sm font-medium transition-colors hover:text-white {isSectionActive(
+						'recent-work'
+					)
+						? 'bg-white/10 text-white'
+						: 'text-white/70'}"
 				>
-					<div class="hamburger {mobileMenuOpen ? 'open' : ''}">
-						<span class="hamburger-line"></span>
-						<span class="hamburger-line"></span>
-						<span class="hamburger-line"></span>
-					</div>
-				</button>
+					Our work
+				</a>
+				<!-- Pricing link hidden while the homepage #pricing section is commented out
+				<a
+					href="/#pricing"
+					onclick={() => (activeSection = 'pricing')}
+					aria-current={isSectionActive('pricing') ? 'location' : undefined}
+					class="rounded-full px-3 py-2 text-sm font-medium transition-colors hover:text-white {isSectionActive(
+						'pricing'
+					)
+						? 'bg-white/10 text-white'
+						: 'text-white/70'}"
+				>
+					Pricing
+				</a>
+				-->
+				<a
+					href="/contact"
+					aria-current={isActive('/contact') ? 'page' : undefined}
+					class="rounded-full px-3 py-2 text-sm font-medium transition-colors hover:text-white {isActive(
+						'/contact'
+					)
+						? 'bg-white/10 text-white'
+						: 'text-white/70'}"
+				>
+					Contact
+				</a>
 			</div>
+		</nav>
+
+		<div class="flex items-center gap-2">
+			<a
+				href="/contact"
+				class="hidden rounded-full bg-white px-4 py-2.5 font-mono text-xs tracking-wider text-background uppercase transition-colors hover:bg-white/85 lg:inline-flex"
+			>
+				Book a call
+			</a>
+			<a
+				href="/#intake-form"
+				class="nav-cta-gradient items-center rounded-full px-4 py-2.5 font-mono text-xs tracking-wider text-white uppercase shadow-lg transition-shadow hover:shadow-brand-violet/40 {mobileMenuOpen
+					? 'hidden md:inline-flex'
+					: 'inline-flex'}"
+			>
+				Get started
+			</a>
+
+			<button
+				class="relative z-50 flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-white/10 md:hidden"
+				onclick={() => (mobileMenuOpen = !mobileMenuOpen)}
+				aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+				aria-expanded={mobileMenuOpen}
+			>
+				<div class="hamburger {mobileMenuOpen ? 'open' : ''}">
+					<span class="hamburger-line"></span>
+					<span class="hamburger-line"></span>
+					<span class="hamburger-line"></span>
+				</div>
+			</button>
 		</div>
 	</div>
 </header>
@@ -186,7 +230,7 @@
 			<li class="mobile-nav-item" style="--delay: 0">
 				<a
 					href="/"
-					class="mobile-nav-link {isActive('/', true) ? 'active' : ''}"
+					class="mobile-nav-link {isActive('/', true) && !activeSection ? 'active' : ''}"
 					onclick={() => (mobileMenuOpen = false)}
 					tabindex={mobileMenuOpen ? 0 : -1}
 				>
@@ -198,9 +242,21 @@
 					Services
 				</a>
 			</li>
+			<li class="mobile-nav-item" style="--delay: 2">
+				<a href="/#recent-work" class="mobile-nav-link {isSectionActive('recent-work') ? 'active' : ''}" aria-current={isSectionActive('recent-work') ? 'location' : undefined} onclick={() => { activeSection = 'recent-work'; mobileMenuOpen = false; }} tabindex={mobileMenuOpen ? 0 : -1}>
+					Our work
+				</a>
+			</li>
+			<!-- Pricing link hidden while the homepage #pricing section is commented out
+			<li class="mobile-nav-item" style="--delay: 2">
+				<a href="/#pricing" class="mobile-nav-link {isSectionActive('pricing') ? 'active' : ''}" aria-current={isSectionActive('pricing') ? 'location' : undefined} onclick={() => { activeSection = 'pricing'; mobileMenuOpen = false; }} tabindex={mobileMenuOpen ? 0 : -1}>
+					Pricing
+				</a>
+			</li>
+			-->
 			<li class="mobile-nav-item" style="--delay: 3">
-				<a href="/#intake-form" class="mobile-nav-link" onclick={() => (mobileMenuOpen = false)} tabindex={mobileMenuOpen ? 0 : -1}>
-					Work with us
+				<a href="/website-redesign" class="mobile-nav-link {isActive('/website-redesign') ? 'active' : ''}" onclick={() => (mobileMenuOpen = false)} tabindex={mobileMenuOpen ? 0 : -1}>
+					Free redesign
 				</a>
 			</li>
 			<li class="mobile-nav-item" style="--delay: 4">
@@ -218,14 +274,12 @@
 		<div class="mobile-nav-item mt-8 sm:mt-12" style="--delay: 5">
 			<a
 				href="/#intake-form"
-				class="nav-cta-gradient inline-flex items-center gap-2 rounded-full py-3 pr-3 pl-6 text-base font-medium text-white shadow-lg"
+				class="nav-cta-gradient inline-flex items-center gap-4 rounded-full py-2 pr-2 pl-6 font-mono text-sm tracking-wider text-white uppercase shadow-lg"
 				onclick={() => (mobileMenuOpen = false)}
 				tabindex={mobileMenuOpen ? 0 : -1}
 			>
-				Get Started
-				<span
-					class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/10"
-				>
+				Get started
+				<span class="flex h-10 w-10 items-center justify-center rounded-full bg-white text-brand-violet">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						class="h-4 w-4"
@@ -233,8 +287,9 @@
 						viewBox="0 0 24 24"
 						stroke="currentColor"
 						stroke-width="2"
+						aria-hidden="true"
 					>
-						<path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+						<path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6" />
 					</svg>
 				</span>
 			</a>

@@ -1,30 +1,56 @@
 <script>
 	import { onMount } from 'svelte';
-	import { scrollReveal, pageLoad } from '$lib/actions/scrollReveal.js';
+	import { scrollReveal } from '$lib/actions/scrollReveal.js';
+	import { splitWords, scramble, countUp } from '$lib/actions/motion.js';
+	import { fly } from 'svelte/transition';
+	import { prefersReducedMotion } from 'svelte/motion';
 
 	// ===== Features Data =====
+	// Each reason is paired with a real build that shows it, rendered in the tabbed panel.
 	let features = $state([
 		{
 			title: 'Unified Platform',
 			description: 'Replace multiple SaaS subscriptions with one comprehensive custom solution that handles all your business needs under one roof.',
-			icon: '🏗️'
+			points: ['One login for the whole team', 'One source of truth', 'No more copy-paste between tools'],
+			stat: '1',
+			statLabel: 'Platform, not ten',
+			image: 'hometown.jpg',
+			client: 'Hometown Industries',
+			caption: 'Warehouse management platform'
 		},
 		{
 			title: '100% Custom Built',
 			description: 'Every feature is built specifically for your business processes. No more settling for 60% functionality from off-the-shelf solutions.',
-			icon: '⚡'
+			points: ['Built around your workflow', 'Your terms, your screens', 'Features only you need'],
+			stat: '100%',
+			statLabel: 'Custom fit',
+			image: 'rai.jpg',
+			client: 'RAI Digital Assets',
+			caption: 'Crypto tax-loss harvesting engine'
 		},
 		{
 			title: 'Massive Cost Savings',
-			description: 'Eliminate expensive monthly subscriptions. Our custom solutions typically cost 40% less than multiple vendor subscriptions.',
-			icon: '💰'
+			description: 'Replace a stack of expensive SaaS subscriptions with one. Our custom solutions typically cost 40% less than multiple vendor subscriptions.',
+			points: ['No stacked subscriptions', 'One monthly subscription', 'Pays for itself'],
+			stat: '40%',
+			statLabel: 'Typical cost savings',
+			image: 'purposeinexpenses.webp',
+			client: 'Purpose In Expenses',
+			caption: 'Expense-to-donation platform'
 		},
 		{
 			title: 'Evolves With You',
 			description: 'Unlike static SaaS products, your custom platform grows and adapts as your business needs change over time.',
-			icon: '🚀'
+			points: ['Ongoing feature development', 'Scales as you grow', '24/7 priority support'],
+			stat: '24/7',
+			statLabel: 'Support',
+			image: 'greysource-landing-20260923.webp',
+			client: 'GreySource',
+			caption: 'Recruiting platform'
 		}
 	]);
+
+	let activeFeature = $state(0);
 
 	// ===== Stats Data =====
 	let stats = $state([
@@ -331,254 +357,429 @@
 	<meta name="twitter:image" content="https://www.corelabs.digital/logos/core-labs-full-logo.png" />
 </svelte:head>
 
-<!-- section:hero {"type":"hero","id":"hero-1"} -->
-<section class="hero-gradient relative pt-32 pb-20 sm:pt-40 sm:pb-32 lg:pt-48 lg:pb-40">
-	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto max-w-4xl text-center">
-			<div class="mb-8" use:pageLoad={{ delay: 0 }}>
-				<span
-					class="bg-accent/10 text-accent ring-accent/20 inline-flex items-center rounded-full px-4 py-1.5 text-base font-medium ring-1 ring-inset"
-					>The future of business software</span
-				>
-			</div>
+{#snippet eyebrow(text, centered = false)}
+	<p
+		class="flex gap-6 font-mono text-xs tracking-widest text-white/50 uppercase {centered
+			? 'justify-center'
+			: ''}"
+	>
+		<span aria-hidden="true">/</span><span use:scramble>{text}</span>
+	</p>
+{/snippet}
 
-			<h1
-				class="font-heading text-foreground text-5xl font-bold tracking-tight text-balance sm:text-6xl lg:text-7xl"
-				use:pageLoad={{ delay: 100 }}
-			>
-				We create stunning software and websites for leading <span class="text-accent">brands</span>
-			</h1>
+{#snippet arrowIcon(size = 'h-4 w-4')}
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		class={size}
+		fill="none"
+		viewBox="0 0 24 24"
+		stroke="currentColor"
+		stroke-width="2"
+		aria-hidden="true"
+	>
+		<path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+	</svg>
+{/snippet}
 
-			<p
-				class="text-muted-foreground mx-auto mt-8 max-w-3xl text-xl leading-8 text-pretty sm:text-2xl"
-				use:pageLoad={{ delay: 200 }}
-			>
-				With the team and platform to take your project from idea to launch
-			</p>
+{#snippet checkIcon()}
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		class="h-4 w-4 shrink-0 text-lilac"
+		fill="none"
+		viewBox="0 0 24 24"
+		stroke="currentColor"
+		stroke-width="2"
+		aria-hidden="true"
+	>
+		<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+	</svg>
+{/snippet}
 
-			<div
-				class="mt-12 flex flex-wrap items-center justify-center gap-5"
-				use:pageLoad={{ delay: 300 }}
-			>
-				<a
-					href="/#intake-form"
-					class="btn-gradient btn-animate group inline-flex items-center gap-3 rounded-full py-4 pr-4 pl-7 text-xl font-medium text-white shadow-lg"
-				>
-					Get Started
-					<span
-						class="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-white/10 transition-colors group-hover:bg-white/20"
+<!-- Hero: an inset rounded panel, headline anchored bottom-left, real work on the right -->
+<section class="px-2 pt-2 sm:px-3 sm:pt-3">
+	<div class="hero-gradient sd-recede relative isolate overflow-hidden rounded-[2rem] sm:rounded-[2.5rem]">
+		<div
+			class="grid-lines absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_at_70%_40%,black,transparent_70%)]"
+			aria-hidden="true"
+		></div>
+
+		<div class="container mx-auto px-5 pt-28 pb-12 sm:px-8 sm:pt-40 sm:pb-16 lg:px-12 lg:pt-44 lg:pb-20">
+			<div class="grid items-end gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-12">
+				<div class="sd-lift">
+					<p class="flex items-center gap-3 font-mono text-xs tracking-widest text-white/60 uppercase">
+						<span class="h-2 w-2 rounded-full bg-gradient-to-r from-brand-blue to-brand-violet"></span>
+						Custom software &amp; websites
+					</p>
+					<h1
+						class="font-heading mt-6 text-[2.6rem] leading-[1.04] font-medium tracking-tight text-balance text-white sm:text-6xl lg:text-7xl"
 					>
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-						</svg>
-					</span>
-				</a>
-				<a
-					href="/contact"
-					class="btn-secondary-animate group inline-flex items-center gap-3 rounded-full border border-white/30 bg-transparent py-4 pr-4 pl-7 text-xl font-medium text-white shadow-sm hover:bg-white/10"
-				>
-					Contact Us
-					<span
-						class="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 transition-colors group-hover:bg-white/10"
-					>
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-						</svg>
-					</span>
-				</a>
-			</div>
+						We create stunning software and websites for leading <span class="text-gradient-purple"
+							>brands</span
+						>
+					</h1>
+					<p class="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-white/70 sm:text-xl">
+						With the team and platform to take your project from idea to launch.
+					</p>
 
-			<div
-				class="mt-20 grid grid-cols-2 gap-10 md:grid-cols-4"
-				use:pageLoad={{ delay: 400, stagger: true, staggerDelay: 100 }}
-			>
-				{#each stats as stat}
-					<div class="text-center">
-						<div class="text-foreground text-4xl font-bold">{stat.value}</div>
-						<div class="text-muted-foreground text-base">{stat.label}</div>
+					<div class="mt-10 flex flex-wrap items-center gap-3">
+						<a
+							href="/#intake-form"
+							class="btn-gradient btn-animate group inline-flex items-center gap-4 rounded-full py-2 pr-2 pl-6 font-mono text-sm tracking-wider text-white uppercase shadow-lg"
+						>
+							Get started
+							<span
+								class="flex h-10 w-10 items-center justify-center rounded-full bg-white text-brand-violet transition-transform group-hover:translate-x-0.5"
+							>
+								{@render arrowIcon()}
+							</span>
+						</a>
+						<a
+							href="/contact"
+							class="inline-flex min-h-14 items-center rounded-full border border-white/20 px-6 font-mono text-sm tracking-wider text-white uppercase transition-colors hover:bg-white/10"
+						>
+							Contact us
+						</a>
 					</div>
-				{/each}
+				</div>
+
+				<!-- Two real builds, stacked like windows -->
+				<div class="hero-window-in relative mx-auto w-full max-w-xl pb-6 lg:max-w-none">
+					<div
+						class="absolute top-0 right-0 w-[72%] rotate-3 overflow-hidden rounded-2xl border border-white/10 opacity-60 shadow-2xl"
+					>
+						<img
+							src="/portfolio/neversettle.jpg"
+							alt=""
+							width="1200"
+							height="750"
+							decoding="async"
+							class="aspect-[16/10] w-full object-cover object-top"
+						/>
+					</div>
+
+					<div
+						class="relative mt-12 w-[90%] rounded-[1.5rem] border border-white/15 bg-surface p-2 shadow-[0_30px_80px_-20px_rgba(116,51,255,0.55)] sm:mt-16"
+					>
+						<div class="flex items-center gap-1.5 px-3 pt-1.5 pb-2.5" aria-hidden="true">
+							<span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+							<span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+							<span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+							<span
+								class="ml-3 truncate rounded-full bg-white/5 px-3 py-0.5 font-mono text-[10px] tracking-wider text-white/40"
+								>purposeinexpenses.com</span
+							>
+						</div>
+						<img
+							src="/portfolio/purposeinexpenses.webp"
+							alt="Purpose In Expenses homepage, built by Core Labs"
+							width="1200"
+							height="750"
+							fetchpriority="high"
+							class="aspect-[16/10] w-full rounded-[1.1rem] object-cover object-top"
+						/>
+					</div>
+
+					<div
+						class="hero-chip-in absolute right-0 bottom-0 rounded-2xl border border-white/10 bg-surface-raised/95 px-5 py-4 shadow-xl backdrop-blur"
+					>
+						<p class="font-heading text-3xl font-medium text-white tabular-nums" use:countUp>40%</p>
+						<span
+							class="mt-1 inline-flex rounded-md bg-lilac/15 px-2 py-0.5 font-mono text-[10px] tracking-wider text-lilac uppercase"
+							>Lower cost vs. SaaS</span
+						>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </section>
-<!-- /section:hero -->
 
+<!-- Client wall -->
+<section aria-labelledby="clients-heading" class="py-20 sm:py-28">
+	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="grid gap-6 lg:grid-cols-[1fr_2fr]">
+			{@render eyebrow('Who we build for')}
+			<h2
+				use:splitWords
+				id="clients-heading"
+				class="font-heading text-3xl leading-[1.1] font-medium tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
+			>
+				The businesses outgrowing off-the-shelf software build with <span
+					class="text-gradient-purple">Core Labs</span
+				>
+			</h2>
+		</div>
+
+		<ul
+			class="mt-14 grid grid-cols-2 border-t border-l border-white/10 sm:grid-cols-4"
+			use:scrollReveal={{ stagger: true, staggerDelay: 70 }}
+		>
+			{#each recentBuilds as build}
+				<li class="border-r border-b border-white/10">
+					<a
+						href={build.url}
+						target="_blank"
+						rel="noopener"
+						class="flex h-24 items-center justify-center px-3 text-center font-heading text-sm font-semibold text-balance text-white/55 transition-colors hover:bg-white/[0.03] hover:text-white sm:h-28 sm:text-base"
+					>
+						{build.client}<span class="sr-only"> (opens in a new tab)</span>
+					</a>
+				</li>
+			{/each}
+		</ul>
+	</div>
+</section>
+
+<!-- Free Website Redesign: one centred statement over a framed before/after tile -->
 <section
 	id="free-website-redesign"
 	aria-labelledby="free-website-redesign-heading"
-	class="faq-gradient relative overflow-hidden py-20 sm:py-32"
+	class="scroll-mt-24 pb-20 sm:pb-28"
 >
-	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div
-			class="glass-card relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-white/10 p-6 sm:p-10 lg:p-14"
-		>
-			<!-- Soft glow behind the mockup -->
-			<div
-				class="pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-[#7433ff]/20 blur-3xl"
-				aria-hidden="true"
-			></div>
-
-			<div class="relative grid items-center gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-14">
-				<div use:scrollReveal>
-					<span
-						class="bg-accent/10 text-accent ring-accent/20 inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium ring-1 ring-inset"
-						>Free design preview</span
-					>
-					<h2
-						id="free-website-redesign-heading"
-						class="font-heading mt-6 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
-					>
-						Free Website <span class="text-gradient-purple">Redesign</span>
-					</h2>
-					<p class="mt-6 text-lg leading-relaxed text-pretty text-white/70">
-						See what your website could look like with a free custom design preview, tailored to
-						your business. No commitment, no credit card required.
-					</p>
-
-					<ul class="mt-8 space-y-4">
-						{#each redesignPerks as perk}
-							<li class="flex items-start gap-3">
-								<span
-									class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#334fff]/20"
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										class="h-4 w-4 text-[#a78bfa]"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										stroke-width="2"
-										aria-hidden="true"
-									>
-										<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-									</svg>
-								</span>
-								<span class="text-white/90">{perk}</span>
-							</li>
-						{/each}
-					</ul>
-
-					<div class="mt-10 flex flex-col items-center gap-3 sm:items-start">
-						<a
-							href="/website-redesign"
-							class="btn-gradient btn-animate group inline-flex items-center justify-center gap-3 rounded-full py-3 pr-3 pl-6 text-base font-medium whitespace-nowrap text-white shadow-lg sm:text-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background focus-visible:outline-none"
-						>
-							Get My Free Design Preview
-							<span
-								class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/10 transition-colors group-hover:bg-white/20"
-							>
-								<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-								</svg>
-							</span>
-						</a>
-						<p class="text-sm text-white/50">Takes less than a minute to request</p>
-					</div>
-				</div>
-
-				<!-- Before → after mockup. Decorative: the copy beside it carries the offer. -->
-				<div class="relative mx-auto mb-6 w-full max-w-md lg:mb-0 lg:max-w-none" aria-hidden="true" use:scrollReveal={{ delay: 150 }}>
-					<!-- Today -->
-					<div
-						class="absolute top-0 left-0 w-[70%] -rotate-3 rounded-xl border border-white/10 bg-white/[0.04] p-3 opacity-60"
-					>
-						<div class="flex items-center gap-1.5">
-							<span class="h-2 w-2 rounded-full bg-white/20"></span>
-							<span class="h-2 w-2 rounded-full bg-white/20"></span>
-							<span class="h-2 w-2 rounded-full bg-white/20"></span>
-							<span class="ml-2 text-[10px] font-semibold tracking-[0.2em] text-white/50 uppercase">Today</span>
-						</div>
-						<div class="mt-4 space-y-2">
-							<div class="h-2.5 w-2/3 rounded bg-white/15"></div>
-							<div class="h-2 w-full rounded bg-white/10"></div>
-							<div class="h-2 w-5/6 rounded bg-white/10"></div>
-							<div class="mt-3 h-14 rounded bg-white/5"></div>
-						</div>
-					</div>
-
-					<!-- Preview -->
-					<div
-						class="relative mt-16 ml-auto w-[85%] rounded-2xl border border-white/15 bg-[#0d0a1f] shadow-2xl shadow-[#7433ff]/20"
-					>
-						<div class="flex items-center gap-1.5 border-b border-white/10 px-4 py-3">
-							<span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
-							<span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
-							<span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
-							<span class="ml-3 h-4 flex-1 rounded-full bg-white/5"></span>
-						</div>
-						<div class="p-5 sm:p-6">
-							<div class="rounded-xl bg-gradient-to-br from-[#334fff]/40 to-[#7433ff]/40 p-5">
-								<div class="h-3 w-3/4 rounded bg-white/90"></div>
-								<div class="mt-2 h-3 w-1/2 rounded bg-white/90"></div>
-								<div class="mt-4 h-2 w-5/6 rounded bg-white/40"></div>
-								<div class="btn-gradient mt-5 h-6 w-24 rounded-full"></div>
-							</div>
-							<div class="mt-4 grid grid-cols-3 gap-3">
-								<div class="h-14 rounded-lg border border-white/10 bg-white/5"></div>
-								<div class="h-14 rounded-lg border border-white/10 bg-white/5"></div>
-								<div class="h-14 rounded-lg border border-white/10 bg-white/5"></div>
-							</div>
-						</div>
-
-						<div
-							class="absolute -bottom-5 -left-4 flex items-center gap-2 rounded-full border border-white/15 bg-[#1a1035] px-4 py-2 text-sm font-medium text-white shadow-lg sm:-left-8"
-						>
-							<span class="h-2 w-2 rounded-full bg-[#a78bfa]"></span>
-							Your preview in 5 business days
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
-
-<!-- section:features {"type":"features","id":"features-1"} -->
-<section id="features" class="features-gradient relative py-20 sm:py-32">
-	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto max-w-2xl text-center" use:scrollReveal>
-			<h2 class="font-heading text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl">
-				Why businesses choose custom over SaaS
+	<div class="container mx-auto px-4 text-center sm:px-6 lg:px-8">
+		<div>
+			{@render eyebrow('Free design preview', true)}
+			<h2
+				use:splitWords
+				id="free-website-redesign-heading"
+				class="font-heading mx-auto mt-6 max-w-4xl text-3xl leading-[1.1] font-medium tracking-tight text-balance text-white sm:text-5xl lg:text-6xl"
+			>
+				<span class="text-gradient-purple">Free Website Redesign.</span> See what your site could look
+				like, tailored to your business.
 			</h2>
-			<p class="mt-4 text-lg text-white/70 text-pretty">
-				Traditional SaaS forces you to adapt your business to their software. We build software that
-				adapts to your business.
+			<p class="mx-auto mt-6 max-w-xl text-lg text-pretty text-white/60" use:scrollReveal={{ delay: 250 }}>
+				A free custom design preview. No commitment, no credit card required.
 			</p>
 		</div>
 
-		<div class="mx-auto mt-16 max-w-7xl">
+		<div
+			class="sd-rise relative mx-auto mt-14 max-w-3xl overflow-hidden rounded-[2rem] border border-white/10 bg-surface px-6 pt-10 pb-14 sm:px-14 sm:pt-14"
+		>
 			<div
-				class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
-				use:scrollReveal={{ stagger: true, staggerDelay: 100 }}
-			>
-				{#each features as feature}
-					<div
-						class="glass-card card-animate group relative rounded-2xl border border-white/10 p-6 backdrop-blur-sm hover:border-white/20 hover:bg-white/10"
-					>
-						<div class="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#334fff]/20 to-[#7433ff]/20 text-3xl">
-							{feature.icon}
-						</div>
-						<h3 class="text-xl font-semibold text-white">{feature.title}</h3>
-						<p class="mt-4 leading-relaxed text-white/70">{feature.description}</p>
+				class="pointer-events-none absolute -top-24 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-brand-violet/25 blur-3xl"
+				aria-hidden="true"
+			></div>
+
+			<!-- Before → after mockup. Decorative: the copy around it carries the offer. -->
+			<div class="relative mx-auto w-full max-w-md text-left" aria-hidden="true">
+				<div
+					class="sd-fall-back absolute top-0 left-0 w-[70%] -rotate-3 rounded-xl border border-white/10 bg-white/[0.04] p-3 opacity-60"
+				>
+					<div class="flex items-center gap-1.5">
+						<span class="h-2 w-2 rounded-full bg-white/20"></span>
+						<span class="h-2 w-2 rounded-full bg-white/20"></span>
+						<span class="h-2 w-2 rounded-full bg-white/20"></span>
+						<span class="ml-2 font-mono text-[10px] tracking-[0.2em] text-white/50 uppercase">Today</span>
 					</div>
-				{/each}
+					<div class="mt-4 space-y-2">
+						<div class="h-2.5 w-2/3 rounded bg-white/15"></div>
+						<div class="h-2 w-full rounded bg-white/10"></div>
+						<div class="h-2 w-5/6 rounded bg-white/10"></div>
+						<div class="mt-3 h-14 rounded bg-white/5"></div>
+					</div>
+				</div>
+
+				<div
+					class="relative mt-16 ml-auto w-[85%] rounded-2xl border border-white/15 bg-background shadow-2xl shadow-brand-violet/20"
+				>
+					<div class="flex items-center gap-1.5 border-b border-white/10 px-4 py-3">
+						<span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+						<span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+						<span class="h-2.5 w-2.5 rounded-full bg-white/20"></span>
+						<span class="ml-3 h-4 flex-1 rounded-full bg-white/5"></span>
+					</div>
+					<div class="p-5 sm:p-6">
+						<div class="rounded-xl bg-gradient-to-br from-brand-blue/40 to-brand-violet/40 p-5">
+							<div class="h-3 w-3/4 rounded bg-white/90"></div>
+							<div class="mt-2 h-3 w-1/2 rounded bg-white/90"></div>
+							<div class="mt-4 h-2 w-5/6 rounded bg-white/40"></div>
+							<div class="btn-gradient mt-5 h-6 w-24 rounded-full"></div>
+						</div>
+						<div class="mt-4 grid grid-cols-3 gap-3">
+							<div class="h-14 rounded-lg border border-white/10 bg-white/5"></div>
+							<div class="h-14 rounded-lg border border-white/10 bg-white/5"></div>
+							<div class="h-14 rounded-lg border border-white/10 bg-white/5"></div>
+						</div>
+					</div>
+
+					<div
+						class="absolute -bottom-5 -left-4 flex items-center gap-2 rounded-full border border-white/15 bg-surface-raised px-4 py-2 font-mono text-[11px] tracking-wider text-white uppercase shadow-lg sm:-left-8"
+					>
+						<span class="h-2 w-2 rounded-full bg-lilac"></span>
+						Preview in 5 business days
+					</div>
+				</div>
 			</div>
+		</div>
+
+		<ul
+			class="mx-auto mt-10 flex max-w-3xl flex-wrap justify-center gap-2"
+			use:scrollReveal={{ stagger: true, staggerDelay: 90 }}
+		>
+			{#each redesignPerks as perk}
+				<li
+					class="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-left text-sm text-white/85"
+				>
+					{@render checkIcon()}
+					{perk}
+				</li>
+			{/each}
+		</ul>
+
+		<div class="mt-10 flex flex-col items-center gap-3">
+			<a
+				href="/website-redesign"
+				class="btn-gradient btn-animate group inline-flex items-center gap-4 rounded-full py-2 pr-2 pl-6 font-mono text-sm tracking-wider text-white uppercase shadow-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background focus-visible:outline-none"
+			>
+				Get my free design preview
+				<span
+					class="flex h-10 w-10 items-center justify-center rounded-full bg-white text-brand-violet transition-transform group-hover:translate-x-0.5"
+				>
+					{@render arrowIcon()}
+				</span>
+			</a>
+			<p class="text-sm text-white/50">Takes less than a minute to request</p>
 		</div>
 	</div>
 </section>
-<!-- /section:features -->
+
+<!-- Why custom: numbered tabs over a single panel -->
+<section id="features" class="scroll-mt-24 px-2 sm:px-3">
+	<div class="sd-rise rounded-[2rem] bg-surface py-20 sm:rounded-[2.5rem] sm:py-28">
+		<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="grid gap-6 lg:grid-cols-[1fr_2fr]">
+				{@render eyebrow('Why custom')}
+				<div>
+					<h2
+				use:splitWords
+						class="font-heading text-3xl leading-[1.1] font-medium tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
+					>
+						Software that adapts to your business, <span class="text-white/40"
+							>not the other way around.</span
+						>
+					</h2>
+					<p class="mt-5 max-w-2xl text-lg text-pretty text-white/60" use:scrollReveal={{ delay: 250 }}>
+						Traditional SaaS forces you to adapt your business to their software. We build software
+						that adapts to your business.
+					</p>
+				</div>
+			</div>
+
+			<div
+				role="tablist"
+				aria-label="Why businesses choose custom over SaaS"
+				class="mt-14 grid grid-cols-2 gap-2 lg:grid-cols-4"
+			>
+				{#each features as feature, i}
+					<button
+						type="button"
+						role="tab"
+						id="feature-tab-{i}"
+						aria-selected={activeFeature === i}
+						aria-controls="feature-panel"
+						tabindex={activeFeature === i ? 0 : -1}
+						onclick={() => (activeFeature = i)}
+						onkeydown={(e) => {
+							if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+							e.preventDefault();
+							activeFeature =
+								(activeFeature + (e.key === 'ArrowRight' ? 1 : -1) + features.length) %
+								features.length;
+							document.getElementById(`feature-tab-${activeFeature}`)?.focus();
+						}}
+						class="flex min-h-14 items-center gap-3 rounded-[1.25rem] border p-1.5 pr-4 text-left text-sm font-medium transition-colors sm:rounded-full sm:text-base {activeFeature ===
+						i
+							? 'btn-gradient border-transparent text-white'
+							: 'border-white/10 bg-white/[0.03] text-white/70 hover:border-white/20 hover:text-white'}"
+					>
+						<span
+							class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-mono text-xs {activeFeature ===
+							i
+								? 'bg-white text-brand-violet'
+								: 'bg-background text-white/80 ring-1 ring-white/10'}">0{i + 1}</span
+						>
+						{feature.title}
+					</button>
+				{/each}
+			</div>
+
+			{#each [features[activeFeature]] as feature (activeFeature)}
+				<div
+					id="feature-panel"
+					role="tabpanel"
+					aria-labelledby="feature-tab-{activeFeature}"
+					class="mt-4 grid gap-10 rounded-[1.75rem] border border-white/10 bg-background/60 p-6 sm:p-10 lg:grid-cols-2 lg:gap-14 lg:p-12"
+				>
+					<div
+						class="flex flex-col"
+						in:fly={{ y: 24, duration: prefersReducedMotion.current ? 0 : 600, opacity: 0 }}
+					>
+						<h3 class="font-heading flex items-center gap-3 text-2xl font-medium text-white sm:text-3xl">
+							<span class="h-2.5 w-2.5 shrink-0 rounded-full bg-lilac" aria-hidden="true"></span>
+							{feature.title}
+						</h3>
+						<p class="mt-5 max-w-md text-lg leading-relaxed text-pretty text-white/70">
+							{feature.description}
+						</p>
+						<ul class="mt-6 space-y-2.5 font-mono text-xs tracking-wider text-white/50 uppercase">
+							{#each feature.points as point}
+								<li class="flex gap-3"><span class="text-lilac" aria-hidden="true">+</span>{point}</li>
+							{/each}
+						</ul>
+						<div class="mt-10 lg:mt-auto lg:pt-12">
+							<p
+								class="font-heading text-6xl font-medium tracking-tight text-white tabular-nums sm:text-7xl"
+								use:countUp
+							>
+								{feature.stat}
+							</p>
+							<span
+								class="mt-3 inline-flex rounded-md bg-lilac/15 px-2.5 py-1 font-mono text-xs tracking-wider text-lilac uppercase"
+								>{feature.statLabel}</span
+							>
+						</div>
+					</div>
+
+					<div class="sd-drift self-center">
+						<figure
+							in:fly={{ y: 40, duration: prefersReducedMotion.current ? 0 : 750, delay: 80, opacity: 0 }}
+							class="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-brand-blue/40 to-brand-violet/40 p-3 sm:p-5"
+						>
+							<img
+								src="/portfolio/{feature.image}"
+								alt="{feature.client} {feature.caption.toLowerCase()}"
+								width="1200"
+								height="750"
+								loading="lazy"
+								decoding="async"
+								class="aspect-[16/10] w-full rounded-[1rem] border border-white/10 object-cover object-top shadow-2xl"
+							/>
+							<figcaption
+								class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 px-1 font-mono text-[11px] tracking-wider text-white/70 uppercase"
+							>
+								<span class="rounded-md bg-background/80 px-2 py-0.5 text-white">{feature.client}</span>
+								{feature.caption}
+							</figcaption>
+						</figure>
+					</div>
+				</div>
+			{/each}
+		</div>
+	</div>
+</section>
+
 
 <!-- What we've built recently -->
-<section id="recent-work" class="hero-section-bg relative py-20 sm:py-32">
+<section id="recent-work" class="scroll-mt-24 py-20 sm:py-28">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="flex flex-wrap items-end justify-between gap-6" use:scrollReveal>
+		<div class="flex flex-wrap items-end justify-between gap-6">
 			<div class="max-w-2xl">
-				<p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">Recent work</p>
+				{@render eyebrow('Recent work')}
 				<h2
-					class="font-heading mt-4 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
+				use:splitWords
+					class="font-heading mt-6 text-3xl leading-[1.1] font-medium tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
 				>
-					What we've built recently
+					What we've built <span class="text-gradient-purple">recently</span>
 				</h2>
 			</div>
 
@@ -587,7 +788,7 @@
 					type="button"
 					onclick={() => scrollRail(-1)}
 					aria-label="Show previous projects"
-					class="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 text-white/70 transition-colors hover:border-white/40 hover:bg-white/10 hover:text-white"
+					class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white/80 transition-colors hover:bg-white hover:text-background"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -605,7 +806,7 @@
 					type="button"
 					onclick={() => scrollRail(1)}
 					aria-label="Show next projects"
-					class="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 text-white/70 transition-colors hover:border-white/40 hover:bg-white/10 hover:text-white"
+					class="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white/80 transition-colors hover:bg-white hover:text-background"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -629,7 +830,8 @@
 		<!-- A scrollable region has to be focusable, or keyboard users cannot scroll it. -->
 		<div
 			bind:this={railElement}
-			class="rail-scroll flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/40"
+			use:scrollReveal={{ stagger: true, staggerDelay: 90 }}
+				class="rail-scroll flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/40"
 			tabindex="0"
 			role="region"
 			aria-label="Recent projects, scrollable"
@@ -643,7 +845,7 @@
 						class="group block rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/40"
 					>
 						<div
-							class="relative aspect-[16/10] overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]"
+							class="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-surface p-2"
 						>
 							<img
 								src="/portfolio/{build.image}"
@@ -652,15 +854,17 @@
 								height="750"
 								loading="lazy"
 								decoding="async"
-								class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+								class="aspect-[16/10] w-full rounded-[1.1rem] object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
 							/>
 						</div>
 
 						<div class="mt-5">
-							<p class="text-xs font-semibold tracking-[0.22em] text-white/40 uppercase">
+							<span
+								class="inline-flex rounded-md bg-lilac/15 px-2 py-0.5 font-mono text-[11px] tracking-wider text-lilac uppercase"
+							>
 								{build.tag}
-							</p>
-							<h3 class="font-heading mt-2 text-xl font-semibold text-balance text-white">
+							</span>
+							<h3 class="font-heading mt-3 text-xl font-medium text-balance text-white">
 								{build.title}
 							</h3>
 							<p class="mt-1 text-sm text-white/50">{build.client}</p>
@@ -692,143 +896,133 @@
 	</div>
 </section>
 
-<!-- section:pricing {"type":"pricing","id":"pricing-1"} -->
-<section id="pricing" class="pricing-gradient relative py-20 sm:py-32">
+<!-- Outcomes bento, with the plan — COMMENTED OUT for now (2026-11-03).
+To restore: remove this comment wrapper, and re-enable the "Pricing" links in
+Navbar.svelte and Footer.svelte.
+<section id="pricing" class="scroll-mt-24 py-20 sm:py-28">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto max-w-2xl text-center" use:scrollReveal>
-			<h2
-				class="font-heading text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
-			>
-				Investment that pays for itself
-			</h2>
-			<p class="mt-4 text-lg text-pretty text-white/70">
-				Compare our one-time investment to your annual SaaS subscription costs
-			</p>
-		</div>
-
-		<div class="mx-auto mt-16 max-w-lg" use:scrollReveal={{ delay: 100 }}>
-			<div class="flex justify-center">
-				{#each plans as plan}
-					<div
-						class="glass-card card-animate relative w-full rounded-2xl border border-white/10 p-8 backdrop-blur-sm"
-					>
-						{#if plan.popular}
-							<div class="absolute -top-3 left-1/2 -translate-x-1/2 transform">
-								<span
-									class="popular-badge inline-flex rounded-full px-4 py-1 text-sm font-medium text-white"
-								>
-									Most Popular
-								</span>
-							</div>
-						{/if}
-
-						<div class="pb-8 text-center">
-							<h3 class="text-2xl font-semibold text-white">{plan.name}</h3>
-							<p class="mt-4 text-white/70">{plan.description}</p>
-						</div>
-
-						<div class="space-y-6">
-							<ul class="space-y-4">
-								{#each plan.features as feature}
-									<li class="flex items-center">
-										<span
-											class="mr-3 flex h-6 w-6 items-center justify-center rounded-full bg-[#334fff]/20"
-										>
-											<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#7433ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-												<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-											</svg>
-										</span>
-										<span class="text-white/90">{feature}</span>
-									</li>
-								{/each}
-							</ul>
-							<a
-								href="/#intake-form"
-								class="btn-gradient btn-animate group inline-flex w-full items-center justify-center gap-3 rounded-full py-3 pr-3 pl-6 text-lg font-medium text-white shadow-lg"
-							>
-								{plan.cta}
-								<span
-									class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/10 transition-colors group-hover:bg-white/20"
-								>
-									<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-										<path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-									</svg>
-								</span>
-							</a>
-						</div>
-					</div>
-				{/each}
+		<div class="grid gap-6 lg:grid-cols-[1fr_2fr]">
+			{@render eyebrow('Outcomes')}
+			<div>
+				<h2
+					class="font-heading text-3xl leading-[1.1] font-medium tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
+				>
+					An investment that <span class="text-gradient-purple">pays for itself</span>
+				</h2>
+				<p class="mt-5 max-w-2xl text-lg text-pretty text-white/60" use:scrollReveal={{ delay: 250 }}>
+					Compare one Core Labs subscription to everything you pay SaaS vendors today.
+				</p>
 			</div>
 		</div>
-	</div>
-</section>
-<!-- /section:pricing -->
 
-<!-- section:cta {"type":"cta","id":"cta-1"} -->
-<section class="cta-section-gradient relative py-20 sm:py-32">
-	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto max-w-4xl text-center">
-			<h2
-				class="font-heading text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
-				use:scrollReveal
-			>
-				Ready to bring your vision to life?
-			</h2>
-			<p
-				class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/70 text-pretty"
-				use:scrollReveal={{ delay: 100 }}
-			>
-				Let's build something extraordinary together. From concept to launch, we're here to make it happen.
-			</p>
+		<div class="mt-14 grid gap-4 lg:grid-cols-3" use:scrollReveal={{ delay: 100 }}>
 			<div
-				class="mt-10 flex flex-wrap items-center justify-center gap-4"
-				use:scrollReveal={{ delay: 200 }}
+				class="relative flex min-h-[22rem] flex-col items-center justify-center gap-4 overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-brand-blue to-brand-violet p-8 lg:row-span-2"
 			>
-				<a
-					href="/#intake-form"
-					class="btn-gradient btn-animate group inline-flex items-center gap-3 rounded-full py-3 pr-3 pl-6 text-lg font-medium text-white shadow-lg"
-				>
-					Start a Project
-					<span
-						class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/10 transition-colors group-hover:bg-white/20"
-					>
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-						</svg>
-					</span>
-				</a>
-				<a
-					href="/contact"
-					class="btn-secondary-animate group inline-flex items-center gap-3 rounded-full border border-white/30 bg-transparent py-3 pr-3 pl-6 text-lg font-medium text-white shadow-sm hover:bg-white/10"
-				>
-					Book a Call
-					<span
-						class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 transition-colors group-hover:bg-white/10"
-					>
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-						</svg>
-					</span>
-				</a>
+				<p class="absolute top-6 left-7 font-mono text-xs tracking-widest text-white/70 uppercase">
+					/ Typical results
+				</p>
+				<div class="glass-pill rounded-full px-10 py-5 text-center text-white">
+					<p class="font-heading text-4xl font-medium tabular-nums sm:text-5xl">{stats[0].value}</p>
+					<p class="mt-1 text-lg">{stats[0].label}</p>
+				</div>
+				<div class="glass-pill scale-90 rounded-full px-10 py-5 text-center text-white/80">
+					<p class="font-heading text-4xl font-medium tabular-nums sm:text-5xl">{stats[1].value}</p>
+					<p class="mt-1 text-lg">{stats[1].label}</p>
+				</div>
 			</div>
-			<p
-				class="mt-8 text-sm text-white/50"
-				use:scrollReveal={{ delay: 300 }}
-			>
-				Free consultation • No commitment • Response within 24 hours
-			</p>
+
+			{#each plans as plan}
+				<div class="rounded-[1.75rem] border border-white/10 bg-surface p-7 sm:p-10 lg:col-span-2">
+					<div class="flex flex-wrap items-start justify-between gap-6">
+						<div class="max-w-sm">
+							{#if plan.popular}
+								<span
+									class="inline-flex rounded-md bg-lilac/15 px-2.5 py-1 font-mono text-xs tracking-wider text-lilac uppercase"
+									>Most popular</span
+								>
+							{/if}
+							<h3 class="font-heading mt-4 text-2xl font-medium text-white sm:text-3xl">{plan.name}</h3>
+							<p class="mt-2 text-white/60">{plan.description}</p>
+						</div>
+						<p class="font-heading text-4xl font-medium tracking-tight text-white sm:text-5xl">
+							{plan.price}
+						</p>
+					</div>
+
+					<ul class="mt-8 grid gap-x-8 gap-y-3 border-t border-white/10 pt-8 sm:grid-cols-2">
+						{#each plan.features as feature}
+							<li class="flex items-center gap-3 text-white/85">
+								{@render checkIcon()}
+								{feature}
+							</li>
+						{/each}
+					</ul>
+
+					<a
+						href="/#intake-form"
+						class="btn-gradient btn-animate group mt-10 inline-flex items-center gap-4 rounded-full py-2 pr-2 pl-6 font-mono text-sm tracking-wider text-white uppercase shadow-lg"
+					>
+						{plan.cta}
+						<span
+							class="flex h-10 w-10 items-center justify-center rounded-full bg-white text-brand-violet transition-transform group-hover:translate-x-0.5"
+						>
+							{@render arrowIcon()}
+						</span>
+					</a>
+				</div>
+			{/each}
+
+			{#each [stats[2], stats[3]] as stat, i}
+				<div class="flex flex-col justify-between rounded-[1.75rem] border border-white/10 bg-surface p-7 sm:p-8">
+					<p class="font-heading text-5xl font-medium tracking-tight text-white tabular-nums">
+						{stat.value}
+					</p>
+					<div class="mt-8">
+						<span
+							class="inline-flex rounded-md bg-white/10 px-2.5 py-1 font-mono text-xs tracking-wider text-white/80 uppercase"
+							>{stat.label}</span
+						>
+						<p class="mt-3 text-white/60">
+							{i === 0
+								? 'Priority support for every platform we ship, whenever your team needs it.'
+								: 'Built to grow with you, from your first user to your thousandth.'}
+						</p>
+					</div>
+				</div>
+			{/each}
 		</div>
 	</div>
 </section>
-<!-- /section:cta -->
+-->
 
-<!-- section:contact {"type":"contact","id":"contact-intake"} -->
-<section id="intake-form" class="intake-section-gradient relative py-20 sm:py-32">
-	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto max-w-5xl" use:scrollReveal>
+<!-- Closing CTA + intake form in one dark panel -->
+<section id="intake-form" class="scroll-mt-20 px-2 pb-2 sm:px-3 sm:pb-3">
+	<div class="dot-field sd-rise rounded-[2rem] border border-white/10 py-20 sm:rounded-[2.5rem] sm:py-28">
+		<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="grid gap-6 lg:grid-cols-[1fr_2fr]">
+				{@render eyebrow('Start a project')}
+				<div>
+					<h2
+				use:splitWords
+						class="font-heading text-3xl leading-[1.1] font-medium tracking-tight text-balance text-white sm:text-4xl lg:text-5xl"
+					>
+						Ready to bring your vision to <span class="text-gradient-purple">life?</span>
+					</h2>
+					<p class="mt-5 max-w-2xl text-lg text-pretty text-white/60" use:scrollReveal={{ delay: 250 }}>
+						Let's build something extraordinary together. From concept to launch, we're here to make
+						it happen.
+					</p>
+					<p class="mt-6 font-mono text-xs tracking-widest text-white/50 uppercase" use:scrollReveal={{ delay: 250 }}>
+						Free consultation · No commitment · Response within 24 hours
+					</p>
+				</div>
+			</div>
+
+			<div class="mx-auto mt-14 max-w-5xl" use:scrollReveal={{ delay: 100 }}>
 			<form
 				bind:this={formElement}
-				class="intake-form-shadow rounded-2xl bg-white p-8 sm:p-12"
+				class="intake-form-shadow rounded-[1.75rem] bg-white p-6 sm:p-12"
 				method="POST"
 				onsubmit={handleSubmit}
 			>
@@ -889,7 +1083,7 @@
 									type="button"
 									class="pill-button rounded-full border-2 px-4 py-2 text-base font-medium transition-all {foundUsVia ===
 									option
-										? 'border-[#7433ff] bg-[#f0ebff] text-[#7433ff]'
+										? 'border-brand-violet bg-brand-violet/10 text-brand-violet'
 										: 'border-gray-300 bg-white text-gray-600 hover:border-gray-400'}"
 									onclick={() => (foundUsVia = option)}
 								>
@@ -910,7 +1104,7 @@
 									type="button"
 									class="pill-button rounded-full border-2 px-4 py-2 text-base font-medium transition-all {helpWith ===
 									option
-										? 'border-[#7433ff] bg-[#f0ebff] text-[#7433ff]'
+										? 'border-brand-violet bg-brand-violet/10 text-brand-violet'
 										: 'border-gray-300 bg-white text-gray-600 hover:border-gray-400'}"
 									onclick={() => (helpWith = option)}
 								>
@@ -1007,20 +1201,18 @@
 						<button
 							type="submit"
 							disabled={isSubmitting}
-							class="btn-gradient btn-animate group inline-flex items-center gap-3 rounded-full py-3 pr-3 pl-6 text-base font-medium text-white shadow-lg disabled:cursor-not-allowed disabled:opacity-60 {isSubmitting ? 'btn-loading' : ''}"
-						>
-							<span class={isSubmitting ? 'opacity-0' : ''}>Send</span>
-							<span
-								class="flex h-8 w-8 items-center justify-center rounded-full border border-white/30 bg-white/20 {isSubmitting ? 'opacity-0' : ''}"
+							class="btn-gradient btn-animate group inline-flex items-center gap-4 rounded-full py-2 pr-2 pl-6 font-mono text-sm tracking-wider text-white uppercase shadow-lg disabled:cursor-not-allowed disabled:opacity-60 {isSubmitting ? 'btn-loading' : ''}"
 							>
-								<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
-								</svg>
-							</span>
-						</button>
+								<span class={isSubmitting ? 'opacity-0' : ''}>Send</span>
+								<span
+									class="flex h-10 w-10 items-center justify-center rounded-full bg-white text-brand-violet {isSubmitting ? 'opacity-0' : ''}"
+								>
+									{@render arrowIcon()}
+								</span>
+							</button>
 					</div>
 			</form>
+			</div>
 		</div>
 	</div>
 </section>
-<!-- /section:contact -->
